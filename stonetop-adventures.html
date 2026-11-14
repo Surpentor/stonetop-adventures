@@ -1,0 +1,1892 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:,">
+<title>Stonetop Adventures</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14110d; --bg2:#1c1712; --panel:#1e1813; --panel2:#241c15; --line:#3a2f22;
+  --ink:#e3d5ba; --muted:#b3a181; --faint:#8a755a; --gold:#d8b46a; --gold2:#e8c877; --rust:#c0513a;
+  --chip:#2a2118; --good:#9dbb7a;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Serif 4",Georgia,serif;font-size:17px;line-height:1.6}
+button,[role="button"],select,input,textarea{font:inherit}
+button,select,input[type="text"]{min-height:44px}
+a{color:var(--gold)}
+h1,h2,h3,.cz{font-family:Cinzel,serif}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 72px}
+nav.tabs{position:sticky;top:0;z-index:20;background:var(--bg2);border-bottom:1px solid var(--line);display:flex;gap:2px;flex-wrap:nowrap;justify-content:center;padding:6px 10px}
+nav.tabs button{background:none;border:1px solid transparent;color:var(--muted);border-radius:8px;padding:6px 9px;cursor:pointer;font-family:Cinzel,serif;font-size:11px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;min-height:38px}
+nav.tabs button[aria-selected="true"]{color:var(--gold2);border-color:var(--line);background:var(--panel)}
+@media(max-width:760px){nav.tabs{flex-wrap:wrap}}
+.hero{text-align:center;padding:20px 24px 16px;background:radial-gradient(ellipse 75% 95% at 50% 0%,var(--panel2) 0%,var(--bg) 72%);border-bottom:1px solid var(--line)}
+.hero h1{font-size:clamp(26px,4vw,34px);letter-spacing:3px;text-transform:uppercase;color:var(--gold2);margin:0 0 6px}
+.hero p{font-style:italic;color:var(--muted);max-width:680px;margin:0 auto;line-height:1.55;font-size:15px}
+.rule{width:80px;height:2px;margin:12px auto 0;background:linear-gradient(90deg,transparent,var(--rust),transparent)}
+.strip{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;padding:20px;background:var(--bg2);border-bottom:1px solid var(--line)}
+.strip .cell{text-align:center;min-width:200px}
+.strip .lab{display:block;font-family:Cinzel,serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--faint);margin-bottom:3px}
+.strip .val{font-weight:600;font-size:18px}
+section.page{display:none;padding-top:36px}
+section.page.on{display:block}
+h2.sec{font-size:23px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);border-bottom:1px solid var(--line);padding-bottom:10px;margin:34px 0 18px}
+h2.sec:first-child{margin-top:0}
+.lede{color:var(--muted);max-width:720px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g3,.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
+.wic{width:44px;height:44px;display:block;margin-bottom:10px;color:var(--gold)}
+.card h3{color:var(--gold2);margin:0 0 8px;font-size:18px;letter-spacing:.5px}
+.card p{color:var(--muted);font-size:15.5px;margin:0 0 8px}
+.tag{display:inline-block;font-family:Cinzel,serif;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--rust);border:1px solid var(--rust);border-radius:20px;padding:3px 11px;margin-bottom:10px}
+.role{font-family:Cinzel,serif;font-size:10.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--rust);margin-bottom:5px}
+.person{border-top:3px solid var(--gold)}
+.person.dead{border-top-color:var(--faint);opacity:.88}
+.meta{font-size:13.5px;color:var(--faint);font-style:italic;margin-bottom:8px}
+.btn{background:var(--panel2);border:1px solid var(--gold);color:var(--gold2);border-radius:8px;padding:9px 16px;cursor:pointer;font-family:Cinzel,serif;font-size:13px;letter-spacing:1px;min-height:44px}
+.btn:hover{border-color:var(--gold2)}
+.btn.rust{border-color:var(--rust);color:var(--rust)}
+.btn.small{min-height:40px;padding:6px 12px;font-size:12px}
+input[type="text"],input[type="number"],select,textarea{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:9px 12px;width:100%}
+textarea{min-height:74px;resize:vertical}
+label.fl{display:block;font-family:Cinzel,serif;font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--faint);margin:0 0 6px}
+.note{font-size:14px;color:var(--faint);font-style:italic}
+.status{border:1px dashed var(--rust);border-radius:8px;padding:12px 16px;color:var(--muted);font-size:15px;background:var(--panel)}
+.status.ok{border-color:var(--good)}
+/* web */
+.webwrap{display:grid;grid-template-columns:1fr 330px;gap:18px;align-items:start}
+@media(max-width:860px){.webwrap{grid-template-columns:1fr}}
+#web-box{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+svg#web{width:100%;height:auto;display:block;touch-action:none;cursor:grab}
+svg#web:active{cursor:grabbing}
+svg#web .wlink{stroke-width:1.3;fill:none}
+svg#web .wnode{cursor:pointer}
+svg#web .wnode circle{stroke-width:1.6}
+svg#web .wnode text{fill:var(--ink);font-size:12px;font-family:"Source Serif 4",serif;pointer-events:none}
+svg#web .wnode.dead text{fill:var(--faint)}
+.filterrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.filterrow .flab{font-family:Cinzel,serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--faint);min-width:54px}
+.legend{display:flex;gap:8px 18px;flex-wrap:wrap;margin-top:12px;font-size:13.5px;color:var(--muted)}
+.legend .li{display:inline-flex;align-items:center;gap:7px}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block;flex:none}
+.ldash{width:22px;border-top:3px solid;display:inline-block;flex:none;border-radius:2px}
+.connlink{background:none;border:none;color:var(--gold2);font-weight:600;cursor:pointer;padding:0;font-size:15px;text-align:left;min-height:0}
+.connlink:hover{text-decoration:underline}
+.conn .cdot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:7px;flex:none}
+.conn{display:flex;align-items:flex-start}
+.conn .ctext{flex:1}
+.tgroup{font-family:Cinzel,serif;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;margin:12px 0 2px}
+.person.flash{outline:2px solid var(--gold2);outline-offset:3px}
+.chr-entry{white-space:pre-wrap;font-size:16px;color:var(--ink);margin-top:6px}
+.conn{border-bottom:1px solid var(--line);padding:8px 0;font-size:15px}
+.conn b{color:var(--gold2);font-weight:600}
+.conn span{color:var(--muted)}
+/* timeline */
+.tl{border-left:2px solid var(--line);margin-left:8px;padding-left:22px}
+.tl .ev{position:relative;padding:0 0 20px}
+.tl .ev::before{content:"";position:absolute;left:-29px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--rust);border:2px solid var(--bg)}
+.tl .when{font-family:Cinzel,serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.tl p{color:var(--muted);margin:4px 0 0;max-width:700px}
+/* questions */
+.qgroup{margin-bottom:8px}
+.qitem{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:12px}
+.qitem .q{font-size:16.5px;margin:0 0 10px}
+.qitem .src{font-family:Cinzel,serif;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--faint)}
+.sub{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:15px}
+.sub .who{color:var(--gold2);font-weight:600}
+.sub.canon{border-color:var(--gold);background:#2b2113}
+.sub.pending{opacity:.92}
+.badge{display:inline-block;font-family:Cinzel,serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;border-radius:20px;padding:2px 9px;margin-left:8px;vertical-align:middle}
+.badge.canon{color:#14110d;background:var(--gold);border:1px solid var(--gold)}
+.badge.pending{color:var(--muted);border:1px solid var(--line)}
+.badge.accepted{color:#14110d;background:var(--good);border:1px solid var(--good)}
+.badge.dismissed{color:var(--ink);border:1px solid var(--rust);background:transparent}
+.review-item{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:12px}
+.review-item .rq{font-size:16.5px;margin:6px 0 8px}
+.review-item .ra{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:15.5px;margin:8px 0}
+.review-item .rmeta{font-size:13.5px;color:var(--faint)}
+.review-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.btn.good{border-color:var(--good);color:var(--good)}
+details.code{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:14px}
+details.code summary{cursor:pointer;font-family:Cinzel,serif;letter-spacing:1px;color:var(--gold2);min-height:36px}
+pre{white-space:pre-wrap;word-break:break-word;font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:14px;color:var(--muted);overflow-x:auto}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:640px){.statgrid{grid-template-columns:1fr}}
+.bigstat{text-align:center}
+.bigstat .num{font-family:Cinzel,serif;font-size:34px;color:var(--gold2)}
+footer{text-align:center;padding:34px 20px;color:var(--faint);font-style:italic;border-top:1px solid var(--line);background:var(--bg2);font-size:14.5px}
+.searchrow{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.searchrow input{flex:1;min-width:200px}
+.chipbtn{background:var(--chip);border:1px solid var(--line);color:var(--muted);border-radius:20px;padding:6px 14px;cursor:pointer;font-size:14px;min-height:40px}
+.chipbtn[aria-pressed="true"]{color:var(--gold2);border-color:var(--gold)}
+[hidden]{display:none!important}
+/* gm sign-in panel */
+#gm-panel{background:var(--bg2);border-bottom:1px solid var(--line);padding:14px 20px}
+#gm-panel .inner{max-width:1080px;margin:0 auto}
+#gm-form{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+#gm-form .fld{flex:1;min-width:200px;max-width:320px}
+#gm-panel input[type="email"],#gm-panel input[type="password"]{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:9px 12px;width:100%;min-height:44px}
+#gm-btn{border-color:var(--gold)}
+#gm-setup h3{color:var(--gold2);margin:0 0 6px;font-size:19px;letter-spacing:1px}
+#gm-setup .srow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+#gm-setup .fld{flex:1;min-width:200px;max-width:320px}
+/* vault */
+.vrow{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:10px;flex-wrap:wrap}
+.vrow .vt{flex:1;min-width:200px}
+.vrow .vt button{background:none;border:none;color:var(--gold2);font-weight:600;cursor:pointer;padding:0;font-size:16.5px;text-align:left;min-height:0;font-family:"Source Serif 4",serif}
+.vrow .vt button:hover{text-decoration:underline}
+.vrow .vp{font-size:13px;color:var(--faint)}
+.badge.vis{color:#14110d;background:var(--good);border:1px solid var(--good)}
+.badge.hid{color:var(--rust);border:1px solid var(--rust)}
+.vault-body{font-size:16.5px}
+.vault-body h1{font-size:26px;color:var(--gold2);letter-spacing:1px;margin:22px 0 10px}
+.vault-body h2{font-size:21px;color:var(--gold);margin:22px 0 8px}
+.vault-body h3{font-size:18px;color:var(--gold2);margin:18px 0 6px}
+.vault-body h4{font-size:16.5px;color:var(--gold2);margin:16px 0 6px}
+.vault-body p{margin:0 0 12px;max-width:760px}
+.vault-body ul,.vault-body ol{margin:0 0 12px;padding-left:24px;max-width:740px}
+.vault-body li{margin-bottom:4px}
+.vault-body blockquote{border-left:3px solid var(--line);margin:0 0 12px;padding:2px 0 2px 16px;color:var(--muted);max-width:740px}
+.vault-body table{border-collapse:collapse;margin:0 0 16px;font-size:15px;max-width:100%}
+.vault-body th,.vault-body td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+.vault-body th{color:var(--gold2);font-family:Cinzel,serif;font-size:12.5px;letter-spacing:1px}
+.vault-body code{background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:14px}
+.vault-body hr{border:none;border-top:1px solid var(--line);margin:18px 0}
+.vault-body .wlink-miss{color:var(--muted)}
+.vault-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}
+#vault-edit{width:100%;min-height:340px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;line-height:1.55}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>Stonetop</h1>
+  <p>A village on the edge of a dangerous world. One hundred and fifty years of small lives, quiet griefs, and things that should not be.</p>
+  <div class="rule"></div>
+</header>
+<nav class="tabs" role="tablist" aria-label="Site sections">
+  <button role="tab" data-tab="home" aria-selected="true">Home</button>
+  <button role="tab" data-tab="people" aria-selected="false">People</button>
+  <button role="tab" data-tab="web" aria-selected="false">Relationship Web</button>
+  <button role="tab" data-tab="sessions" aria-selected="false">Sessions</button>
+  <button role="tab" data-tab="chronicle" aria-selected="false">Chronicle</button>
+  <button role="tab" data-tab="world" aria-selected="false">World</button>
+  <button role="tab" data-tab="vault" aria-selected="false">Vault</button>
+  <button role="tab" data-tab="steading" aria-selected="false">Steading</button>
+  <button role="tab" data-tab="questions" aria-selected="false">Open Questions</button>
+  <button role="tab" data-tab="review" id="tab-review" aria-selected="false" hidden>GM Review</button>
+  <button type="button" id="gm-btn" aria-expanded="false">GM Sign In</button>
+</nav>
+<div id="gm-panel" hidden>
+  <div class="inner">
+    <form id="gm-form">
+      <div class="fld"><label class="fl" for="gm-email">GM email</label><input type="email" id="gm-email" autocomplete="username" placeholder="gm@example.com"></div>
+      <div class="fld"><label class="fl" for="gm-pass">Password</label><input type="password" id="gm-pass" autocomplete="current-password" placeholder="Password"></div>
+      <button class="btn" type="submit" id="gm-signin">Sign in</button>
+      <span class="note" id="gm-note" style="align-self:center"></span>
+    </form>
+    <form id="gm-setup" hidden>
+      <h3 id="gm-setup-title">Set Your GM Password</h3>
+      <p style="color:var(--muted);margin:0 0 12px;max-width:680px">This link has signed you in as the GM. Choose a password for your account below. Once it is saved, you are signed in with the full GM controls, and you can use this password with the normal sign-in from then on.</p>
+      <div class="srow">
+        <div class="fld"><label class="fl" for="gm-newpass">New password</label><input type="password" id="gm-newpass" autocomplete="new-password" placeholder="At least 6 characters"></div>
+        <div class="fld"><label class="fl" for="gm-newpass2">Confirm password</label><input type="password" id="gm-newpass2" autocomplete="new-password" placeholder="Type it again"></div>
+        <button class="btn" type="submit" id="gm-setup-btn">Set password</button>
+        <span class="note" id="gm-setup-note" style="align-self:center"></span>
+      </div>
+    </form>
+    <div id="gm-signedin" hidden>
+      <span id="gm-who" style="color:var(--gold2)"></span>
+      <button class="btn small" type="button" id="gm-signout" style="margin-left:12px">Sign out</button>
+      <p class="note" style="margin:8px 0 0">While you are signed in, the GM Review tab, the per-page show and hide controls, and inline editing are available. Players never see them.</p>
+    </div>
+  </div>
+</div>
+<div class="strip">
+  <div class="cell"><span class="lab">Current Date</span><span class="val">First of Spring, Year 150</span></div>
+  <div class="cell"><span class="lab">Next Session</span><span class="val">October 23rd, 2026</span></div>
+  <div class="cell"><span class="lab">The Village</span><span class="val">A hundred and fifty souls</span></div>
+</div>
+
+<div class="wrap">
+
+<!-- HOME -->
+<section class="page on" id="pg-home">
+  <h2 class="sec">The Sessions</h2>
+  <div class="grid g2">
+    <div class="card"><span class="tag">Next Up</span><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4C6 9 6 14 7.5 20"/><path d="M12 4C11 9 11 14 12.5 20"/><path d="M17 4C16 9 16 14 17.5 20"/></svg><h3>Upcoming Session Hooks</h3>
+      <p>The party marches west to the Crynwin nests after Hilde, following White Oak's landmarks. White Oak's child-price stands refused. Ogmolok's containment is in question.</p>
+      <button class="btn small" data-go="sessions">Read the hooks</button></div>
+    <div class="card"><span class="tag">So Far</span><svg class="wic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l2.3 5.1 5.6.7-4.1 3.9 1 5.6-4.8-2.7-4.8 2.7 1-5.6-4.1-3.9 5.6-.7z"/></svg><h3>Campaign Recap</h3>
+      <p>The undertower is delved and the Forgemaster slain. The Crynwin raid Stonetop and take Hilde. The dead are burned, the flaming sword is drawn, and a dryad names her price.</p>
+      <button class="btn small" data-go="sessions">Sessions 3 to 7</button></div>
+  </div>
+
+  <h2 class="sec">At the Table</h2>
+  <div class="grid g3">
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V10l8-6 8 6v11"/><path d="M9 21v-6h6v6"/><path d="M2.5 21h19"/></svg><h3>The Steading Playbook</h3><p>Prosperity, Population, Defenses, and the problems the village carries. Adjust it together during play.</p><button class="btn small" data-go="steading">Open the playbook</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h13v18H6z"/><path d="M9.5 8h6M9.5 12h6"/><path d="M9.5 16.2c.8-1.2 2.2-1.4 2.7-.5.4.7-.2 1.4-1 1.7v.6"/><circle cx="12.2" cy="19" r=".4" fill="currentColor"/></svg><h3>Open Questions</h3><p>Every open question from the village notes, gathered in one place: <span id="qcount-home"></span> of them. Answer one, sign it, submit it.</p><button class="btn small" data-go="questions">Answer questions</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="8" r="2.2"/><circle cx="10" cy="18" r="2.2"/><circle cx="19" cy="19" r="1.8"/><path d="M8 7l7.6.7M7 8l2 7.5M11.8 17l5-1M17.5 10l1 6.8"/></svg><h3>The Relationship Web</h3><p>The village web, drawn from the Relationship Graph note and the character notes: family, love, work, mentorship, secrets, and threats. Drag it, zoom it, search it, and click a person to read their ties.</p><button class="btn small" data-go="web">Explore the web</button></div>
+  </div>
+
+  <h2 class="sec">Explore the Village</h2>
+  <div class="grid g4">
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8.5" cy="8" r="3.2"/><path d="M3 20c.6-3.4 2.7-5 5.5-5S13.4 16.6 14 20"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14.6c2.9-.3 5 1.3 5.6 4.4"/></svg><h3>People</h3><p>The adventurers, the elders, the villagers, and the dead who still shape them.</p><button class="btn small" data-go="people">The People</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c-3 3.5-4.5 6.5-4.5 10a4.5 4.5 0 0 0 9 0C16.5 9.5 15 6.5 12 3Z"/><path d="M12 21v-6"/></svg><h3>World</h3><p>Lore, supernatural creatures, the threat of Ogmolok, the Ruined Tower, and the timeline.</p><button class="btn small" data-go="world">Open the world</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M16 4v3h3"/><path d="M8.5 11h7M8.5 14.5h7"/></svg><h3>Sessions</h3><p>Summaries of Sessions 3 through 7, and what Session 8 holds.</p><button class="btn small" data-go="sessions">Read summaries</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5V21"/><path d="M8.5 21h7"/><path d="M4.5 6.5h15"/><path d="M7 6.5L5 12.5h4L7 6.5Z"/><path d="M17 6.5L15 12.5h4L17 6.5Z"/></svg><h3>The Judge's Chronicle</h3><p>The village record, kept by Wapner Sati in his own hand. The Judge can add new entries here; accepted entries stand as canon, word for word.</p><button class="btn small" data-go="chronicle">Open the Chronicle</button></div>
+  </div>
+</section>
+
+<!-- PEOPLE -->
+<section class="page" id="pg-people">
+  <h2 class="sec">The Adventurers</h2>
+  <p class="lede">Stonetop is a village of a hundred and fifty souls. Everyone knows everyone. Everyone has history with everyone. What follows is who they are, and what they carry.</p>
+  <div class="grid g2" id="pc-grid" style="margin-top:18px"></div>
+  <h2 class="sec">Elders and Villagers</h2>
+  <div class="grid g3" id="npc-grid"></div>
+  <h2 class="sec">Outsiders</h2>
+  <div class="grid g2" id="out-grid"></div>
+  <h2 class="sec">The Dead</h2>
+  <div class="grid g4" id="dead-grid"></div>
+</section>
+
+<!-- WEB -->
+<section class="page" id="pg-web">
+  <h2 class="sec">The Web of the Living and the Dead</h2>
+  <p class="lede">The Character Relationships text index, the reference the Relationship Graph note points to for its connections, advertises 99 connections. Counted as pairs of people, though, the index itself enumerates 75 person-to-person pairs. All 75 of those pairs are drawn here, along with 17 more person-to-person ties found only elsewhere in the vault, in the character notes, session summaries, and creature and threat notes: 92 person-to-person ties in all. The 16 ties to powers and factions are counted separately, never toward the person-to-person total. <span id="web-counts"></span> Drag a person to move them, drag the background to pan, scroll or pinch to zoom. Click a person to read their ties.</p>
+  <div class="searchrow" style="margin-top:14px">
+    <input type="text" id="web-search" list="web-names" placeholder="Search for a person" aria-label="Search for a person">
+    <datalist id="web-names"></datalist>
+    <button class="btn small" id="web-zoom-in">Zoom in</button>
+    <button class="btn small" id="web-zoom-out">Zoom out</button>
+    <button class="btn small" id="web-reset">Reset view</button>
+  </div>
+  <div class="filterrow"><span class="flab">Ties</span><span id="web-tiefilters" style="display:contents">
+    <button class="chipbtn" data-tf="all" aria-pressed="true">All ties</button>
+    <button class="chipbtn" data-tf="family" aria-pressed="true">Family</button>
+    <button class="chipbtn" data-tf="love" aria-pressed="true">Love</button>
+    <button class="chipbtn" data-tf="work" aria-pressed="true">Work and trade</button>
+    <button class="chipbtn" data-tf="mentor" aria-pressed="true">Mentorship</button>
+    <button class="chipbtn" data-tf="secret" aria-pressed="true">Secrets and watching</button>
+    <button class="chipbtn" data-tf="conflict" aria-pressed="true">Threats and conflict</button>
+  </span></div>
+  <div class="filterrow"><span class="flab">People</span><span id="web-groupfilters" style="display:contents">
+    <button class="chipbtn" data-gf="all" aria-pressed="true">Everyone</button>
+    <button class="chipbtn" data-gf="adv" aria-pressed="false">Adventurers</button>
+    <button class="chipbtn" data-gf="villager" aria-pressed="false">Villagers</button>
+    <button class="chipbtn" data-gf="elder" aria-pressed="false">Elders</button>
+    <button class="chipbtn" data-gf="outsider" aria-pressed="false">Outsiders</button>
+    <button class="chipbtn" data-gf="dead" aria-pressed="false">The dead</button>
+    <button class="chipbtn" data-gf="entity" aria-pressed="false">Powers and factions</button>
+  </span></div>
+  <div class="webwrap">
+    <div id="web-box"><svg id="web" viewBox="0 0 900 640" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Interactive force-directed relationship web of Stonetop characters"></svg></div>
+    <div class="card" id="web-panel"><h3>Pick a person</h3><p>Click any name in the web and their connections appear here.</p></div>
+  </div>
+  <div class="legend" aria-label="Legend">
+    <span class="li"><span class="ldash" style="border-color:#e8c877"></span>Family</span>
+    <span class="li"><span class="ldash" style="border-color:#cf5f74"></span>Love</span>
+    <span class="li"><span class="ldash" style="border-color:#9dbb7a"></span>Work and trade</span>
+    <span class="li"><span class="ldash" style="border-color:#6f9db8"></span>Mentorship</span>
+    <span class="li"><span class="ldash" style="border-color:#9a7fc4"></span>Secrets and watching</span>
+    <span class="li"><span class="ldash" style="border-color:#c0513a"></span>Threats and conflict</span>
+    <span class="li"><span class="dot" style="background:#d8b46a"></span>Adventurer</span>
+    <span class="li"><span class="dot" style="background:#7d6a4f"></span>Villager</span>
+    <span class="li"><span class="dot" style="background:#b08d57"></span>Elder</span>
+    <span class="li"><span class="dot" style="background:#a34a35"></span>Outsider</span>
+    <span class="li"><span class="dot" style="background:#33302b;border:1px dashed #8a755a"></span>The dead</span>
+    <span class="li"><span class="dot" style="background:#6f8f7a"></span>Power or faction</span>
+  </div>
+</section>
+
+<!-- SESSIONS -->
+<section class="page" id="pg-sessions">
+  <h2 class="sec">Session Summaries</h2>
+  <div id="session-list"></div>
+  <h2 class="sec">Next: Session 8</h2>
+  <div class="card"><span class="tag">October 23rd, 2026</span><h3>The Westward March</h3>
+    <p>The party marches west to the Crynwin nests after Hilde, following White Oak's landmarks. White Oak's child-price stands refused. Ogmolok's containment is in question, the Forgemaster is dead, and the Gathered Bands of the Hillfolk, a thousand marching under a Hdor, are nearer Stonetop than anywhere.</p>
+    <p>Threads still live: Ivan Grimshaw rides to Marshedge to seek allies from Brennan Blackthorne. The Seed of Perpetual Prosperity waits somewhere in the tower tunnels. Mirgan works the cipher in the cloak the Pale Hunter sent him.</p></div>
+</section>
+
+<!-- CHRONICLE -->
+<section class="page" id="pg-chronicle">
+  <h2 class="sec">The Judge's Chronicle</h2>
+  <p class="lede">Notable events in the life of the village, recorded by Wapner Sati. What follows is what the village has lived through, and what it has been told.</p>
+  <p>The Chronicle is Stonetop's record and the office of its Judge, and the office is not entirely in the village, or entirely anywhere: an interdimensional room of quills everywhere, stacks of paper, books piled on books, holding the accumulated records and unfinished business of every Judge in the Sati line. There is no index. There has never been an index. What the Judge writes here is kept word for word, exactly as written.</p>
+  <div id="chr-status" class="status" style="margin:16px 0">Loading the Chronicle…</div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3>Entry 1: The Return of Ivan and the Shadow of the Hdor</h3><p class="note" style="margin:0 0 6px">First of Spring, Year 150</p><p>Ivan Grimshaw returns from the east with word of a Hdor uniting the Hillfolk tribes beneath a single shadow.</p><a class="btn small" href="#chr-e1">Read Entry 1</a></div>
+    <div class="card"><h3>Entry 2: The Return of Ivan and the Shadow of HDOUR</h3><p class="note" style="margin:0 0 6px">Recorded 07/03/2026</p><p>Wapner Satie&#x27;s account of Ivan&#x27;s return, the seven tribes, and what the Chronicle revealed about the Spirit Talkers.</p><a class="btn small" href="#chr-e2">Read Entry 2</a></div>
+    <div class="card"><h3>Entry 3: Chronicle of Curious Conveyances and Unlikely Diplomacies</h3><p class="note" style="margin:0 0 6px">The road to the Ruined Tower</p><p>Dool trees, the ghost of Windy Gilroy, and an audience with Branick the Impossibly Sculpted. Take that, Volo.</p><a class="btn small" href="#chr-e3">Read Entry 3</a></div>
+    <div class="card"><h3>Entry 4: Chronicle of the Hill Tower, Part II</h3><p class="note" style="margin:0 0 6px">The descent</p><p>The parlor of cloud-ships, the stone-top incident, foul waters, and the forge of the thirty-foot hammer-wielder.</p><a class="btn small" href="#chr-e4">Read Entry 4</a></div>
+    <div class="card"><h3>Entry 5: The Chronicle of the Broken Tower, Part III</h3><p class="note" style="margin:0 0 6px">The aftermath</p><p>&quot;The judge is in. ALL RISE.&quot; Constructs, a seized CORE, and sorrow in Stovetop, the Crinwin attack.</p><a class="btn small" href="#chr-e5">Read Entry 5</a></div>
+  </div>
+  <h2 class="sec">The Entries, Word for Word</h2>
+  <div class="card chr-full" id="chr-e1" style="margin-bottom:16px">
+    <h3 style="color:var(--gold2)">Entry 1: The Return of Ivan and the Shadow of the Hdor</h3>
+    <div class="rmeta">First of Spring, Year 150</div>
+    <div class="chr-body">
+      <p><em>Recorded by Judge Wapner Sati within the chaotic halls of The Chronicle, on the night of the First of Spring, Year 150 of the Founding.</em></p>
+      <hr>
+      <p>The day began with unease. Word spread through Stonetop that Ivan had returned from the east — alone, weary, yet unbroken. The villagers gathered at the edge of town, suspicion heavy in their eyes. Mirgan and Aedre approached first, cautious but curious, while I followed close behind. Aedre searched him for signs of deceit or corruption; he was clean.</p>
+      <p>We gathered at the pavilion. The air was thick with tension and the scent of poor ale. A watchman struck Ivan on the way, and I demanded reason — the man answered that Ivan had led the raid against this village. True enough, and so he received only a warning. Ivan, calm despite the insult, asked for water; Mirgan pressed the Milange on him instead, bitter Malort and orange, offered in good faith by the good people of Stonetop. He drank it down, and gagged, and talked.</p>
+      <p>Then came his tale. He spoke of The Hillfolk, ancient bands whose blood feuds ran back before his own birth — feuds that have now ceased. A stranger has appeared, a man come up out of somewhere, whom The Ash Herd name only by a whispered word: <strong>Hdor</strong>. He unites the tribes through fear and mystery. Even Yannic of The Wolf Fang, proud and defiant, who refused the alliance loudly before several tribes, was taken and returned two days later, kneeling. His people folded in behind him, and the Steplands gather as one beneath the Hdor&#x27;s shadow.</p>
+      <p>Ivan&#x27;s words chilled the pavilion. He spoke of a host a thousand strong, four hundred of them trained soldiers, gathering nearer to Stonetop than to any other place, and bound, he believes, for The Ruined Tower and whatever lies in the tunnels beneath it. I pressed him for the truth, my hammer beneath his chin, and found no lie in him. He came back because he is sorry for what he did, and because these people are in our territory. Rory, ever the zealot, invoked rites that vexed me, yet revealed no falsehood — Ivan sat calm and content in Helior&#x27;s light, and whatever is in the man, it did not flinch from it.</p>
+      <p>I dispatched messenger ravens to every village and city within reach, bearing Ivan&#x27;s warning. Then I turned to the Chronicle — that interdimensional archive of chaos — to seek the truth behind the names he uttered: Hdor, the Ruined Tower, crinwin, and Yannic.</p>
+      <p>Within its shifting shelves I found a tome titled <em>Strange Migrations of the Hill Folk</em>. Its pages spoke of Spirit Talkers — sorcerers bound by taboo, feared for their communion with unseen forces. A Hdor, it said, is one who breaks those sacred laws, wielding power for himself until it consumes him. Such beings summon spirits and beasts to attend and spy for them, and hoard arcana, or hunt for more. The Hillfolk drive them off but dare not slay them, for those who slay a Hdor are cursed.</p>
+      <p>Further reading revealed the Tower&#x27;s origin: once the domain of the <strong>Tempest Lords</strong>, near-godlike Makers — perhaps the first of them — prideful charters of the seas and the stars. The Tower was the mast of their ship, catching wind and lightning, now grounded and hollow. Arcana of their making remain below, some said to be very powerful, in tunnels whose reach no one has mapped, where relic-seekers have braved the edges and not always returned.</p>
+      <p>And so the Chronicle grows — a record of rising storms and ancient pride. The Steplands march, the Tower waits, and the Hdor&#x27;s name spreads like thunder across the plains.</p>
+      <hr>
+      <p><em>Filed, insofar as anything here is filed, in Year 150 — a year the village has not yet named.</em></p>
+    </div>
+  </div>
+  <div class="card chr-full" id="chr-e2" style="margin-bottom:16px">
+    <h3 style="color:var(--gold2)">Entry 2: The Return of Ivan and the Shadow of HDOUR</h3>
+    <div class="rmeta">Recorded 07/03/2026</div>
+    <div class="chr-body">
+      <p>Chronicle Entry: The Return of Ivan and the Shadow of HDOUR Recorded by Judge Wapner Satie within the chaotic halls of the Chronicle, 07/03/2026 The day began with unease. Word spread through Stovetop that Ivan had returned from the east — alone, weary, yet unbroken. The villagers gathered at the edge of town, suspicion heavy in their eyes. Mirgan and Aedra approached first, cautious but curious, while I followed close behind. Aedra searched him for signs of deceit or corruption; he was clean. As the sun dipped below the horizon, we gathered at the pavilion. The air was thick with tension and the scent of poor ale. A guard struck Ivan without cause, and I demanded reason — none was given. Ivan, calm despite the insult, asked only for water, refusing the bitter melort offered to him. Then came his tale. He spoke of the Hillfolk, ancient clans whose blood feuds had ceased under his watch. But now, a stranger had appeared — a man called HDOUR — who united the seven tribes through fear and mystery. Even Yannic of the Wolf Fang, proud and defiant, was taken and returned two days later, kneeling without mark or wound. The tribes followed, and the Steplands became one under HDOUR&#x27;s shadow. Ivan&#x27;s words chilled the pavilion. He spoke of a host of a thousand strong, four hundred trained soldiers, marching toward the Ruined Tower. I pressed him for the truth, and he swore it upon his life. Rory, ever the zealot, invoked rites that vexed me, yet revealed no falsehood. I dispatched messenger ravens to every village and city, bearing Ivan&#x27;s warning. Then, I turned to the Chronicle — that interdimensional archive of chaos — to seek the truth behind the names he uttered: HDOUR, Ruined Tower, Crinwin, and Yannic. Within its shifting shelves, I found a tome titled Strange Migrations of the Hillfolk. Its pages spoke of Spirit Talkers — sorcerers bound by taboo, feared for their communion with unseen forces. HDOUR, it said, was one who broke those sacred laws, wielding power for himself until it consumed him. Such beings could summon spirits and beasts, and those who slew them were cursed. Further reading revealed the Tower&#x27;s origin: once the domain of the Tempest Lords, godlike makers who commanded wind and lightning. The Tower was the mast of their celestial ship, now grounded and hollow, its tunnels crawling with hunters seeking relics of forgotten power. And so the Chronicle grows — a record of rising storms and ancient pride. The Steplands march, the Tower waits, and HDOUR&#x27;s name spreads like thunder across the plains.</p>
+    </div>
+  </div>
+  <div class="card chr-full" id="chr-e3" style="margin-bottom:16px">
+    <h3 style="color:var(--gold2)">Entry 3: Chronicle of Curious Conveyances and Unlikely Diplomacies</h3>
+    <div class="rmeta">The road to the Ruined Tower</div>
+    <div class="chr-body">
+      <p>Judge Wapner Satie Chronicle of Curious Conveyances and Unlikely Diplomacies. An Account of the Road to the Ruined Tower and the Hillfolk Conclave. Let it be known, dear reader, that few journeys begin with such innocent intentions and end with such bewildering revelations as the expedition undertaken by the stalwart company of Stovetop. I, Wapner Satie, have taken it upon myself to record our travels, for the roads they walked—crafted by the ancient Makers themselves—are seldom host to violence, yet often host to stories worth the telling. On the Road of Makers and Mispronunciations The party departed their humble town with supplies in hand and questions aplenty. Mirgan, a man of either mischief or mischief‑adjacent tendencies, continued to mispronounce Aedre&#x27;s name with such consistency that one must assume it is deliberate. Aedre, in turn, filled the air with whistles so erratic and off‑key that even Picard&#x27;s flute would blush. When asked to share something new, I confessed an enjoyment of Merlort, a beverage whose admirers are few, brave, and possibly cursed. Of Changing Seasons and Sinister Groves As we neared the crossroads, the air grew cold—unnaturally so—and the season itself seemed to shift beneath our boots. A strange light flickered overhead, neither sun nor star, and the nearby grove exuded a palpable aura of decay. Rori identified the dreaded Dool trees, and Aedre revealed their connection to the Pale Hunter, who despises them with legendary fervor. These trees, it is said, house dual spirits—never a comforting trait in flora. Mirgan wondered aloud whether cutting them down would be wise. No one answered. A wise choice, for when dealing with haunted timber, silence is often the safest reply. The Tale of Windy Gilroy The company recalled the ghost of Windy Gilroy, once Stovetop&#x27;s village idiot, later rumored to be a sorcerer of immense power who lost control of his arcana and fled into the wilds. His spirit is said to haunt the roads, perhaps seeking the sanity he misplaced. Arrival at the Tower of Hillfolk Upon reaching the ruined tower—glorious in height though decrepit in form—we found it surrounded by zounds of hillfolk. The tower, rumored to house a Seed of Perpetual Prosperity deep within its catacombs, could feed Stovetop for generations. Yet one must always ask: if something can create endless bounty, what calamity might it also unleash? The hillfolk, strangely organized and peaceful, greeted us with nods of recognition. They had built a veritable city around the tower, and when asked who ruled them, the answer was Branick. Branick the Impossibly Sculpted Three warriors escorted the group to meet Branick, who proved to be an elderly man carved from the very concept of physical perfection. If oil were poured upon him, he would gleam like a divine idol. He carried the swagger of one who has visited death, punched it in the jaw, and returned. Mirgan attempted diplomacy with all the finesse of a man juggling eels. Rori stepped in with better questions, and soon Branick&#x27;s attention turned to Mirgan&#x27;s sacred spear—pun very much intended. A truth‑compelling enchantment was invoked, and Branick admitted his interest. Mirgan reluctantly surrendered the spear for examination. Branick recognized the arcana within and even claimed familiarity with the wood, boasting of his own &quot;hardwood&quot; with a pride that suggested both confidence and innuendo. Deals, Feasts, and Hillfolk Hospitality Branick vowed not to march on Stovetop and hinted at trade opportunities—no doubt influenced by the party&#x27;s impressive grasp of negotiation, allegedly honed through Volo&#x27;s Art of the Deal (a fine purchase, if I may say so). The night ended with feasting, singing, and camaraderie among the hillfolk as the party camped near the catacomb entrance. Branick, though soft‑spoken, proved himself a capable leader—stern when needed, generous when possible, and possessed of a physique that inspired both admiration and questionable commentary. Thus concludes this chapter of their journey. What lies beneath the tower, within the catacombs, and beyond the Seed of Prosperity remains to be seen. But rest assured, dear reader: I shall chronicle every curious twist, every perilous turn, and every mispronounced name. Take that Volo</p>
+    </div>
+  </div>
+  <div class="card chr-full" id="chr-e4" style="margin-bottom:16px">
+    <h3 style="color:var(--gold2)">Entry 4: Chronicle of the Hill Tower, Part II</h3>
+    <div class="rmeta">The descent</div>
+    <div class="chr-body">
+      <p>Chronicle of the Hill Tower, Part II As recorded by Judge Wapner Satie, Morning broke over the Hill Tower with the reluctant glow of a sun that clearly wished it were shining somewhere else. Rori, ever the zealous herald of her storm‑kissed deity, was already awake—proselytizing to the hillfolk with the fervor of a street preacher and the subtlety of a brass band. A noble pursuit, yes, but one that tends to cling to the uneducated like burrs to a wool cloak. With lamp ignited, we descended the spiral staircase—an architectural nightmare that wound downward as though designed by a cartographer who hated joy. The darkness below was not merely absence of light, but a chasm of pure, unrepentant blackness. A place where weary adventurers go to die, or worse, continue adventuring. At last, a chamber greeted us. Light poured through high windows in dramatic beams, as if the gods themselves were wrestling for the privilege of illuminating our path. The room, however, bore the scars of previous explorers—ravaged, rummaged, and left in a state that suggested adventurers are, in fact, the true monsters of the world. Two paths awaited: west or east. We chose east. We always chose east. I don&#x27;t know why. Tradition, perhaps. Or stubbornness. The Parlor of Cloud‑Ships and Bird Filth The Parlor was a gallery of ancient carvings—magnificent depictions of cloud‑borne ships hurling lightning upon cities below. A stirring vision of Tempest Lord grandeur… or it would have been, had the entire display not been defiled by the avian population of the tower. Birds, in their infinite disrespect, had claimed the room as their personal latrine. I hate birds. Mirgan, ever the scholar of stones, noted that the tower&#x27;s rock matched that of Stovetop. He then launched into a tale of the Tempest Lords—Makers of floating castles and storm‑catching vessels. A history so grand it nearly made me forget the smell. Rori, seeking divine insight, urged us to watch for shards. Of what, she did not specify. Her god is fond of riddles. The Great Hall and the Stone‑Top Incident The Great Hall was a cathedral of disorder—dirty windows, scattered debris, and a stone table large enough to host a feast for giants. Hillfolk rummaged about like raccoons in a pantry. Rori pointed at the table and declared, &quot;Hey look, stone top.&quot; No one laughed. I groaned, mostly because I didn&#x27;t think of it first. One leg of the table was braced with extra stones, and upon a bronze plate Mirgan discovered runes—ancient sigils humming with thunderous potential. After he cleaned it, I deciphered the markings, confirming their storm‑touched nature. Mirgan became visibly excited. Embarrassingly excited. Lower‑region excited. Aedre, ever the shadow in the corner of one&#x27;s eye, scouted two nearby doors. One led to a bathing chamber, the other a servant&#x27;s passage. Both were unremarkable save for a lone broom—ominous in its stillness, clearly cursed, and wisely left behind. The Chamber of Foul Waters We entered a room filled with water that smelled as though it had been siphoned directly from the crypts of the dead. Massive pipes lined the walls, groaning with the threat of imminent explosion. We left quickly. Some horrors are not worth the XP. The Descent to the Forge Downward we continued, until a rhythmic bang… bang… bang… echoed through the stone. The unmistakable cadence of forging—though what was being forged, and by whom, was a question best left unanswered. At the bottom lay five tunnels and a hole descending into narrowing darkness. Rori lowered the lamp; the passage constricted unnaturally. Man‑made? Sorcery? Maker‑craft? Only descent would reveal the truth. One tunnel flickered with firelight. Aedre scouted and returned with news of constructs—mechanical beings, monotone and murderous. But stranger still, a massive green ghost drifted among them, sliming the machines with spectral ooze. I suggested &quot;Slimer.&quot; It felt right. Mirgan, of course, was thrilled. Rori noticed and the two bickered like a couple ten years into a marriage neither remembers agreeing to. The Forge of the Tower We followed Mirgan into the forge. Heat slammed into us like the breath of the hells themselves. A colossal figure—thirty feet tall, hammer in hand—turned to face us. &quot;WHO ARE YOU?&quot; Its voice shook the chamber, rattling teeth and courage alike. We stated our intentions. Mirgan, in a display of conversational recklessness, engaged the creature directly. One wrong word and we would have been paste. The being declared its purpose: to restore the tower to its rightful glory. A noble, secular mission of reconstruction. It spoke of a mighty Storm Catcher, of demons from the hells who destroyed the tower, of the last Tempest Lord—a beautiful woman who built a town of faithful citizens. It recounted the fall of the Makers, the wars of gods, and the shattering of a great orb whose fragments lay hidden throughout the tower. Mirgan, naturally, provoked it. The creature attacked. Mirgran performed a maneuver that can only be described as &quot;Troyish Achilles nonsense,&quot; contorting his body in ways that should be illegal, striking the creature while dodging its hammer. I, in mounting frustration, turned my justice upon the constructs. The battle was glorious, chaotic, and spiritually idiotic. Fire, as always, proved effective. Mirgan—now Migraine—had once again placed us in mortal peril. And I, tragically, was without Merlort.</p>
+    </div>
+  </div>
+  <div class="card chr-full" id="chr-e5" style="margin-bottom:16px">
+    <h3 style="color:var(--gold2)">Entry 5: The Chronicle of the Broken Tower, Part III</h3>
+    <div class="rmeta">The aftermath</div>
+    <div class="chr-body">
+      <p>THE CHRONICLE OF THE BROKEN TOWER, PART III As set down by the wandering scribe of Judge Wapner Saite, in the year of smoke and sorrow.</p>
+      <p>Of the Ruins Beneath Fern Gully Adjacent And lo, the Tower groaned like an old god turning in its sleep. The constructs—those iron‑wrought abominations of forgotten craft—still littered the chamber, some twitching, some shattered, some glaring with the hateful glow of false life.</p>
+      <p>Migraine, ever the opportunist, sought loot among the debris. A Fival‑born instinct, some say—others call it madness. Yet while his fingers danced over broken gears, another doorway revealed itself, a mouth of shadow beckoning.</p>
+      <p>Judge Wapner Satie—hammer‑bearer, shield‑breaker, and wielder of &quot;special access&quot;—stepped through to his home‑realm of research and secrets. But fate, ever mischievous, allowed a construct to slither behind him, its gears whispering treachery.</p>
+      <p>He turned. He struck. The hammer fell like a verdict.</p>
+      <p>The construct stabbed him westward—why westward, none can say, save perhaps the gods of direction—but Wapner seized its head, kicked open the door, and hurled the metal serpent into its kin. The crash echoed like thunder in a cathedral.</p>
+      <p>Then, standing tall, blood warm upon his armor, he proclaimed:</p>
+      <p>&quot;The judge is in. ALL RISE.&quot;</p>
+      <p>And rise they did—constructs without number, unleashing hell upon the party. Of Battle, Bedrolls, and Bedlam The thrown construct, insulted beyond measure, lunged again. Wapner met it with shield and fury, smashing it into scrap and clipping another besides. For a heartbeat he admired his stance—heroic, statuesque, undeniably majestic—until he realized he had StoveTop&#x27;s ass pressed against him. History will debate the tactical relevance of this.</p>
+      <p>Aedre, daughter of the Steplands, leapt into the fray, blades singing, protecting Migraine with the ferocity of a storm‑born wolf. Meta‑learning occurred—some call it &quot;oops we&#x27;re still figuring out the rules&quot;—but the battle raged nonetheless.</p>
+      <p>Aedre braced defensively. Wapner sprinted to reclaim his shield.</p>
+      <p>Unbeknownst to him—but knownst to all others—a construct prepared to Vlad‑the‑Impaler him from behind. Salvation came from an unlikely quarter: Rori, who distracted the creature by lowering their bedroll to their waist and performing what scholars now refer to as cannon‑firing thrusts. The construct, confused by this display of primal intimidation, redirected its murderous intent.</p>
+      <p>At last, battered and sparking, the constructs retreated. The party allowed them to flee, for victory had already been claimed. Wapner seized a CORE—glowing, humming, heavy with secrets—and they ascended from the basement. Of Branick, Lubed and Luminous At the exit stood Branick, ever slick, ever shimmering with his strange oils, light trickling down him like dew on marble. Migraine attempted negotiation, proving once more that he is a terrible negotiator. Rori spoke of the ghost&#x27;s warning—that the Tower would have &quot;removed&quot; the hillfolk.</p>
+      <p>Branick demanded they leave. Wapner offered knowledge, secrets, truths of the Tower&#x27;s inner workings. Branick remained unmoved.</p>
+      <p>Thus the party departed, swift as wind over dying embers.</p>
+      <p>Of Sorrow in Stovetop Stovetop lay wounded. Homes broken. Bodies torn. Smoke rising like mourning veils.</p>
+      <p>Aedre&#x27;s father had fallen. Her grief was a storm no blade could parry.</p>
+      <p>Migraine sought his mother, who spoke of stolen grain—desperation gnawing at the edges of civilization.</p>
+      <p>Sullen, grim and weary, pulled Wapner aside. His words were heavy:</p>
+      <p>The attack was Crinwin work. Hunger drove them. Many were eviscerated. Many were desperate.</p>
+      <p>Thus ends this chapter of the Chronicle—written in ash, blood, and the trembling hope that the next dawn will bring answers rather than ruin.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Add an Entry</h3>
+    <p style="color:var(--muted)">For the Judge, Wapner Sati. Write the entry as it should stand in the record. New entries wait for GM review below; once the GM accepts one, it stands as canon, verbatim. No spelling or continuity corrections are made to a Chronicle entry, ever.</p>
+    <label class="fl" for="chr-title">Entry title</label>
+    <input type="text" id="chr-title" placeholder="For example: Entry 6 - The Road West">
+    <label class="fl" for="chr-by" style="margin-top:12px">Submitted by</label>
+    <input type="text" id="chr-by" value="Wapner Sati">
+    <label class="fl" for="chr-entry" style="margin-top:12px">The entry</label>
+    <textarea id="chr-entry" style="min-height:150px" placeholder="Write it as the Judge writes it. It will be kept exactly as written."></textarea>
+    <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="btn" id="chr-submit">Submit entry for review</button><span class="note" id="chr-note"></span></div>
+  </div>
+  <h2 class="sec">New Canon Entries</h2>
+  <div id="chr-canon"><p class="note">No submitted entries have been accepted yet. Entries the Judge submits from this page, once the GM accepts them, will stand here, word for word, after Entries 1 to 5 above.</p></div>
+  <div id="chr-review" hidden>
+  <h2 class="sec">Awaiting GM Review</h2>
+  <p class="lede">For the GM, and visible only while the GM is signed in. Accept an entry and it joins the canon above. Dismiss it and it stays in the record below, without joining the Chronicle.</p>
+  <div id="chr-pending"><p class="note">Nothing is waiting. New entries the Judge submits will appear here.</p></div>
+  <div id="chr-dismissed-wrap" style="display:none"><h2 class="sec">Dismissed Entries</h2><div id="chr-dismissed"></div></div>
+  </div>
+</section>
+
+<!-- WORLD -->
+<section class="page" id="pg-world">
+  <h2 class="sec">Lore</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Spirit Talkers</h3><p>Among the Hillfolk, a spirit talker who breaks the old taboos is called a Hdor. The Ash Herd whispered the word for the man uniting the bands. Seven tribes have folded in, a thousand people marching, four hundred of them soldiers, and Ivan Grimshaw rode to Stonetop to warn the village.</p></div>
+    <div class="card"><h3>Seed of Perpetual Prosperity</h3><p>Something in the tunnels beneath the tower, spoken of in the old stories: a seed, or a cache, that asks minimal tending. Nothing in the old stories is free. Where it lies, whether the Forgemaster knew of it, and what the tending costs are all open questions.</p></div>
+  </div>
+  <h2 class="sec">Threats</h2>
+  <div class="card"><span class="tag">Threat</span><h3>Ogmolok, the Buried Horror</h3>
+    <p>What the Forgemaster remembered, under the Ruined Tower: when the Storm Lords' slaves rebelled and unleashed the things below, the forge-lord cities were buried. The tower endured as a bastion. Then the cultists of Ogmolok drove the defenders out, and Ogmolok came up from below. The Storm Catcher cast the spell that turned the things below to glass, and the same spell shattered her, broke the Maker's road for a stretch, and brought the tower down.</p>
+    <p>What the Dusk People told Brynna: Ogmolok lives. It is only contained, held by the Guardians and by those repairing the tower's defenses. Thistlewick warned that killing the Forgemaster could loose Ogmolok and his horde through the portal. The Forgemaster is already dead, by Mirgan's spear. Whether the containment still holds is the question the whole campaign now rests on.</p></div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3>The Gathered Bands</h3><p>Seven Hillfolk tribes folded in under a Hdor, a thousand marching, four hundred soldiers, gathering nearer Stonetop than anywhere. Chief Yannic of the Wolf Fang refused publicly, was taken, and came back two days later kneeling. Ivan thinks they are after something in the Ruined Tower and its tunnels.</p></div>
+    <div class="card"><h3>The Ruined Tower</h3><p>Stormcatcher's Tower, bastion of the old wars, brought down by the Storm Catcher's own spell. The village knows the undertower has been delved and the Forgemaster slain there. What repairs to the tower's defenses continue, and who is doing them now, nobody in the village can say.</p></div>
+  </div>
+  <h2 class="sec">Supernatural Creatures</h2>
+  <div class="grid g3" id="creature-grid"></div>
+  <h2 class="sec">Timeline</h2>
+  <div class="tl">
+    <div class="ev"><span class="when">Long ago</span><p>The Storm Lords' slaves rebel, the forge-lord cities are buried, and the Storm Catcher's spell turns the things below to glass and brings the tower down.</p></div>
+    <div class="ev"><span class="when">150 years of village life</span><p>Stonetop grows to a hundred and fifty souls on the edge of a dangerous world.</p></div>
+    <div class="ev"><span class="when">Thirty years ago</span><p>Mister Fredd arrives from somewhere he has never named, is taken in, and never leaves. Cynebald has watched him ever since.</p></div>
+    <div class="ev"><span class="when">Four years ago</span><p>Ivan Grimshaw refuses Brennan Blackthorne's wage in Marshedge and disappears east, unseen by anyone Stonetop trusts.</p></div>
+    <div class="ev"><span class="when">Two years ago</span><p>Selen Gethin vanishes following a trail he mistook for Crynwin sign, and spends two years hunting alongside the Pale Hunter. His house goes to Dirgge and Penny.</p></div>
+    <div class="ev"><span class="when">First of Spring, Year 150</span><p>Selen walks back into the village, and Ivan Grimshaw rides in the same morning with a warning: a Hdor is uniting the Hillfolk. Rory shares a sunset with Hilde, and receives a kiss on the cheek.</p></div>
+    <div class="ev"><span class="when">Sessions 3 to 5</span><p>The road west, the undertower delved, the Forgemaster slain. The Crynwin raid Stonetop and take Hilde.</p></div>
+    <div class="ev"><span class="when">Sessions 6 and 7</span><p>The dead are burned, the flaming sword is drawn, and White Oak the dryad names her price: a memory given, and a favor for the future. Her child-price stands refused.</p></div>
+    <div class="ev"><span class="when">Session 8, October 23rd, 2026</span><p>The westward march to the Crynwin nests after Hilde.</p></div>
+  </div>
+</section>
+
+<!-- STEADING -->
+<section class="page" id="pg-steading">
+  <h2 class="sec">The Steading: Stonetop</h2>
+  <p class="lede">The player facing playbook for the village itself. Anyone at the table can adjust it during play: change a stat, add a problem, strike one through when the village deals with it.</p>
+  <div id="sb-status" class="status" style="margin:16px 0">Live sync is not connected yet. Changes made here last for this sitting on this device. Changes made here last for this sitting on this device until live sync connects.</div>
+  <div class="statgrid">
+    <div class="card bigstat"><label class="fl" for="st-pros">Prosperity</label><input type="text" id="st-pros" placeholder="Not set yet"><p class="note">Set by the GM on first use.</p></div>
+    <div class="card bigstat"><label class="fl" for="st-pop">Population</label><input type="text" id="st-pop" placeholder="Not set yet"><p class="note">Set by the GM on first use.</p></div>
+    <div class="card bigstat"><label class="fl" for="st-def">Defenses</label><input type="text" id="st-def" placeholder="Not set yet"><p class="note">Set by the GM on first use.</p></div>
+  </div>
+  <h2 class="sec">Problems and Claims</h2>
+  <div id="prob-list"></div>
+  <div class="card" style="margin-top:14px">
+    <label class="fl" for="prob-new">Add a problem or claim</label>
+    <div class="searchrow" style="margin:0"><input type="text" id="prob-new" placeholder="For example: The grain tallies do not add up"><button class="btn" id="prob-add">Add</button></div>
+  </div>
+  <h2 class="sec">Change Log</h2>
+  <div class="card"><div id="change-log"><p class="note">No changes yet this sitting.</p></div>
+  <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="copy-steading">Copy steading summary</button><span class="note" id="copy-note" style="align-self:center"></span></div></div>
+</section>
+
+<!-- QUESTIONS -->
+<section class="page" id="pg-questions">
+  <h2 class="sec">Open Questions</h2>
+  <p class="lede">Every Open Questions section in the published notes, gathered in one place: <span id="qcount-q"></span> questions across <span id="qsrc-q"></span> notes. Write an answer, sign your name, and submit. New answers wait for GM review; once the GM accepts one in GM Review, it appears under its question marked as Canon. Dismissed answers stay in the GM record and do not appear here.</p>
+  <div id="q-status" class="status" style="margin:16px 0">Submissions are kept for this sitting until live sync connects; once connected, answers are saved and visible to the whole table.</div>
+  <div class="searchrow"><input type="text" id="q-search" placeholder="Search questions, or filter by note name"><select id="q-filter" style="max-width:260px"><option value="">All notes</option></select></div>
+  <div id="q-list"></div>
+</section>
+
+<!-- VAULT -->
+<section class="page" id="pg-vault">
+  <h2 class="sec">The Vault</h2>
+  <p class="lede">The campaign's notes, whole. Players see the notes the GM has chosen to show; the rest stay behind the GM sign-in, and their text is never part of this page. When the GM is signed in, every note carries a control for whether players see it, and an edit control to change the note right here.</p>
+  <div id="vault-status" class="status" style="margin:16px 0">Loading the vault notes…</div>
+  <div id="vault-list"></div>
+  <div id="vault-reader" hidden>
+    <button class="btn small" id="vault-back">&larr; All notes</button>
+    <div class="vault-tools" id="vault-tools"></div>
+    <h2 class="sec" id="vault-title" style="margin-top:10px"></h2>
+    <p class="note" id="vault-path" style="margin-top:-8px"></p>
+    <div id="vault-view">
+      <div class="card"><div class="vault-body" id="vault-body"></div></div>
+    </div>
+    <div id="vault-editwrap" hidden>
+      <label class="fl" for="vault-edit">Note text (Markdown, exactly as it will be kept)</label>
+      <textarea id="vault-edit"></textarea>
+      <div class="vault-tools">
+        <button class="btn" id="vault-save">Save changes</button>
+        <button class="btn small" id="vault-cancel">Cancel</button>
+        <span class="note" id="vault-savenote"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GM REVIEW -->
+<section class="page" id="pg-review">
+  <h2 class="sec">GM Review</h2>
+  <p class="lede">For the GM, and visible only while the GM is signed in. Every answer players submit to an open question lands here first. Accept an answer as canon and it shows on the Open Questions page, attached to its question and marked Canon. Dismiss an answer and it stays in this record, but never shows as canon.</p>
+  <div id="review-status" class="status" style="margin:16px 0">Loading submitted answers…</div>
+  <div class="searchrow" id="review-filters" role="group" aria-label="Filter submissions by status">
+    <button class="chipbtn" data-rf="pending" aria-pressed="true">Pending <span id="count-pending"></span></button>
+    <button class="chipbtn" data-rf="accepted" aria-pressed="false">Accepted as canon <span id="count-accepted"></span></button>
+    <button class="chipbtn" data-rf="dismissed" aria-pressed="false">Dismissed <span id="count-dismissed"></span></button>
+    <button class="chipbtn" data-rf="all" aria-pressed="false">All <span id="count-all"></span></button>
+    <button class="btn small" id="review-refresh" style="margin-left:auto">Refresh</button>
+  </div>
+  <div id="review-list"></div>
+</section>
+
+</div>
+<footer>These notes update as the campaign unfolds. Open Questions throughout mark things the village doesn't know yet, or knows, but hasn't faced.</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+/* ============================================================
+   SUPABASE CONFIG: connected to the free "stonetop" Supabase
+   project. Steading changes and question answers save and
+   sync live for every device. This is the anon public key,
+   which is safe to publish; never paste a service role key.
+   ============================================================ */
+var SUPABASE_URL = "https://fvagnxahxsurbjwvmkay.supabase.co";
+var SUPABASE_ANON_KEY = "sb_publishable_ImCXZslGvO-jXtHhCkI-9w_LmHaXd1Y";
+
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+/* Capture any Supabase auth redirect params from the URL hash
+   before the client is created and consumes them. Invite and
+   recovery links arrive with access_token and type in the hash;
+   a failed link arrives with error and error_code instead. */
+function parseHashParams(){
+  var h = window.location.hash || "";
+  if (h.charAt(0) === "#") h = h.slice(1);
+  var out = {};
+  if (!h || h.indexOf("=") === -1) return out;
+  h.split("&").forEach(function(pair){
+    var i = pair.indexOf("=");
+    if (i > 0){
+      try { out[decodeURIComponent(pair.slice(0, i))] = decodeURIComponent(pair.slice(i + 1).replace(/\+/g, " ")); } catch(e){}
+    }
+  });
+  return out;
+}
+var AUTH_HASH = parseHashParams();
+var sb = null;
+if (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase) {
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+/* ---------- tabs ---------- */
+function go(tab){
+  if (tab==="review" && !window.isGM) tab = "home";
+  document.querySelectorAll("section.page").forEach(function(s){ s.classList.toggle("on", s.id==="pg-"+tab); });
+  document.querySelectorAll("nav.tabs button[data-tab]").forEach(function(b){ b.setAttribute("aria-selected", b.dataset.tab===tab ? "true":"false"); });
+  window.scrollTo({top:0});
+}
+document.querySelectorAll("nav.tabs button[data-tab]").forEach(function(b){ b.addEventListener("click", function(){ go(b.dataset.tab); }); });
+document.querySelectorAll("[data-go]").forEach(function(b){ b.addEventListener("click", function(){ go(b.dataset.go); }); });
+
+/* ---------- people ---------- */
+var PCS = [
+ {n:"Aedre Lachlann", role:"The Heavy", meta:"28, She/Her · The Town Sheriff (Constable)", d:"Stonetop's constable in everything but name. She keeps the peace, breaks up the fights, and walks past Kaelyn's house twice a night since the knife appeared on the table. Betrothed to Selen Gethin, who has just come home after two years missing."},
+ {n:"Mirgan Steadhurst", role:"The Seeker", meta:"40, He/Him · Witch Hunter", d:"The village intellectual. The man you go to when the problem has no ordinary solution. He carries a twisted spear he won't explain, and the flaming spear killed the Forgemaster. Kaelyn's son, Cynebald's student, Brynna's lover."},
+ {n:"Rory MacCullough", role:"The Lightbearer", meta:"36, He/Him · Soul on Fire", d:"Helior's light, steady as a hearthfire. He remembers your dog's name and leaves tea for your cough. He came back to Stonetop different, and better. He has feelings for Hilde Saer he has not said out loud."},
+ {n:"Wapner Sati", role:"The Judge", meta:"He/Him · Of the Sati line", d:"Stonetop's Judge, of the Sati line. Carries the hammer, keeps the Chronicle, an interdimensional office with no index and no mercy. Betrothed to Hilde Saer. Sends birds when word must outrun a rider."}
+];
+var NPCS = [
+ {n:"Kaelyn Steadhurst", meta:"60 · Village Elder, Granary Tally-Keeper", d:"Mirgan's mother. Keeps the grain tallies and the village's secrets in equal measure. There is a stranger's knife in her kitchen drawer."},
+ {n:"Cynebald Saer", meta:"67 · Village Elder, Retired Seeker", d:"Mirgan's mentor. A difficult man with a long memory. Has watched Mister Fredd for thirty years without saying why. Hilde's father."},
+ {n:"Brynna Lachlann", meta:"26 · Goat Herder", d:"Aedre's sister. Mirgan's lover. Sharp-tongued, curious rather than scandalized. She meets the Dusk People at the old stones at dusk, and told no one what they warned her."},
+ {n:"Coren Hearthwise", meta:"32 · Distiller", d:"Lena's husband. Keeps the still. Kind to a fault, with two ribs that never fully healed. Mirgan comes by late, asking for less ordinary things."},
+ {n:"Dirgge MacCullough", meta:"38 · Blacksmith, Stable Hand", d:"Rory's cousin. Came to Stonetop before Rory and built a life. Runs the forge and the stables. Newly married to Penny, and newly settled in Selen Gethin's old house."},
+ {n:"Penny MacCullough", meta:"34 · Blacksmith", d:"Dirgge's wife, and the second smith at Stonetop's one forge. Newlyweds, given Selen Gethin's old house the same morning he walked back into the village."},
+ {n:"Goldina Cleary", meta:"15 · Runner and Message-Girl", d:"The Cleary daughter. Bookish and quick, the fastest pair of legs in Stonetop. Mirgan is watching to see if she has the cast for it. Kaelyn is her great-aunt."},
+ {n:"Hilde Saer", meta:"33 · Gatherer, Herbalist", d:"Cynebald's daughter. Knows the old plant lore and carries the household knowledge since her mother Mereda died. Betrothed to Wapner. Taken by the Crynwin in the raid, and the village marches west after her."},
+ {n:"Mister Fredd", meta:"55 · Publican, Stable Owner", d:"Keeps the public house. Warm smile, ready ear. Came from somewhere he's never named thirty years ago, and has not left since. Currently keeping watch over an unlikely lodger: Ivan Grimshaw."},
+ {n:"Selen Gethin", meta:"32 · Watch Captain, post unfilled, returned", d:"Head of Stonetop's watch before he vanished for two years, hunting alongside the Pale Hunter. He came home the first morning of spring with a cloak for Mirgan, and cannot sleep through a night."},
+ {n:"Lena Hearthwise", meta:"32 · Midwife", d:"Coren's wife. Took up midwifery when her predecessor died. Consults Kaelyn on the parts of the old lore not written down, and quietly benefits Wynne."},
+ {n:"Joren Cleary", meta:"37 · Weaver, Dyer", d:"Aldwin's wife. Mirgan's cousin. Practical and efficient. Aware of more than she lets on. Supplies herbs to Brynna for dyes."},
+ {n:"Aldwin Cleary", meta:"38 · Tanner", d:"Joren's husband. Keeps his own counsel. Has a quiet unease about Mirgan he doesn't put into words."},
+ {n:"Wynne Pritchard", meta:"29 · Farmer", d:"Urbgen's sister. Left to carry a soured name after her brother was found dead in a locked cell. Isolated since, quietly benefited by Lena, and relying on Mister Fredd more than she says."},
+ {n:"Nora Sati", meta:"Sister to the Judge", d:"Wapner's sister and closest kin, born adjacent to the Chronicle and the Sati judgeship. Little else has come into the story yet."}
+];
+var OUTS = [
+ {n:"Ivan Grimshaw", meta:"39, He/Him · Former lieutenant of The Claws", d:"The man Brennan Blackthorne sent when sending Brennan himself would have been too much. Aedre bested him in the rain, face-first in a pig trough, and he has thought about it for years. He rode back into Stonetop on the first morning of spring, Year 150, hands raised, and warned the village: a Hdor is uniting the Hillfolk. Judged truthful by Wapner. Lodged with Mister Fredd."},
+ {n:"Brennan Blackthorne", meta:"Marshal of Marshedge · Former leader of The Claws", d:"Built the Claws, ran them for two decades, then sold the whole company to the council that had been hunting him. Now the law in Marshedge. He remembers Aedre, who bested his lieutenant Ivan in the rain."},
+ {n:"Brannick", meta:"60s, He/Him · Uniter of the Hillfolk", d:"The Hdor who leads the Gathered Bands. A big man with scarred hands, a bronze ram's-head brooch, and a black stone medallion. Seven tribes have folded in under him. What he is hunting in the tower and its tunnels, nobody in Stonetop knows."},
+ {n:"Yannic", meta:"Chief of the Wolf Fang", d:"Refused Brannick and the Gathered Bands publicly, was taken, and came back two days later kneeling. His folding-in marked the last resistance breaking among the bands. Known to the party only through Ivan's account, recorded in the Chronicle."}
+];
+var DEAD = [
+ {n:"Bren Steadhurst", d:"Mirgan's father, Kaelyn's husband. Was Cynebald's friend and partner in the work. Taught Isen to hunt. First told Mister Fredd he could stay. His absence shapes them all."},
+ {n:"Isen Lachlann", d:"Aedre and Brynna's father. Hunted with Bren. His absence shapes the sisters' independence."},
+ {n:"Mereda Saer", d:"Stonetop's last potter. Cynebald's wife, Hilde's mother. Her absence shapes Hilde's solo carrying of the household knowledge."},
+ {n:"Urbgen Pritchard", d:"Wynne's brother. Advocated for Aedre's trial. His absence shapes Wynne's isolation."},
+ {n:"Tolan", d:"Aedre's childhood friend, a few years older, already training among the hunters. The Claws caught him beyond their claimed borders and killed him for what they called trespassing. Stonetop never truly got him back; only pieces of him were recovered."}
+];
+function personSlug(name){ return name.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
+function personCard(p, kind){
+  var el=document.createElement("div"); el.className="card person"+(kind==="dead"?" dead":""); el.id="person-"+personSlug(p.n);
+  el.innerHTML = (p.role?'<div class="role">'+p.role+'</div>':"")+"<h3>"+p.n+"</h3>"+(p.meta?'<div class="meta">'+p.meta+'</div>':"")+"<p>"+p.d+"</p>";
+  return el;
+}
+PCS.forEach(function(p){ document.getElementById("pc-grid").appendChild(personCard(p)); });
+NPCS.forEach(function(p){ document.getElementById("npc-grid").appendChild(personCard(p)); });
+OUTS.forEach(function(p){ document.getElementById("out-grid").appendChild(personCard(p)); });
+DEAD.forEach(function(p){ document.getElementById("dead-grid").appendChild(personCard(p,"dead")); });
+
+/* ---------- creatures ---------- */
+var CREATURES = [
+ {n:"Crynwin", d:"Starving vermin, or something more. Their raids on Stonetop have grown bolder and more organized since Selen disappeared, and Aedre believes something is leading them, or teaching them. They raided the village and took Hilde."},
+ {n:"The Pale Hunter", d:"A giant man with antlers, abroad on certain nights, with spectral hounds. Selen followed him for two years and came home carrying his cloak for Mirgan, embroidered with clouds, damp with rain and ozone. Between sessions, Mirgan learned the entity's name: Arrune."},
+ {n:"White Oak", d:"The papery-white dryad of the fae circle in the Greatwood. She asks a price: a memory, given, and a favor for the future. Her child-price stands refused. What a dryad does with a memory once it is given is an open question."},
+ {n:"Thistlewick", d:"An idol with claims nobody has confirmed, except one the party takes seriously: kill the Forgemaster and you could loose Ogmolok. What charged up means, and what Mirgan took away from that floor, are open questions."},
+ {n:"The Fae", d:"The Fae cannot break a promise. Now that the Forest Folk are gone, oaths and arrangements between them and the Fae may have lapsed, or turned dangerous. The correct way to refuse a Fae offer without giving insult matters."},
+ {n:"Dusk People", d:"Brynna meets them at the old stones outside the Ringwall at dusk. They quiet the other voices she hears. They warned her the Crynwin were starving and would come for the village's food, and that Ogmolok lives, only contained. They were right."},
+ {n:"Arrune", d:"The name Mirgan learned for the entity behind the Pale Hunter's cloak. The cloak's embroidery is a cipher, slowly yielding, and a proper cypher feels within reach. Mirgan keeps working."}
+];
+CREATURES.forEach(function(c){
+  var el=document.createElement("div"); el.className="card";
+  el.innerHTML="<h3>"+c.n+"</h3><p>"+c.d+"</p>";
+  document.getElementById("creature-grid").appendChild(el);
+});
+
+/* ---------- sessions ---------- */
+var SESSIONS = [
+ {t:"Session 3: The Road West", parts:["Provisioning","The Roads Remember","The Crossroads"], d:"The party provisions and takes the road west. The roads remember, and the crossroads hold what they always hold."},
+ {t:"Session 4: The Undertower", parts:["Among the Bands","Into the Mound","The Great Hall"], d:"Among the bands, into the mound, and down into the great hall of the undertower beneath the Ruined Tower."},
+ {t:"Session 5: The Raid", parts:["Looting the Forge","The Run Home","Aftermath"], d:"The forge is looted, the Forgemaster slain by Mirgan's spear, and the run home begins. The Crynwin raid Stonetop while the party is gone, and take Hilde."},
+ {t:"Session 6: Ashes and Questions", parts:["The Village Takes Stock","What the Village Thinks It Knows","Rory and Cynebald"], d:"The village takes stock of the dead and the damage. The dead are burned. What the village thinks it knows is not all of it."},
+ {t:"Session 7: White Oak's Price", parts:["Preparations","What Thistlewick Claims","Into the Greatwood"], d:"Into the Greatwood, where White Oak names her price: a memory given, and a favor for the future. Her child-price stands refused, and she gives the landmarks west to the Crynwin nests."}
+];
+SESSIONS.forEach(function(s){
+  var el=document.createElement("div"); el.className="card"; el.style.marginBottom="14px";
+  el.innerHTML="<h3>"+s.t+"</h3><p>"+s.d+"</p><p class='note'>Sections: "+s.parts.join(" · ")+"</p>";
+  document.getElementById("session-list").appendChild(el);
+});
+</script>
+<script>
+/* ---------- relationship web ----------
+   Data crawled from the vault copy held for this site (Nov 2026):
+   the Relationship Graph note, the character notes' connections
+   tables, and the named links running through their stories, the
+   session summaries, and the creature and threat notes.
+   Reconciled Nov 2026 against "Character Relationships - Text
+   Index.md": the Graph note advertises 99 connections for that
+   index; counted as pairs of people, the index lists 75, and all
+   75 are drawn here, plus 17 ties found only elsewhere in the
+   vault: 92 person-to-person ties. The 16 ties to the 9 powers
+   and factions are a separate class and are not counted toward
+   the person-to-person total. Counts on the page are computed
+   from this data at load. */
+var PEOPLE_WEB = [
+ ["Kaelyn","Kaelyn Steadhurst","elder"],["Mirgan","Mirgan Steadhurst","adv"],["Brynna","Brynna Lachlann","villager"],
+ ["Aedre","Aedre Lachlann","adv"],["Cynebald","Cynebald Saer","elder"],["Hilde","Hilde Saer","villager"],
+ ["Wapner","Wapner Sati","adv"],["Rory","Rory MacCullough","adv"],["Mister Fredd","Mister Fredd","elder"],
+ ["Coren","Coren Hearthwise","villager"],["Lena","Lena Hearthwise","villager"],["Dirgge","Dirgge MacCullough","villager"],
+ ["Penny","Penny MacCullough","villager"],["Goldina","Goldina Cleary","villager"],["Joren","Joren Cleary","villager"],
+ ["Aldwin","Aldwin Cleary","villager"],["Selen","Selen Gethin","villager"],["Wynne","Wynne Pritchard","villager"],
+ ["Nora","Nora Sati","villager"],["Ivan","Ivan Grimshaw","outsider"],["Brennan","Brennan Blackthorne","outsider"],
+ ["Brannick","Brannick","outsider"],["Yannic","Yannic","outsider"],["Bren","Bren Steadhurst","dead"],
+ ["Isen","Isen Lachlann","dead"],["Mereda","Mereda Saer","dead"],["Urbgen","Urbgen Pritchard","dead"],["Tolan","Tolan","dead"],
+ ["Pale Hunter","The Pale Hunter","entity"],["White Oak","White Oak","entity"],["Crynwin","The Crynwin","entity"],
+ ["The Claws","The Claws","entity"],["Gathered Bands","The Gathered Bands","entity"],["Ash Herd","The Ash Herd","entity"],
+ ["Dusk People","The Dusk People","entity"],["Arrune","Arrune","entity"],["Thistlewick","Thistlewick","entity"]
+];
+var EDGES = [
+ ["Kaelyn","Mirgan","family","Mother and son"],
+ ["Kaelyn","Aedre","mentor","Protected and protector. Kaelyn tended Aedre's wounds as a teenager, and spoke the words she needed"],
+ ["Mirgan","Brynna","love","Lovers"],
+ ["Mirgan","Aedre","mentor","Guidance. Aedre trusts Mirgan to always have her back"],
+ ["Brynna","Aedre","family","Sisters"],
+ ["Kaelyn","Cynebald","family","Lifelong contemporaries, the elder circle. A kind of love in it that does not need naming"],
+ ["Kaelyn","Mister Fredd","secret","Old kindness, unnamed. First household to take him in; he brings her spring preserves, and she pretends to be surprised"],
+ ["Cynebald","Mister Fredd","secret","Quietly watches, unsaid, for thirty years. Mister Fredd sits with him on bad nights"],
+ ["Cynebald","Hilde","family","Father and daughter"],
+ ["Cynebald","Mereda","love","Husband and wife (she is deceased)"],
+ ["Hilde","Mereda","family","Mother and daughter (she is deceased)"],
+ ["Hilde","Coren","work","Supplies botanicals to the still"],
+ ["Hilde","Joren","work","Trading partners; botanicals for the dye-pots"],
+ ["Hilde","Kaelyn","work","Brings her flowers. Kaelyn keeps them, dried, in bundles on a shelf, and has never said why"],
+ ["Joren","Brynna","work","Supplies herbs to Brynna for dyes"],
+ ["Coren","Mister Fredd","work","Oldest friends. Coren is his largest customer, and one of the few people Fredd would tell certain things to"],
+ ["Dirgge","Brynna","work","Friend; keeps her ironwork sound"],
+ ["Dirgge","Coren","work","Friends; Dirgge mends the still for Coren"],
+ ["Dirgge","Mister Fredd","work","Employed by Mister Fredd at the stables"],
+ ["Dirgge","Penny","love","Married, fellow blacksmiths"],
+ ["Coren","Lena","love","Husband and wife"],
+ ["Lena","Kaelyn","secret","Consults Kaelyn on old midwifery lore. Fellow keepers of village secrets"],
+ ["Lena","Brynna","family","Friends. Lena tends the herd in a pinch"],
+ ["Lena","Wynne","work","Quietly benefits Wynne"],
+ ["Goldina","Kaelyn","family","Great-aunt and great-niece, by long-cousin reckoning"],
+ ["Goldina","Cynebald","mentor","Takes books from Cynebald, who says she listens"],
+ ["Goldina","Mister Fredd","work","Runs the morning's messages for Mister Fredd"],
+ ["Goldina","Mirgan","mentor","Cousin once removed. Mirgan has taken her under his wing"],
+ ["Aedre","Isen","family","Father and daughter (he is deceased). He taught his daughters to fight"],
+ ["Aedre","Selen","love","Betrothed. Returned Year 150 Spring after two years missing; the reunion is still unsettled"],
+ ["Aedre","Coren","conflict","Seeks forgiveness from Coren, whom she wronged. Coren has forgiven her fully"],
+ ["Aedre","Brennan","conflict","Bested his lieutenant. Brennan remembers her"],
+ ["Aedre","Ivan","conflict","Broke each other in the rain in Stonetop. He rode back unexplained"],
+ ["Rory","Aedre","mentor","Rory needs guidance from Aedre. He once dragged her home bleeding and unconscious"],
+ ["Rory","Mirgan","family","Old and dear friends. Mirgan is Rory's anchor"],
+ ["Rory","Hilde","love","Quiet crush. A sunset shared, a kiss on the cheek, First of Spring"],
+ ["Rory","Dirgge","family","Cousins"],
+ ["Rory","Wapner","secret","Confidant. The Judge confides in Rory more than anyone else"],
+ ["Wapner","Nora","family","Sister, closest kin"],
+ ["Wapner","Hilde","love","Betrothed. Her kindness warms his soul"],
+ ["Wapner","Mirgan","conflict","Stood beside Mirgan in battle against unnatural chaos"],
+ ["Wapner","Aedre","work","Passed judgement on Aedre in the Coren matter"],
+ ["Wapner","Cynebald","mentor","Names Cynebald wisest of the elders"],
+ ["Mirgan","Cynebald","mentor","Teacher and student"],
+ ["Mirgan","Joren","family","Cousins, lifelong"],
+ ["Mirgan","Coren","secret","Quiet customer, for less-ordinary things, late at night"],
+ ["Bren","Isen","mentor","Bren taught Isen to hunt. They hunted together"],
+ ["Bren","Cynebald","work","Friends and partners in the work"],
+ ["Bren","Mister Fredd","work","First told Mister Fredd he could stay"],
+ ["Bren","Kaelyn","love","Husband and wife (he is deceased)"],
+ ["Brynna","Isen","family","Father and daughter (he is deceased)"],
+ ["Joren","Kaelyn","family","Aunt and niece. Joren is Kaelyn's niece"],
+ ["Mereda","Mister Fredd","secret","One of those Mister Fredd quietly tended to. He keeps the broken shards of her jug in a sealed box"],
+ ["Urbgen","Wynne","family","Brother and sister (he is deceased). He was found dead in a locked cell"],
+ ["Urbgen","Aedre","conflict","Advocated for Aedre's trial"],
+ ["Brennan","Ivan","work","Ivan would not follow him to the Marshedge watch. Now Ivan rides to him as Stonetop's envoy"],
+ ["Selen","Mirgan","work","Delivered the Pale Hunter's cloak to Mirgan"],
+ ["Brannick","Yannic","conflict","Yannic refused him publicly, was taken, and came back kneeling"],
+ ["Joren","Aldwin","love","Husband and wife, shared work"],
+ ["Joren","Goldina","family","Joren is Goldina's mother"],
+ ["Aldwin","Goldina","family","Father and daughter"],
+ ["Aedre","Tolan","family","Childhood friend, a few years older, already training among the hunters. The Claws killed him for trespassing; only pieces of him came home"],
+ ["Ivan","Mister Fredd","work","Lodger at the public house. Mister Fredd watches over him, warmly welcomed"],
+ ["Wapner","Ivan","work","Judged him truthful at the gate, hammer under his chin"],
+ ["Ivan","Rory","secret","Rory shone Helior's light on him. Ivan says things make more sense now"],
+ ["Ivan","Yannic","conflict","Ivan witnessed Yannic's refusal of the Hdor, and his return two days later, kneeling"],
+ ["Brannick","Mirgan","conflict","Brannick asked to see Mirgan's twisted spear, studied it, named it powerful arcana, and gave it back. Mutual respect, under threat"],
+ ["Brannick","Aedre","conflict","He warned her about undefended homes"],
+ ["Brannick","Wapner","conflict","Wapner watched his eyes through the spear parley, and read no lie in him"],
+ ["Brannick","Ivan","conflict","Ivan carried the warning of Brannick's gathering bands to Stonetop"],
+ ["Dirgge","Selen","work","Dirgge and Penny live in Selen's old house, given to them while he was gone"],
+ ["Penny","Selen","work","Penny lives in Selen's old house, now that the dead man has come home"],
+ ["Penny","Rory","family","Cousins by marriage. Penny is Dirgge's wife"],
+ ["Cynebald","Urbgen","secret","Cynebald examined Urbgen's body after his death, saw something, and said nothing"],
+ ["Wynne","Mister Fredd","work","Wynne relies on Mister Fredd, in her isolation since her brother's death"],
+ ["Bren","Mirgan","family","Father and son (he is deceased). Bren's absence shapes Mirgan's mentorship need and his path"],
+ ["Mister Fredd","Rory","mentor","Soul-work. Rory tends Mister Fredd's soul, and Fredd is helping Rory find his centre"],
+ ["Mirgan","Ivan","work","Mirgan managed Stonetop's answer to Ivan: the frisking at the gate, the questions at the pavilion, and he carried the elders' plan to Ivan at the public house"],
+ ["Cynebald","Ivan","work","Cynebald proposed sending Ivan to Marshedge to seek allies from Brennan, provisioned for the journey"],
+ ["Cynebald","Rory","secret","Spoke behind a closed door about Hilde and the Crynwin. Rory told him: Hilde doesn't need a dead father"],
+ ["Goldina","Aedre","mentor","Goldina admires Aedre from a careful distance, and finds reasons to deliver messages in person just to watch the constable work"],
+ ["Kaelyn","Mereda","secret","Kaelyn is one of the very few who remembers Mereda's potter's invocations, and has not said whether she will ever teach them to Hilde"],
+ ["Ivan","Selen","secret","Ivan rode back into Stonetop the same morning Selen returned, Year 150 Spring. Whether that was coincidence is an open question in Ivan's own note"],
+ ["Wapner","Coren","work","Wapner's judgement in the Aedre matter was over Coren's broken bones"],
+ ["Kaelyn","Wapner","work","Kaelyn laid out the elders' plan on the night of Ivan's warning: scout the Ruined Tower, take Wapner and one of his birds, and send word back"],
+ ["Cynebald","Coren","work","A steady customer: Cynebald drinks Coren's whisky, not much, and eats whatever Hilde brings him"],
+ ["Kaelyn","Coren","work","Bread, milk, and sometimes a bit of the first run from Coren's still, when Kaelyn can get it"],
+ ["Aldwin","Mirgan","secret","A quiet unease about Mirgan that Aldwin doesn't put into words"],
+ ["Selen","Pale Hunter","secret","The Pale Hunter held Selen for two years, then released him. Selen hunted alongside him, with three spectral dogs for company"],
+ ["Pale Hunter","Mirgan","secret","The Hunter knew Mirgan's name without being told, and sent him the embroidered cloak through Selen"],
+ ["Ivan","The Claws","work","Former lieutenant of the Claws, from its early days under Brennan"],
+ ["Brennan","The Claws","work","Built the Claws and ran them for two decades. The company, sold to the council, is now the Marshedge watch"],
+ ["Tolan","The Claws","conflict","The Claws caught Tolan beyond their claimed borders and killed him for what they called trespassing"],
+ ["Ivan","Gathered Bands","work","Ivan travelled with the Gathered Bands for weeks, and carried their warning out to Stonetop"],
+ ["Brannick","Gathered Bands","conflict","Brannick, the Hdor, leads the Gathered Bands: seven tribes folding in under him, a thousand marching"],
+ ["Yannic","Gathered Bands","conflict","The Wolf Fang folded into the Gathered Bands after Yannic was taken and came back kneeling"],
+ ["Ivan","Ash Herd","work","The Ash Herd took Ivan in without asking why, and kept him for years"],
+ ["Brynna","Dusk People","secret","Brynna meets the Dusk People at the old stones outside the Ringwall at dusk. They quiet the other voices she hears"],
+ ["Mirgan","White Oak","secret","White Oak asked Mirgan for the trinket in his hand, and a favour for the future: his child, after he has it. The bargain stands refused"],
+ ["Rory","White Oak","secret","White Oak took Rory's memory of the first time he saw Hilde, as the price of the Crynwin nest locations"],
+ ["Hilde","Crynwin","conflict","Taken by the Crynwin in the raid on Stonetop. The village marches west after her"],
+ ["Selen","Crynwin","conflict","Selen vanished following a trail he mistook for Crynwin sign, and the raids grew bolder in his absence"],
+ ["Mirgan","Arrune","secret","Arrune is the name Mirgan learned for the thing behind the Pale Hunter's cloak. He works the cloak's cipher, slowly yielding"],
+ ["Mirgan","Thistlewick","secret","Thistlewick warned Mirgan in the undertower: kill the Forgemaster, and you could loose Ogmolok"],
+ ["Aldwin","Cynebald","mentor","His father's old friend, respected at a distance"],
+ ["Aldwin","Mister Fredd","work","Drinks at his establishment"],
+ ["Brynna","Wynne","family","Friends"],
+ ["Wapner","Yannic","work","Recorded Yannic's story in the Chronicle's first entry"]
+];
+var TIE_COLORS = { family:"#e8c877", love:"#cf5f74", work:"#9dbb7a", mentor:"#6f9db8", secret:"#9a7fc4", conflict:"#c0513a" };
+var TIE_LABELS = { family:"Family", love:"Love", work:"Work and trade", mentor:"Mentorship", secret:"Secrets and watching", conflict:"Threats and conflict" };
+var TIE_ORDER = ["family","love","work","mentor","secret","conflict"];
+var GROUP_COLORS = { adv:"#d8b46a", villager:"#7d6a4f", elder:"#b08d57", outsider:"#a34a35", dead:"#33302b", entity:"#6f8f7a" };
+var GROUP_LABELS = { adv:"Adventurer", villager:"Villager", elder:"Elder", outsider:"Outsider", dead:"The Dead", entity:"Power or faction" };
+var GROUP_SECTORS = { adv:0.55, elder:1.35, villager:2.6, entity:3.55, outsider:4.35, dead:5.5 };
+
+var svg = document.getElementById("web");
+var NS = "http://www.w3.org/2000/svg";
+var WN = [], WBY = {};
+PEOPLE_WEB.forEach(function(p, i){
+  var sector = GROUP_SECTORS[p[2]];
+  var a = sector + ((i * 0.618) % 1 - 0.5) * 1.5 + (i % 5) * 0.12;
+  var r = 150 + ((i * 37) % 120);
+  var n = { id:p[0], full:p[1], g:p[2], x:450 + r * Math.cos(a), y:320 + r * 0.82 * Math.sin(a), vx:0, vy:0, deg:0, fx:null, fy:null, el:null, ringEl:null };
+  WN.push(n); WBY[n.id] = n;
+});
+var WL = EDGES.map(function(e){
+  var l = { a:WBY[e[0]], b:WBY[e[1]], t:e[2], label:e[3], el:null };
+  l.a.deg++; l.b.deg++; return l;
+});
+WN.forEach(function(n){ n.r = 8 + Math.min(11, n.deg * 0.85); });
+
+var worldG = document.createElementNS(NS, "g");
+var linkG = document.createElementNS(NS, "g");
+var nodeG = document.createElementNS(NS, "g");
+worldG.appendChild(linkG); worldG.appendChild(nodeG); svg.appendChild(worldG);
+WL.forEach(function(l){
+  var ln = document.createElementNS(NS, "line");
+  ln.setAttribute("class", "wlink"); ln.setAttribute("stroke", TIE_COLORS[l.t]);
+  linkG.appendChild(ln); l.el = ln;
+});
+WN.forEach(function(n){
+  var g = document.createElementNS(NS, "g");
+  g.setAttribute("class", "wnode" + (n.g === "dead" ? " dead" : ""));
+  g.dataset.person = n.id;
+  var c = document.createElementNS(NS, "circle");
+  c.setAttribute("r", n.r); c.setAttribute("fill", GROUP_COLORS[n.g]);
+  c.setAttribute("stroke", n.g === "dead" ? "#8a755a" : "#e8c877");
+  if (n.g === "dead") c.setAttribute("stroke-dasharray", "3 3");
+  var t = document.createElementNS(NS, "text");
+  t.setAttribute("y", -n.r - 6); t.setAttribute("text-anchor", "middle"); t.textContent = n.id;
+  g.appendChild(c); g.appendChild(t);
+  nodeG.appendChild(g); n.el = g; n.ringEl = c;
+});
+
+var tieOn = { family:true, love:true, work:true, mentor:true, secret:true, conflict:true };
+var groupFilter = "all";
+var selected = null;
+var view = { k:1, x:0, y:0 };
+
+function nodeVisible(n){ return groupFilter === "all" || n.g === groupFilter; }
+function linkVisible(l){ return tieOn[l.t] && nodeVisible(l.a) && nodeVisible(l.b); }
+function neighborsOf(id){
+  var s = {};
+  WL.forEach(function(l){ if (l.a.id === id) s[l.b.id] = true; if (l.b.id === id) s[l.a.id] = true; });
+  return s;
+}
+function renderWeb(){
+  worldG.setAttribute("transform", "translate(" + view.x + "," + view.y + ") scale(" + view.k + ")");
+  var nb = selected ? neighborsOf(selected) : null;
+  WL.forEach(function(l){
+    var vis = linkVisible(l);
+    var hot = selected && (l.a.id === selected || l.b.id === selected);
+    l.el.setAttribute("x1", l.a.x); l.el.setAttribute("y1", l.a.y);
+    l.el.setAttribute("x2", l.b.x); l.el.setAttribute("y2", l.b.y);
+    l.el.style.display = vis ? "" : "none";
+    l.el.style.strokeOpacity = !vis ? 0 : (selected ? (hot ? 0.95 : 0.07) : 0.42);
+    l.el.style.strokeWidth = hot ? 2.6 : 1.3;
+  });
+  WN.forEach(function(n){
+    var vis = nodeVisible(n);
+    var dim = selected && n.id !== selected && !nb[n.id];
+    n.el.setAttribute("transform", "translate(" + n.x + "," + n.y + ")");
+    n.el.style.display = vis ? "" : "none";
+    n.el.style.opacity = !vis ? 0 : (dim ? 0.22 : 1);
+    n.ringEl.setAttribute("stroke", n.id === selected ? "#ffffff" : (n.g === "dead" ? "#8a755a" : "#e8c877"));
+    n.ringEl.setAttribute("stroke-width", n.id === selected ? 3 : 1.6);
+  });
+}
+
+/* --- force simulation --- */
+var simRunning = false, dragNode = null;
+function webActive(){ var p = document.getElementById("pg-web"); return p && p.classList.contains("on"); }
+function tickSim(){
+  var i, j, a, b, dx, dy, d2, d, f;
+  WN.forEach(function(n){ n.fx = 0; n.fy = 0; });
+  for (i = 0; i < WN.length; i++) for (j = i + 1; j < WN.length; j++){
+    a = WN[i]; b = WN[j];
+    dx = a.x - b.x; dy = a.y - b.y; d2 = dx * dx + dy * dy; if (d2 < 1) d2 = 1;
+    d = Math.sqrt(d2);
+    f = Math.min(15000 / d2, 2.6);
+    dx /= d; dy /= d;
+    a.fx += dx * f; a.fy += dy * f; b.fx -= dx * f; b.fy -= dy * f;
+  }
+  WL.forEach(function(l){
+    if (!linkVisible(l)) return;
+    a = l.a; b = l.b;
+    dx = b.x - a.x; dy = b.y - a.y; d = Math.sqrt(dx * dx + dy * dy) || 1;
+    f = (d - 132) * 0.03;
+    dx /= d; dy /= d;
+    a.fx += dx * f; a.fy += dy * f; b.fx -= dx * f; b.fy -= dy * f;
+  });
+  WN.forEach(function(n){
+    n.fx += (450 - n.x) * 0.014; n.fy += (320 - n.y) * 0.014;
+    if (n === dragNode && n.px != null){ n.x = n.px; n.y = n.py; n.vx = 0; n.vy = 0; return; }
+    n.vx = (n.vx + n.fx) * 0.82; n.vy = (n.vy + n.fy) * 0.82;
+    n.x += n.vx; n.y += n.vy;
+  });
+}
+function simEnergy(){
+  var e = 0;
+  WN.forEach(function(n){ e += Math.abs(n.vx) + Math.abs(n.vy); });
+  return e;
+}
+function simFrame(){
+  tickSim(); renderWeb();
+  if (webActive() && (simEnergy() > 0.05 || dragNode)){ requestAnimationFrame(simFrame); }
+  else { simRunning = false; }
+}
+function reheat(){
+  WN.forEach(function(n){ n.vx += (Math.random() - 0.5) * 0.6; n.vy += (Math.random() - 0.5) * 0.6; });
+  if (!simRunning){ simRunning = true; requestAnimationFrame(simFrame); }
+}
+
+/* --- pan, zoom, drag --- */
+function svgPoint(evt){
+  var pt = svg.createSVGPoint(); pt.x = evt.clientX; pt.y = evt.clientY;
+  return pt.matrixTransform(svg.getScreenCTM().inverse());
+}
+function worldPoint(evt){
+  var p = svgPoint(evt);
+  return { x:(p.x - view.x) / view.k, y:(p.y - view.y) / view.k };
+}
+var pointers = {}, panLast = null, downAt = null, downNode = null, moved = 0, pinchD = 0, pinchK = 1;
+svg.addEventListener("pointerdown", function(evt){
+  pointers[evt.pointerId] = { x:evt.clientX, y:evt.clientY };
+  svg.setPointerCapture(evt.pointerId);
+  moved = 0;
+  if (Object.keys(pointers).length === 2){
+    var ps = Object.values(pointers);
+    pinchD = Math.hypot(ps[0].x - ps[1].x, ps[0].y - ps[1].y); pinchK = view.k;
+    dragNode = null; panLast = null; return;
+  }
+  var gEl = evt.target.closest ? evt.target.closest(".wnode") : null;
+  var w = worldPoint(evt);
+  downAt = { x:evt.clientX, y:evt.clientY };
+  if (gEl && WBY[gEl.dataset.person] && nodeVisible(WBY[gEl.dataset.person])){
+    dragNode = WBY[gEl.dataset.person]; downNode = dragNode;
+    dragNode.px = w.x; dragNode.py = w.y;
+    if (!simRunning){ simRunning = true; requestAnimationFrame(simFrame); }
+  } else {
+    downNode = null; panLast = svgPoint(evt);
+  }
+});
+svg.addEventListener("pointermove", function(evt){
+  if (!pointers[evt.pointerId]) return;
+  pointers[evt.pointerId] = { x:evt.clientX, y:evt.clientY };
+  if (downAt) moved = Math.max(moved, Math.hypot(evt.clientX - downAt.x, evt.clientY - downAt.y));
+  if (Object.keys(pointers).length === 2){
+    var ps = Object.values(pointers);
+    var d = Math.hypot(ps[0].x - ps[1].x, ps[0].y - ps[1].y);
+    if (pinchD > 0){
+      var mid = { clientX:(ps[0].x + ps[1].x) / 2, clientY:(ps[0].y + ps[1].y) / 2 };
+      zoomAt(mid, Math.max(0.35, Math.min(3, pinchK * d / pinchD)) / view.k);
+    }
+    return;
+  }
+  if (dragNode){
+    var w = worldPoint(evt);
+    dragNode.px = w.x; dragNode.py = w.y;
+    if (!simRunning){ simRunning = true; requestAnimationFrame(simFrame); }
+  } else if (panLast){
+    var p = svgPoint(evt);
+    view.x += p.x - panLast.x; view.y += p.y - panLast.y;
+    panLast = p; renderWeb();
+  }
+});
+function endPointer(evt){
+  delete pointers[evt.pointerId];
+  if (Object.keys(pointers).length < 2) pinchD = 0;
+  if (dragNode){ dragNode.px = null; dragNode.py = null; }
+  if (moved < 6){
+    if (downNode) selectPerson(downNode.id === (selected && selected.id) ? null : downNode);
+    else if (panLast) selectPerson(null);
+  }
+  dragNode = null; downNode = null; panLast = null; downAt = null;
+}
+svg.addEventListener("pointerup", endPointer);
+svg.addEventListener("pointercancel", endPointer);
+function zoomAt(evtLike, factor){
+  var p = svgPoint(evtLike);
+  var wx = (p.x - view.x) / view.k, wy = (p.y - view.y) / view.k;
+  var k2 = Math.max(0.35, Math.min(3, view.k * factor));
+  view.x = p.x - wx * k2; view.y = p.y - wy * k2; view.k = k2;
+  renderWeb();
+}
+svg.addEventListener("wheel", function(evt){ evt.preventDefault(); zoomAt(evt, evt.deltaY < 0 ? 1.12 : 0.89); }, { passive:false });
+document.getElementById("web-zoom-in").addEventListener("click", function(){ zoomAt({ clientX:svg.getBoundingClientRect().left + svg.clientWidth / 2, clientY:svg.getBoundingClientRect().top + svg.clientHeight / 2 }, 1.3); });
+document.getElementById("web-zoom-out").addEventListener("click", function(){ zoomAt({ clientX:svg.getBoundingClientRect().left + svg.clientWidth / 2, clientY:svg.getBoundingClientRect().top + svg.clientHeight / 2 }, 1 / 1.3); });
+document.getElementById("web-reset").addEventListener("click", function(){ view = { k:1, x:0, y:0 }; selectPerson(null); reheat(); });
+
+/* --- selection and side panel --- */
+function selectPerson(n){
+  selected = n;
+  renderWeb(); renderPanel();
+}
+function focusPerson(n){
+  selected = n;
+  view.k = Math.max(view.k, 1.15);
+  view.x = 450 - n.x * view.k; view.y = 320 - n.y * view.k;
+  renderWeb(); renderPanel();
+}
+function renderPanel(){
+  var panel = document.getElementById("web-panel");
+  if (!selected){
+    var top = WN.slice().sort(function(a, b){ return b.deg - a.deg; }).slice(0, 5);
+    var html = "<h3>Pick a person</h3><p>Click any name in the web and their connections appear here, grouped by kind. The most connected villagers:</p>";
+    top.forEach(function(n){ html += "<div class='conn'><span class='cdot' style='background:" + GROUP_COLORS[n.g] + "'></span><span class='ctext'><button class='connlink' data-p='" + n.id + "'>" + n.full + "</button> <span>" + n.deg + " ties</span></span></div>"; });
+    panel.innerHTML = html;
+    wirePanelLinks(panel);
+    return;
+  }
+  var n = selected;
+  var conns = WL.filter(function(l){ return l.a === n || l.b === n; });
+  var html = "<h3>" + n.full + "</h3><p class='note'>" + GROUP_LABELS[n.g] + " · " + conns.length + " ties in the web</p>";
+  TIE_ORDER.forEach(function(t){
+    var rows = conns.filter(function(l){ return l.t === t; });
+    if (!rows.length) return;
+    html += "<div class='tgroup' style='color:" + TIE_COLORS[t] + "'>" + TIE_LABELS[t] + "</div>";
+    rows.forEach(function(l){
+      var other = l.a === n ? l.b : l.a;
+      html += "<div class='conn'><span class='cdot' style='background:" + TIE_COLORS[t] + "'></span><span class='ctext'><button class='connlink' data-p='" + other.id + "'>" + other.full + "</button><br><span>" + l.label + "</span></span></div>";
+    });
+  });
+  if (n.g === "entity"){
+    html += "<div style='margin-top:14px'><button class='btn small' id='web-page-btn'>See " + n.id + " in the World pages</button></div>";
+  } else {
+    html += "<div style='margin-top:14px'><button class='btn small' id='web-page-btn'>See " + n.id + " on the People page</button></div>";
+  }
+  panel.innerHTML = html;
+  wirePanelLinks(panel);
+  var pb = document.getElementById("web-page-btn");
+  if (pb) pb.addEventListener("click", function(){
+    if (n.g === "entity"){ go("world"); return; }
+    go("people");
+    var card = document.getElementById("person-" + personSlug(n.full));
+    if (card){ setTimeout(function(){ card.scrollIntoView({ block:"center", behavior:"smooth" }); card.classList.add("flash"); setTimeout(function(){ card.classList.remove("flash"); }, 2200); }, 60); }
+  });
+}
+function wirePanelLinks(panel){
+  panel.querySelectorAll(".connlink").forEach(function(b){
+    b.addEventListener("click", function(){ var t = WBY[b.dataset.p]; if (t) focusPerson(t); });
+  });
+}
+
+/* --- filters and search --- */
+document.querySelectorAll("#web-tiefilters .chipbtn").forEach(function(b){
+  b.addEventListener("click", function(){
+    if (b.dataset.tf === "all"){
+      TIE_ORDER.forEach(function(t){ tieOn[t] = true; });
+      document.querySelectorAll("#web-tiefilters .chipbtn").forEach(function(x){ x.setAttribute("aria-pressed", "true"); });
+    } else {
+      tieOn[b.dataset.tf] = !tieOn[b.dataset.tf];
+      b.setAttribute("aria-pressed", tieOn[b.dataset.tf] ? "true" : "false");
+      var allOn = TIE_ORDER.every(function(t){ return tieOn[t]; });
+      document.querySelector('#web-tiefilters .chipbtn[data-tf="all"]').setAttribute("aria-pressed", allOn ? "true" : "false");
+    }
+    renderWeb(); reheat();
+  });
+});
+document.querySelectorAll("#web-groupfilters .chipbtn").forEach(function(b){
+  b.addEventListener("click", function(){
+    document.querySelectorAll("#web-groupfilters .chipbtn").forEach(function(x){ x.setAttribute("aria-pressed", "false"); });
+    b.setAttribute("aria-pressed", "true");
+    groupFilter = b.dataset.gf;
+    if (selected && !nodeVisible(selected)) selectPerson(null);
+    renderWeb(); reheat();
+  });
+});
+(function initWeb(){
+  var dl = document.getElementById("web-names");
+  WN.forEach(function(n){ var o = document.createElement("option"); o.value = n.full; dl.appendChild(o); });
+  var ppl = WN.filter(function(n){ return n.g !== "entity"; }).length;
+  var ents = WN.length - ppl;
+  var ppTies = WL.filter(function(l){ return l.a.g !== "entity" && l.b.g !== "entity"; }).length;
+  var fTies = WL.length - ppTies;
+  document.getElementById("web-counts").textContent = "Drawn here: " + ppl + " people and " + ents + " powers and factions.";
+  document.getElementById("web-search").addEventListener("input", function(evt){
+    var v = evt.target.value.trim().toLowerCase(); if (!v) return;
+    var hit = WN.filter(function(n){ return n.full.toLowerCase() === v || n.id.toLowerCase() === v; })[0];
+    if (hit && nodeVisible(hit)) focusPerson(hit);
+  });
+  document.querySelectorAll('[data-tab="web"], [data-go="web"]').forEach(function(b){
+    b.addEventListener("click", function(){ setTimeout(reheat, 30); });
+  });
+  for (var i = 0; i < 160; i++) tickSim();
+  renderWeb(); renderPanel();
+})();
+
+
+/* ---------- steading ---------- */
+var steading = { prosperity:"", population:"", defenses:"", problems:[] };
+var probSeed = ["Ogmolok's containment is in question, now that the Forgemaster is dead","Hilde is held by the Crynwin, somewhere west","The Gathered Bands: a thousand Hillfolk marching under a Hdor","White Oak's price: a memory given, and a favor owed"];
+steading.problems = probSeed.map(function(t){ return {text:t, done:false}; });
+var logEl = document.getElementById("change-log");
+var changes = [];
+function logChange(msg){
+  changes.unshift(msg);
+  logEl.innerHTML = changes.map(function(c){ return "<p style='margin:0 0 6px'>"+esc(c)+"</p>"; }).join("");
+}
+function renderProblems(){
+  var el = document.getElementById("prob-list"); el.innerHTML = "";
+  steading.problems.forEach(function(p,i){
+    var row = document.createElement("div"); row.className = "card"; row.style.marginBottom = "10px"; row.style.display = "flex"; row.style.gap = "12px"; row.style.alignItems = "flex-start";
+    row.innerHTML = "<div style='flex:1;"+(p.done?"text-decoration:line-through;color:var(--faint)":"")+"'>"+esc(p.text)+"</div>";
+    var b1 = document.createElement("button"); b1.className = "btn small"; b1.textContent = p.done ? "Reopen" : "Dealt with";
+    b1.addEventListener("click", function(){ p.done = !p.done; logChange((p.done?"Problem dealt with: ":"Problem reopened: ")+p.text); saveSteading(); renderProblems(); });
+    var b2 = document.createElement("button"); b2.className = "btn small rust"; b2.textContent = "Remove";
+    b2.addEventListener("click", function(){ var gone = steading.problems.splice(i,1)[0]; logChange("Problem removed: "+gone.text); saveSteading(); renderProblems(); });
+    row.appendChild(b1); row.appendChild(b2); el.appendChild(row);
+  });
+  if (!steading.problems.length) el.innerHTML = "<p class='note'>No problems on the board. The village breathes easy, for now.</p>";
+}
+["pros","pop","def"].forEach(function(k){
+  var input = document.getElementById("st-"+k);
+  input.addEventListener("change", function(){
+    var key = k==="pros"?"prosperity":(k==="pop"?"population":"defenses");
+    steading[key] = input.value.trim();
+    logChange(key.charAt(0).toUpperCase()+key.slice(1)+" set to: "+(steading[key]||"unset"));
+    saveSteading();
+  });
+});
+document.getElementById("prob-add").addEventListener("click", function(){
+  var inp = document.getElementById("prob-new"); var v = inp.value.trim(); if (!v) return;
+  steading.problems.push({text:v, done:false}); inp.value = "";
+  logChange("Problem added: "+v); saveSteading(); renderProblems();
+});
+function applySteading(){
+  document.getElementById("st-pros").value = steading.prosperity || "";
+  document.getElementById("st-pop").value = steading.population || "";
+  document.getElementById("st-def").value = steading.defenses || "";
+  renderProblems();
+}
+var steadingRowId = null;
+function statNum(v){ var n = parseInt(String(v).trim(), 10); return isNaN(n) ? 0 : n; }
+function saveSteading(){
+  if (!sb) return;
+  /* The live table stores the three stats as numbers (0 means
+     not set yet) and the problems board as a JSON string. */
+  var payload = { prosperity:statNum(steading.prosperity), population:statNum(steading.population), defenses:statNum(steading.defenses), problems:JSON.stringify(steading.problems), updated_at:new Date().toISOString() };
+  if (steadingRowId) {
+    sb.from("steading_state").update(payload).eq("id", steadingRowId).then(function(){});
+  } else {
+    sb.from("steading_state").insert(payload).select().then(function(res){ if (res.data && res.data[0]) steadingRowId = res.data[0].id; });
+  }
+}
+document.getElementById("copy-steading").addEventListener("click", function(){
+  var lines = ["Stonetop, the steading","Prosperity: "+(steading.prosperity||"not set"),"Population: "+(steading.population||"not set"),"Defenses: "+(steading.defenses||"not set"),"Problems:"];
+  steading.problems.forEach(function(p){ lines.push((p.done?"[dealt with] ":"- ")+p.text); });
+  var txt = lines.join("\n");
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){ document.getElementById("copy-note").textContent = "Copied."; });
+});
+applySteading();
+
+/* ---------- open questions ---------- */
+var OQ = {"Ivan Grimshaw": ["Where has Ivan actually been these last four years? Answered: out past the Foothills, living among herders and the Hillfolk.", "Why did he come back now? Answered, and judged truthful: to warn Stonetop of the gathering bands, and because he is sorry.", "Was it coincidence that he arrived the same morning Selen Gethin returned?", "What did Rory's light actually do to him? What \"makes more sense\" now?", "How will Brennan receive him in Marshedge, four years after Ivan refused the wage?", "Can he be trusted with Stonetop's ask, alone on the road?"], "Brannick": ["What is Brannick actually hunting in the tower and its tunnels?", "What happened to Chief Yannic of the Wolf Fang, who refused him publicly and came back kneeling two days later?", "Does Brannick mean the trade agreement, or is it a courtesy extended to people he expects to outlast?", "What would it take for the thousand gathered Hillfolk to turn from defense to something else?"], "Brynna Lachlann": ["What is in the clay bowl by the goat pen, and who or what is it left for?", "What does Mirgan actually see in Brynna that the rest of the village doesn't?", "What is she doing at the old stones outside the Ringwall at dusk, and are her explanations the truth?", "Will she and Mirgan ever formalize the relationship, and does either of them actually want that?"], "Coren Hearthwise": ["What exactly does Mirgan come by asking for in the late hours, and what does Coren give him?", "Why does Coren leave the first pour of every run as an offering, and has it ever mattered that he didn't?", "Will Coren and Lena's childlessness ever come to a head, or stay quietly unspoken forever?", "Does Hilde know how much her windowsill flowers mean to Coren, given he never says thank you?"], "Cynebald Saer": ["What is in the journal, and what is the other hand it is partly written in?", "What did Cynebald see when he examined Urbgen's body, and why did he say nothing?", "What does he actually believe happened to Mereda? Does he blame himself, or something else, or both?", "He has hidden objects from his Seeker years in places he has not shared. What are they, and where?", "He says he has \"nothing left\" from those years. Is that true?", "What is his suspicion about Mister Fredd, the thing thirty years of watching has built, and that he has never acted on?", "What did he and Bren actually encounter in the Foothills the week Bren died?", "What is the flaming blood-bronze sword, and when did he last draw it before now?"], "Dirgge MacCullough": ["Where did Penny come from, and how did she and Dirgge actually meet?", "Does the timing, moving into Selen's old house the very morning Selen came home, bother Dirgge at all? He hasn't said.", "What does Dirgge really think of Rory's new faith, beyond what he's willing to say out loud?", "What is Dirgge not telling anyone about the years Rory disappeared in Marshedge?"], "Goldina Cleary": ["What is Mirgan actually preparing Goldina for, and does he have an end point in mind?", "What did she read in the stranger books that she hasn't told anyone about?", "Will she ever go into the sealed wheelhouse instead of just standing in the doorway?", "What does Cynebald see in her that makes him say, unprompted, that she listens?"], "Hilde Saer": ["What would Hilde find if she spent real time in the sealed wheelhouse instead of rarely and never for long?", "What does Hilde actually feel - for Rory, and for Wapner? The kiss on the cheek says one thing; the betrothal says another.", "Does Rory know about the betrothal? Does Wapner know about the sunset?", "What does Cynebald know about Mereda's death, or the wheelhouse, that he's never told his daughter?", "Does Hilde's gentleness, so unlike her father's, come only from Mereda, or is some of it a choice she's made against him?", "Which Crynwin encampment holds Hilde, and what do the Crynwin actually want with her?", "Did she go willingly? What did she think she was doing?"], "Kaelyn Steadhurst": ["Who left the knife on Kaelyn's table, and what was the message meant to be?", "What really happened to Bren in The Foothills, and does it connect to what Kaelyn saw when she washed his body?", "Will Kaelyn ever teach Mereda's potter's invocations to Hilde, or has she decided against it for good?", "What does Kaelyn know about the village's secrets that she has never once used, and would she, if it came to it?", "Who was taking grain before the raid, and what does Kaelyn threaten with that knife?"], "Mister Fredd": ["What is Mister Fredd running from? What happened to him before Stonetop?", "Why does he keep the lamp burning all night, every night, for thirty years? Is it truly for travelers?", "Why did he keep the broken shards of Mereda's jug in a sealed box? What does that box mean to him?", "He has never left Stonetop in thirty years. Is that grief, safety, or something that won\u2019t let him go?", "Cynebald has watched him for thirty years and never acted. What does Cynebald suspect, and is he right?", "Which god, if any, does Fredd actually pray to? What is he asking for?", "What is the thing he flinches at, the sounds that find him on bad nights?"], "Penny MacCullough": ["Where did Penny come from, and how did she and Dirgge meet?", "How does Penny feel about living in a dead man's house, now that the dead man has come home?", "Does Penny have any reaction to Selen Gethin's return beyond the practical one?"], "Selen Gethin": ["Was the Pale Hunter abroad the night Selen vanished? Confirmed: yes, and Selen followed him for two years.", "What exactly did Selen do during those two years beyond \"hunting\"? What did he see that he hasn't said yet?", "The Hunter told Selen, specifically, that Mirgan would need the cloak. How did the Hunter know Mirgan's name, or that this day was coming?", "The cloak smells of rain and ozone and stays damp. What is it, and what does Mirgan need it for?", "Selen doesn't shiver on a cold morning after days of walking. Is that nothing, or is it something?", "Is Selen still betrothed to Aedre in the ways that matter? They have agreed, in so many words, to pretend things didn't change. Whether pretending works is another question.", "Selen's post on the Watch was never filled. Answered: he asked, and Aedre said it was his whenever he was ready.", "What are the nightmares? What does he see when he can't sleep?", "What did the creatures Selen hunted look like up close, the ones that had been in the village? Were any of them recognized?", "Selen thought he was tracking Crynwin, and the Crynwin have grown bolder and more organized since he vanished. Was something using his trail, or his absence, on purpose?"], "Wapner Sati": ["How old is Wapner, and what does he look like beyond the hammer and the speed-walk?", "What battle against unnatural chaos did he and Mirgan fight together? What did it cost?", "What was his judgement in the Aedre and Coren matter, and does Aedre think it was fair?", "Where, exactly, is the Chronicle? Who built an interdimensional office for a village judge?", "How does his betrothal to Hilde square with Rory's courtship of her - and who knows about whom?", "Wapner has been reading \"A Treatise on the Forest Folk\": the compact with the tree folk, Fistle Wick and Marrowfen (not true names), and a referenced second volume on how to contact them. What does he do with it?", "What happened to the previous Judge of the Sati line?"], "Seed of Perpetual Prosperity": ["Where in the tunnels is it? Did the Forgemaster know about it?", "Is it one seed, or a cache? Who planted it, and why at the tower?", "What does \"minimal tending\" cost, in the end? Nothing in the old stories is free."], "Spirit Talkers": ["What are the taboos, exactly? What do they prevent?", "Is the curse on a Hdor's killer real, or a fear the Hdor cultivate?", "Has a Hdor ever come near Stonetop before? Would the Chronicle know?", "Can a Hdor's sent spirits and beasts be detected? Has one already been watching the village?"], "The Ruined Tower": ["Which of you has braved these ruins before? What kept you from going very far?", "What wondrous trinket back in Stonetop supposedly came from here? Who has it now?", "What marvel is said to lie below the tower? From whom did you hear such tales?", "When the nightmares come and you dream of the tower's fall, are you one of the doomed defenders, or part of the slavering horde?", "The portal beneath the tower, where did it lead? Is it still open?", "Cynebald Saer traded Maker objects to Gordin's Delve in his Seeker years. Did any of them come from here?", "With the Forgemaster dead, what repairs to the tower's defenses continue, and who is doing them?"], "Arrune": ["What is Arrune? What does it want with Mirgan?", "Why did the Pale Hunter decide Mirgan would need this cloak?", "What does the embroidery say, once the cipher breaks?"], "Crynwin": ["What odd noise, heard in the night, is attributed to the crynwin? What is it said to mean?", "What common thing do these vermin seem to covet above all else?", "When did the crynwin last openly raid the village? What did they take?", "What's the surest sign that crynwin have been nearby?", "Who among you hates them most, more than anyone else does? Why?", "What makes you think they might be more than simple beasts, despite what everyone else says?", "There's something that everyone agrees will keep crynwin at bay, a smell, a charm, a sound, a little ritual. What is it? And why is everyone secretly sure it's next to worthless?", "Where did they come from? Were they made, escaped, cursed, or something else entirely?", "Aedre believes their raids are becoming organized, planned. What is leading them, or teaching them?", "The crynwin near Stonetop have been growing bolder since Selen Gethin disappeared. Is that a coincidence? Selen has since returned and says what took him that night was not crynwin, only a trail he mistook for one. If crynwin didn't take him, why have the raids grown bolder and more organized in his absence?"], "Dusk People": ["Who or what are the Dusk People?", "What are Brynna's \"other voices,\" and why do the Dusk People quiet them?", "Should the village fear them?", "What else have they told Brynna that she hasn't passed on?"], "Fae": ["Have any of you dealt with a Fae directly? What were the terms, and were they honored?", "What story did the Forest Folk tell about the Fae that made the village take them seriously?", "Are there Fae in The Great Wood right now, and if so, what do they want?", "The Fae cannot break a promise. Has anyone in the village ever tried to use that?", "Who is White Oak, the papery-white dryad of the fae circle in the Greatwood, and what was the tragedy that befell the fae? She asks a price: a memory, given, and a favor for the future.", "Now that the Forest Folk are gone, what oaths or arrangements between them and the Fae might have lapsed, or turned dangerous?", "What is the correct way to refuse a Fae offer without giving insult?"], "The Pale Hunter": ["Was the Pale Hunter abroad the night Selen Gethin vanished? Confirmed by Selen's own account, two years later.", "What is he? Spirit, ghost, Fae, primordial, or something else?", "How is he connected to the moon? Which nights does he roam, and why those nights?", "What exactly are his hounds, and are they vulnerable to the same things he is?", "What is his relationship with the Lady of Crows?", "What hero won his respect, and how? What reward did they earn?", "What grisly fate befell someone who stood against him?", "What observances did the Forest Folk use to appease him, and does anyone in Stonetop still follow them?", "Who never came home from the Wood, and is said to have crossed his path?", "How did the Hunter know Mirgan Steadhurst by name, and what does he need the cloak for?", "Is there a way to make deliberate contact with the Hunter, now that Selen has returned as a possible thread?"], "Thistlewick": ["What is Thistlewick, and what does the idol actually want?", "Is any part of the Crynwin-curse claim true? Who would know?", "What does \"charged up\" mean, and what did Mirgan actually take away from that floor?"], "White Oak": ["What was the tragedy that befell the fae?", "What is the trinket in Mirgan's hand, and who are \"those who can keep it safe\"?", "Will White Oak return to the child-price, and what happens if she does?", "What does a dryad do with a memory once it is given?"], "Ogmolok": ["What is Ogmolok? What does it want?", "Who are the Guardians? Are they still holding?", "Who is repairing the tower's defenses, now that the Forgemaster is dead?", "Is the portal beneath the tower still open?"]};
+var submissions = {}; /* key: source + question index; holds pending + accepted only */
+var allSubs = []; /* every submission row, including dismissed, for GM Review */
+var reviewFilter = "pending";
+function subStatus(r){ var s = (r && r.status) ? String(r.status).toLowerCase() : "pending"; return (s==="accepted"||s==="dismissed") ? s : "pending"; }
+function fmtDate(v){
+  if (!v) return "Date not recorded";
+  var d = new Date(v);
+  if (isNaN(d.getTime())) return String(v);
+  return d.toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"}) + ", " + d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
+}
+function rebuildSubmissions(){
+  submissions = {};
+  allSubs.forEach(function(r){
+    if (subStatus(r)==="dismissed") return;
+    var src = null, idx = -1;
+    if (r.source_page && OQ[r.source_page]) { idx = OQ[r.source_page].indexOf(r.question); if (idx>-1) src = r.source_page; }
+    if (idx<0) Object.keys(OQ).some(function(s){ var i = OQ[s].indexOf(r.question); if (i>-1){ src = s; idx = i; return true; } return false; });
+    if (idx<0 || !src) return;
+    var key = src+"|"+idx;
+    if (!submissions[key]) submissions[key] = [];
+    submissions[key].push({ id:r.id||null, who:r.submitted_by||r.who||"Anonymous", text:r.answer||r.text||"", status:subStatus(r), submitted_at:r.submitted_at||null });
+  });
+}
+function renderReview(){
+  var list = document.getElementById("review-list");
+  if (!list) return;
+  if (!window.isGM){ list.innerHTML = ""; return; }
+  var counts = { pending:0, accepted:0, dismissed:0, all:allSubs.length };
+  allSubs.forEach(function(r){ counts[subStatus(r)]++; });
+  var cp = document.getElementById("count-pending"); if (cp) cp.textContent = "("+counts.pending+")";
+  var ca = document.getElementById("count-accepted"); if (ca) ca.textContent = "("+counts.accepted+")";
+  var cd = document.getElementById("count-dismissed"); if (cd) cd.textContent = "("+counts.dismissed+")";
+  var cal = document.getElementById("count-all"); if (cal) cal.textContent = "("+counts.all+")";
+  var statusEl = document.getElementById("review-status");
+  if (statusEl){
+    if (sb){ statusEl.className = "status ok"; statusEl.textContent = "Live sync is connected. Accept and Dismiss write the new status back to Supabase, and accepted answers appear as canon on Open Questions for the whole table."; }
+    else { statusEl.className = "status"; statusEl.textContent = "Live sync is not connected, so review decisions last for this sitting only."; }
+  }
+  var rows = allSubs.slice().sort(function(a,b){
+    var pa = subStatus(a)==="pending" ? 0 : 1, pb = subStatus(b)==="pending" ? 0 : 1;
+    if (reviewFilter==="all" && pa!==pb) return pa-pb;
+    var ta = a.submitted_at ? new Date(a.submitted_at).getTime() : 0;
+    var tb = b.submitted_at ? new Date(b.submitted_at).getTime() : 0;
+    return tb-ta;
+  }).filter(function(r){ return reviewFilter==="all" || subStatus(r)===reviewFilter; });
+  list.innerHTML = "";
+  if (!rows.length){
+    var empty = document.createElement("p"); empty.className = "note";
+    empty.textContent = reviewFilter==="pending" ? "No answers are waiting for review. New player submissions will appear here." : (reviewFilter==="all" ? "No answers have been submitted yet. When a player answers an open question, it appears here for review." : "Nothing here yet in this group.");
+    list.appendChild(empty); return;
+  }
+  rows.forEach(function(r){
+    var st = subStatus(r);
+    var card = document.createElement("div"); card.className = "review-item";
+    var badgeLabel = st==="accepted" ? "Canon" : (st==="dismissed" ? "Dismissed" : "Pending");
+    card.innerHTML = "<span class='src' style='font-family:Cinzel,serif;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--faint)'>From: "+esc(r.source_page||"Unknown note")+"</span><span class='badge "+esc(st)+"'>"+badgeLabel+"</span>"+
+      "<p class='rq'>"+esc(r.question||"")+"</p>"+
+      "<div class='ra'>"+esc(r.answer||r.text||"")+"</div>"+
+      "<div class='rmeta'>Submitted by <strong style='color:var(--gold2)'>"+esc(r.submitted_by||r.who||"Anonymous")+"</strong> · "+esc(fmtDate(r.submitted_at))+"</div>";
+    var actions = document.createElement("div"); actions.className = "review-actions";
+    if (st!=="accepted"){
+      var acceptBtn = document.createElement("button"); acceptBtn.className = "btn small good"; acceptBtn.textContent = "Accept as canon";
+      acceptBtn.addEventListener("click", function(){ setSubStatus(r, "accepted", acceptBtn); });
+      actions.appendChild(acceptBtn);
+    }
+    if (st!=="dismissed"){
+      var dismissBtn = document.createElement("button"); dismissBtn.className = "btn small rust"; dismissBtn.textContent = "Dismiss";
+      dismissBtn.addEventListener("click", function(){ setSubStatus(r, "dismissed", dismissBtn); });
+      actions.appendChild(dismissBtn);
+    }
+    if (st!=="pending"){
+      var pendBtn = document.createElement("button"); pendBtn.className = "btn small"; pendBtn.textContent = "Back to pending";
+      pendBtn.addEventListener("click", function(){ setSubStatus(r, "pending", pendBtn); });
+      actions.appendChild(pendBtn);
+    }
+    var note = document.createElement("span"); note.className = "note"; note.style.alignSelf = "center";
+    card.appendChild(actions); card.appendChild(note); list.appendChild(card);
+    r._noteEl = note; r._cardEl = card;
+  });
+}
+function setSubStatus(r, newStatus, btn){
+  var note = r._noteEl;
+  function applyLocal(){
+    r.status = newStatus;
+    rebuildSubmissions(); renderQuestions(); renderReview();
+  }
+  if (!sb || !r.id){ applyLocal(); return; }
+  if (btn) btn.disabled = true;
+  if (note) note.textContent = "Saving…";
+  sb.from("question_submissions").update({ status:newStatus }).eq("id", r.id).select().then(function(res){
+    if (res.error || !res.data || !res.data.length){
+      if (note) note.textContent = "Could not save that decision. Check the connection and try again.";
+      if (btn) btn.disabled = false;
+      return;
+    }
+    r.status = subStatus(res.data[0]);
+    applyLocal();
+  });
+}
+function loadSubmissions(){
+  if (!sb) { rebuildSubmissions(); renderQuestions(); renderReview(); return; }
+  sb.from("question_submissions").select("*").order("submitted_at",{ascending:true}).then(function(res){
+    if (res.data){
+      allSubs = res.data.map(function(r){ return { id:r.id, question:r.question, source_page:r.source_page, answer:r.answer, submitted_by:r.submitted_by, submitted_at:r.submitted_at, status:subStatus(r) }; });
+    }
+    rebuildSubmissions(); renderQuestions(); renderReview();
+  });
+}
+function renderQuestions(){
+  var q = (document.getElementById("q-search").value || "").toLowerCase();
+  var f = document.getElementById("q-filter").value;
+  var list = document.getElementById("q-list"); list.innerHTML = "";
+  var shown = 0;
+  Object.keys(OQ).forEach(function(src){
+    if (f && f!==src) return;
+    var items = OQ[src].filter(function(it){ return !q || it.toLowerCase().indexOf(q)>-1 || src.toLowerCase().indexOf(q)>-1; });
+    if (!items.length) return;
+    var h = document.createElement("h2"); h.className = "sec"; h.textContent = src; list.appendChild(h);
+    OQ[src].forEach(function(it, idx){
+      if (items.indexOf(it)===-1) return;
+      shown++;
+      var box = document.createElement("div"); box.className = "qitem";
+      var key = src+"|"+idx;
+      var subs = (submissions[key]||[]).map(function(s){
+        if (s.status==="accepted") return "<div class='sub canon'><span class='who'>"+esc(s.who)+"</span><span class='badge canon'>Canon</span><div style='margin-top:4px'>"+esc(s.text)+"</div></div>";
+        return "<div class='sub pending'><span class='who'>"+esc(s.who)+"</span><span class='badge pending'>Awaiting GM review</span><div style='margin-top:4px'>"+esc(s.text)+"</div></div>";
+      }).join("");
+      box.innerHTML = "<span class='src'>From: "+src+"</span><p class='q'>"+it+"</p><div class='subs'>"+subs+"</div>"+
+        "<label class='fl' for='ta-"+shown+"'>Your answer</label><textarea id='ta-"+shown+"' placeholder='What does the village know, or think it knows?'></textarea>"+
+        "<div class='searchrow' style='margin:10px 0 0'><input type='text' class='who-inp' placeholder='Your name (character or player)' style='max-width:280px'><button class='btn act-sub'>Submit answer</button></div>";
+      box.querySelector(".act-sub").addEventListener("click", function(){
+        var ta = box.querySelector("textarea"); var who = box.querySelector(".who-inp").value.trim() || "Anonymous";
+        var text = ta.value.trim(); if (!text) { ta.focus(); return; }
+        var entry = { id:null, question:it, source_page:src, answer:text, submitted_by:who, submitted_at:new Date().toISOString(), status:"pending" };
+        allSubs.push(entry);
+        rebuildSubmissions(); renderQuestions(); renderReview();
+        document.getElementById("q-search").value = q;
+        if (sb) sb.from("question_submissions").insert({ question:it, source_page:src, answer:text, submitted_by:who, status:"pending" }).select().then(function(res){
+          if (res.data && res.data[0]){ entry.id = res.data[0].id; entry.status = subStatus(res.data[0]); entry.submitted_at = res.data[0].submitted_at || entry.submitted_at; rebuildSubmissions(); renderQuestions(); renderReview(); }
+        });
+      });
+      list.appendChild(box);
+    });
+  });
+  if (!shown) list.innerHTML = "<p class='note'>No questions match that search.</p>";
+}
+(function initQ(){
+  var total = 0; var sel = document.getElementById("q-filter");
+  Object.keys(OQ).forEach(function(src){ total += OQ[src].length; var o=document.createElement("option"); o.value=src; o.textContent=src; sel.appendChild(o); });
+  document.getElementById("qcount-home").textContent = total;
+  document.getElementById("qcount-q").textContent = total;
+  document.getElementById("qsrc-q").textContent = Object.keys(OQ).length;
+  document.getElementById("q-search").addEventListener("input", renderQuestions);
+  sel.addEventListener("change", renderQuestions);
+  document.querySelectorAll("#review-filters .chipbtn").forEach(function(b){
+    b.addEventListener("click", function(){
+      document.querySelectorAll("#review-filters .chipbtn").forEach(function(x){ x.setAttribute("aria-pressed","false"); });
+      b.setAttribute("aria-pressed","true"); reviewFilter = b.dataset.rf; renderReview();
+    });
+  });
+  var refreshBtn = document.getElementById("review-refresh");
+  if (refreshBtn) refreshBtn.addEventListener("click", function(){ loadSubmissions(); });
+  renderQuestions();
+  renderReview();
+  if (sb){
+    document.getElementById("q-status").className = "status ok";
+    document.getElementById("q-status").textContent = "Live sync is connected. Submitted answers are saved in Supabase. Pending answers show as awaiting GM review; accepted answers show as Canon here, and dismissed answers stay in GM Review only.";
+    document.getElementById("sb-status").className = "status ok";
+    document.getElementById("sb-status").textContent = "Live sync is connected. Steading changes save to Supabase and are shared with every device.";
+    loadSubmissions();
+    sb.from("steading_state").select("*").order("id",{ascending:true}).limit(1).then(function(res){
+      if (res.data && res.data.length){
+        var row = res.data[0]; steadingRowId = row.id;
+        steading.prosperity = row.prosperity ? String(row.prosperity) : "";
+        steading.population = row.population ? String(row.population) : "";
+        steading.defenses = row.defenses ? String(row.defenses) : "";
+        if (Array.isArray(row.problems)) steading.problems = row.problems;
+        else if (typeof row.problems === "string" && row.problems) { try { var p = JSON.parse(row.problems); if (Array.isArray(p)) steading.problems = p; } catch(e){} }
+        applySteading();
+      }
+    });
+  }
+})();
+
+</script>
+<script>
+/* ---------- the Judge's Chronicle: submissions and GM review ----------
+   Entries are stored verbatim in the Supabase table
+   chronicle_submissions (title, entry, submitted_by, status,
+   submitted_at) and follow the same pattern as question answers:
+   pending, accepted (canon), dismissed. Accepted entries stand
+   exactly as written; nothing here edits entry text. */
+var chrSubs = [];
+var chrTableOk = false;
+var chrLoaded = false;
+function chrStatusOf(r){ var s = (r && r.status) ? String(r.status).toLowerCase() : "pending"; return (s === "accepted" || s === "dismissed") ? s : "pending"; }
+function renderChronicle(){
+  var statusEl = document.getElementById("chr-status");
+  if (statusEl){
+    if (sb && chrTableOk){ statusEl.className = "status ok"; statusEl.textContent = "Live sync is connected. Submitted entries save to Supabase, and the GM's decisions here are shared with the whole table."; }
+    else if (sb){ statusEl.className = "status"; statusEl.textContent = "The Chronicle has no table in Supabase yet (chronicle_submissions still needs creating there), so for now entries and review decisions are kept for this sitting only."; }
+    else { statusEl.className = "status"; statusEl.textContent = "Live sync is not connected, so entries and review decisions are kept for this sitting only."; }
+  }
+  var canonEl = document.getElementById("chr-canon");
+  var pendEl = document.getElementById("chr-pending");
+  var disWrap = document.getElementById("chr-dismissed-wrap");
+  var disEl = document.getElementById("chr-dismissed");
+  if (!canonEl || !pendEl) return;
+  var canon = chrSubs.filter(function(r){ return chrStatusOf(r) === "accepted"; });
+  var pending = chrSubs.filter(function(r){ return chrStatusOf(r) === "pending"; });
+  var dismissed = chrSubs.filter(function(r){ return chrStatusOf(r) === "dismissed"; });
+  canonEl.innerHTML = "";
+  if (!canon.length){
+    canonEl.innerHTML = "<p class='note'>No submitted entries have been accepted yet. Entries the Judge submits from this page, once the GM accepts them, will stand here, word for word, after Entries 1 to 5 above.</p>";
+  }
+  canon.forEach(function(r){
+    var card = document.createElement("div"); card.className = "review-item";
+    card.innerHTML = "<h3 style='color:var(--gold2);margin:0 0 4px;font-size:19px'>" + esc(r.title || "Untitled entry") + "</h3>" +
+      "<div class='rmeta'>By <strong style='color:var(--gold2)'>" + esc(r.submitted_by || "Wapner Sati") + "</strong> · " + esc(fmtDate(r.submitted_at)) + "<span class='badge canon'>Canon</span></div>" +
+      "<div class='chr-entry'>" + esc(r.entry || "") + "</div>";
+    canonEl.appendChild(card);
+  });
+  pendEl.innerHTML = "";
+  if (!pending.length) pendEl.innerHTML = "<p class='note'>Nothing is waiting. New entries the Judge submits will appear here.</p>";
+  pending.forEach(function(r){
+    var card = document.createElement("div"); card.className = "review-item";
+    card.innerHTML = "<h3 style='color:var(--gold2);margin:0 0 4px;font-size:19px'>" + esc(r.title || "Untitled entry") + "</h3>" +
+      "<div class='rmeta'>By <strong style='color:var(--gold2)'>" + esc(r.submitted_by || "Wapner Sati") + "</strong> · " + esc(fmtDate(r.submitted_at)) + "<span class='badge pending'>Awaiting GM review</span></div>" +
+      "<div class='chr-entry'>" + esc(r.entry || "") + "</div>";
+    var actions = document.createElement("div"); actions.className = "review-actions";
+    var acceptBtn = document.createElement("button"); acceptBtn.className = "btn small good"; acceptBtn.textContent = "Accept as canon";
+    acceptBtn.addEventListener("click", function(){ setChrStatus(r, "accepted", acceptBtn, note); });
+    var dismissBtn = document.createElement("button"); dismissBtn.className = "btn small rust"; dismissBtn.textContent = "Dismiss";
+    dismissBtn.addEventListener("click", function(){ setChrStatus(r, "dismissed", dismissBtn, note); });
+    var note = document.createElement("span"); note.className = "note"; note.style.alignSelf = "center";
+    actions.appendChild(acceptBtn); actions.appendChild(dismissBtn); actions.appendChild(note);
+    card.appendChild(actions);
+    pendEl.appendChild(card);
+  });
+  if (disWrap && disEl){
+    disWrap.style.display = dismissed.length ? "" : "none";
+    disEl.innerHTML = "";
+    dismissed.forEach(function(r){
+      var card = document.createElement("div"); card.className = "review-item";
+      card.innerHTML = "<h3 style='color:var(--gold2);margin:0 0 4px;font-size:19px'>" + esc(r.title || "Untitled entry") + "</h3>" +
+        "<div class='rmeta'>By <strong style='color:var(--gold2)'>" + esc(r.submitted_by || "Wapner Sati") + "</strong> · " + esc(fmtDate(r.submitted_at)) + "<span class='badge dismissed'>Dismissed</span></div>" +
+        "<div class='chr-entry'>" + esc(r.entry || "") + "</div>";
+      var actions = document.createElement("div"); actions.className = "review-actions";
+      var backBtn = document.createElement("button"); backBtn.className = "btn small"; backBtn.textContent = "Back to pending";
+      var note = document.createElement("span"); note.className = "note"; note.style.alignSelf = "center";
+      backBtn.addEventListener("click", function(){ setChrStatus(r, "pending", backBtn, note); });
+      actions.appendChild(backBtn); actions.appendChild(note);
+      card.appendChild(actions);
+      disEl.appendChild(card);
+    });
+  }
+}
+function setChrStatus(r, newStatus, btn, note){
+  function applyLocal(){ r.status = newStatus; renderChronicle(); }
+  if (!sb || !chrTableOk || !r.id){ applyLocal(); return; }
+  if (btn) btn.disabled = true;
+  if (note) note.textContent = "Saving…";
+  sb.from("chronicle_submissions").update({ status:newStatus }).eq("id", r.id).select().then(function(res){
+    if (res.error || !res.data || !res.data.length){
+      if (note) note.textContent = "Could not save that decision. Check the connection and try again.";
+      if (btn) btn.disabled = false;
+      return;
+    }
+    r.status = chrStatusOf(res.data[0]);
+    applyLocal();
+  });
+}
+function loadChronicle(){
+  if (!sb){ renderChronicle(); return; }
+  sb.from("chronicle_submissions").select("*").order("submitted_at", { ascending:true }).then(function(res){
+    if (!res.error && res.data){
+      chrTableOk = true; chrLoaded = true;
+      chrSubs = res.data.map(function(r){ return { id:r.id, title:r.title, entry:r.entry, submitted_by:r.submitted_by, submitted_at:r.submitted_at, status:chrStatusOf(r) }; });
+    } else {
+      chrTableOk = false;
+    }
+    renderChronicle();
+  });
+}
+document.getElementById("chr-submit").addEventListener("click", function(){
+  var titleEl = document.getElementById("chr-title");
+  var byEl = document.getElementById("chr-by");
+  var entryEl = document.getElementById("chr-entry");
+  var note = document.getElementById("chr-note");
+  var title = titleEl.value.trim();
+  var entry = entryEl.value;
+  var by = byEl.value.trim() || "Wapner Sati";
+  if (!title){ titleEl.focus(); if (note) note.textContent = "Give the entry a title first."; return; }
+  if (!entry.trim()){ entryEl.focus(); if (note) note.textContent = "The entry itself is empty."; return; }
+  var row = { id:null, title:title, entry:entry, submitted_by:by, submitted_at:new Date().toISOString(), status:"pending" };
+  chrSubs.push(row);
+  titleEl.value = ""; entryEl.value = "";
+  if (note) note.textContent = (sb && chrTableOk) ? "Submitted. It is waiting for GM review below." : "Kept for this sitting, below, until the Chronicle's table exists in Supabase.";
+  renderChronicle();
+  if (sb && chrTableOk){
+    sb.from("chronicle_submissions").insert({ title:title, entry:entry, submitted_by:by, status:"pending" }).select().then(function(res){
+      if (res.data && res.data[0]){ row.id = res.data[0].id; row.status = chrStatusOf(res.data[0]); row.submitted_at = res.data[0].submitted_at || row.submitted_at; renderChronicle(); }
+      else if (res.error){ chrTableOk = false; renderChronicle(); }
+    });
+  }
+});
+loadChronicle();
+</script>
+<script>
+/* ---------- GM sign-in and the whole vault ----------
+   The vault lives in the Supabase table vault_pages (slug, path,
+   title, folder, content, visible, updated_at). Nothing of the
+   vault is baked into this file. Row level security does the
+   guarding: anonymous players can only ever select rows where
+   visible = true, so hidden notes, including their titles and
+   text, never leave Supabase for a player. A signed-in GM
+   (Supabase Auth, email and password) can select every row and
+   update visibility and content. Any authenticated account on
+   this project is the GM; there is exactly one such account. */
+window.isGM = false;
+var gmUser = null;
+var vaultRows = null, vaultErr = false, vaultSlug = null, vaultEditing = false;
+
+function vaultKey(){
+  var map = {};
+  (vaultRows || []).forEach(function(r){
+    map[r.slug.toLowerCase()] = r;
+    map[(r.title || "").toLowerCase()] = r;
+    map[r.slug.split("/").pop().toLowerCase()] = r;
+  });
+  return map;
+}
+function inlineMd(s){
+  var keys = vaultKey();
+  var codes = [];
+  s = s.replace(/`([^`]+)`/g, function(m, c){ codes.push(c); return "\u0001" + (codes.length - 1) + "\u0002"; });
+  s = s.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, function(m, target, label){
+    var key = String(target).trim();
+    var row = keys[key.toLowerCase()] || keys[key.split("/").pop().toLowerCase()];
+    var text = (label || key.split("/").pop()).trim();
+    if (row) return '<a href="#" data-vslug="' + esc(row.slug) + '">' + esc(text) + "</a>";
+    return '<span class="wlink-miss">' + esc(text) + "</span>";
+  });
+  s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, function(m, t, u){
+    if (/^(https?:|mailto:)/i.test(u)) return '<a href="' + u + '" target="_blank" rel="noopener">' + t + "</a>";
+    var row = keys[decodeURIComponent(u).replace(/\.md$/, "").toLowerCase()];
+    if (row) return '<a href="#" data-vslug="' + esc(row.slug) + '">' + t + "</a>";
+    return t;
+  });
+  s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/__([^_]+)__/g, "<strong>$1</strong>");
+  s = s.replace(/(^|[^*\w])\*([^*\n]+)\*/g, "$1<em>$2</em>");
+  s = s.replace(/\u0001(\d+)\u0002/g, function(m, i){ return "<code>" + codes[+i] + "</code>"; });
+  return s;
+}
+function renderMarkdown(md){
+  var text = String(md || "").replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, "");
+  var lines = text.split(/\r?\n/);
+  var out = [], para = [], i, line;
+  function flushPara(){ if (para.length){ out.push("<p>" + inlineMd(esc(para.join(" "))) + "</p>"); para = []; } }
+  i = 0;
+  while (i < lines.length){
+    line = lines[i];
+    var trimmed = line.trim();
+    if (/^```/.test(trimmed)){
+      flushPara();
+      var buf = []; i++;
+      while (i < lines.length && !/^```/.test(lines[i].trim())){ buf.push(lines[i]); i++; }
+      i++;
+      out.push("<pre><code>" + esc(buf.join("\n")) + "</code></pre>");
+      continue;
+    }
+    if (!trimmed){ flushPara(); i++; continue; }
+    var h = trimmed.match(/^(#{1,6})\s+(.*)$/);
+    if (h){ flushPara(); var lvl = Math.min(h[1].length + 1, 4); out.push("<h" + lvl + ">" + inlineMd(esc(h[2])) + "</h" + lvl + ">"); i++; continue; }
+    if (/^(-{3,}|\*{3,}|_{3,})$/.test(trimmed)){ flushPara(); out.push("<hr>"); i++; continue; }
+    if (trimmed.charAt(0) === "|" && i + 1 < lines.length && /^\|?[\s:|-]+\|?$/.test(lines[i + 1].trim()) && lines[i + 1].indexOf("-") > -1){
+      flushPara();
+      var headCells = trimmed.replace(/^\||\|$/g, "").split("|").map(function(c){ return inlineMd(esc(c.trim())); });
+      var t = "<table><thead><tr>" + headCells.map(function(c){ return "<th>" + c + "</th>"; }).join("") + "</tr></thead><tbody>";
+      i += 2;
+      while (i < lines.length && lines[i].trim().charAt(0) === "|"){
+        var cells = lines[i].trim().replace(/^\||\|$/g, "").split("|");
+        t += "<tr>" + cells.map(function(c){ return "<td>" + inlineMd(esc(c.trim())) + "</td>"; }).join("") + "</tr>";
+        i++;
+      }
+      out.push(t + "</tbody></table>");
+      continue;
+    }
+    if (/^>\s?/.test(trimmed)){
+      flushPara();
+      var qb = [];
+      while (i < lines.length && /^>\s?/.test(lines[i].trim())){ qb.push(lines[i].trim().replace(/^>\s?/, "")); i++; }
+      out.push("<blockquote>" + qb.map(function(q){ return inlineMd(esc(q)); }).join("<br>") + "</blockquote>");
+      continue;
+    }
+    if (/^\s*[-*+]\s+/.test(line)){
+      flushPara();
+      var ul = [];
+      while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])){ ul.push(lines[i].replace(/^\s*[-*+]\s+/, "")); i++; }
+      out.push("<ul>" + ul.map(function(it){ return "<li>" + inlineMd(esc(it)) + "</li>"; }).join("") + "</ul>");
+      continue;
+    }
+    if (/^\s*\d+[.)]\s+/.test(line)){
+      flushPara();
+      var ol = [];
+      while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])){ ol.push(lines[i].replace(/^\s*\d+[.)]\s+/, "")); i++; }
+      out.push("<ol>" + ol.map(function(it){ return "<li>" + inlineMd(esc(it)) + "</li>"; }).join("") + "</ol>");
+      continue;
+    }
+    if (trimmed.charAt(0) === "<"){
+      flushPara();
+      var hb = [];
+      while (i < lines.length && lines[i].trim()){ hb.push(lines[i]); i++; }
+      out.push(hb.join("\n"));
+      continue;
+    }
+    para.push(trimmed); i++;
+  }
+  flushPara();
+  return out.join("\n");
+}
+function findVaultRow(slug){
+  var hit = null;
+  (vaultRows || []).forEach(function(r){ if (r.slug === slug) hit = r; });
+  return hit;
+}
+function folderLabel(f){ return f ? f : "Vault root"; }
+function renderVaultStatus(){
+  var el = document.getElementById("vault-status");
+  if (!el) return;
+  if (!sb){ el.className = "status"; el.textContent = "Live sync is not connected, so the vault notes cannot be loaded."; return; }
+  if (vaultErr){
+    el.className = "status";
+    el.textContent = window.isGM
+      ? "The vault_pages table in Supabase is not answering yet. Once the table is created and seeded, every note in the vault appears here, with a show or hide control on each."
+      : "The vault notes could not be loaded. Try again in a moment.";
+    return;
+  }
+  if (!vaultRows){ el.className = "status"; el.textContent = "Loading the vault notes…"; return; }
+  if (!vaultRows.length){
+    el.className = "status";
+    el.textContent = window.isGM
+      ? "No notes are loaded yet. Once the vault seed is run in Supabase, all 70 notes appear here."
+      : "No notes are showing right now. The GM chooses which vault notes players can see.";
+    return;
+  }
+  var shown = vaultRows.filter(function(r){ return r.visible; }).length;
+  el.className = "status ok";
+  el.textContent = window.isGM
+    ? vaultRows.length + " notes in the vault. " + shown + " shown to players, " + (vaultRows.length - shown) + " GM only."
+    : shown + (shown === 1 ? " note" : " notes") + " from the vault, chosen by the GM.";
+}
+function renderVault(){
+  renderVaultStatus();
+  var listEl = document.getElementById("vault-list");
+  var readerEl = document.getElementById("vault-reader");
+  if (!listEl || !readerEl) return;
+  if (vaultSlug){
+    var row = findVaultRow(vaultSlug);
+    if (row){ readerEl.hidden = false; listEl.style.display = "none"; renderVaultReader(row); return; }
+    vaultSlug = null;
+  }
+  readerEl.hidden = true;
+  listEl.style.display = "";
+  listEl.innerHTML = "";
+  if (!vaultRows || !vaultRows.length) return;
+  var folders = [];
+  vaultRows.forEach(function(r){ if (folders.indexOf(r.folder || "") === -1) folders.push(r.folder || ""); });
+  folders.sort(function(a, b){ if (a === "") return -1; if (b === "") return 1; return a < b ? -1 : 1; });
+  folders.forEach(function(f){
+    var h = document.createElement("h2"); h.className = "sec"; h.textContent = folderLabel(f);
+    listEl.appendChild(h);
+    vaultRows.filter(function(r){ return (r.folder || "") === f; }).forEach(function(r){
+      var rowEl = document.createElement("div"); rowEl.className = "vrow";
+      var vt = document.createElement("div"); vt.className = "vt";
+      var b = document.createElement("button"); b.type = "button"; b.textContent = r.title || r.slug;
+      b.addEventListener("click", function(){ vaultSlug = r.slug; vaultEditing = false; renderVault(); window.scrollTo({ top:0 }); });
+      var vp = document.createElement("div"); vp.className = "vp"; vp.textContent = r.path || (r.slug + ".md");
+      vt.appendChild(b); vt.appendChild(vp);
+      rowEl.appendChild(vt);
+      if (window.isGM){
+        var badge = document.createElement("span");
+        badge.className = "badge " + (r.visible ? "vis" : "hid");
+        badge.textContent = r.visible ? "Players can see" : "GM only";
+        rowEl.appendChild(badge);
+        var tb = document.createElement("button"); tb.type = "button"; tb.className = "btn small";
+        tb.textContent = r.visible ? "Hide from players" : "Show to players";
+        tb.addEventListener("click", function(){ setVaultVisible(r, !r.visible, tb); });
+        rowEl.appendChild(tb);
+      }
+      listEl.appendChild(rowEl);
+    });
+  });
+}
+function renderVaultReader(row){
+  document.getElementById("vault-title").textContent = row.title || row.slug;
+  document.getElementById("vault-path").textContent = (row.path || (row.slug + ".md")) + (row.updated_at ? " · Last edited " + fmtDate(row.updated_at) : "");
+  var tools = document.getElementById("vault-tools");
+  tools.innerHTML = "";
+  if (window.isGM){
+    var badge = document.createElement("span");
+    badge.className = "badge " + (row.visible ? "vis" : "hid");
+    badge.textContent = row.visible ? "Players can see this note" : "GM only";
+    tools.appendChild(badge);
+    var tb = document.createElement("button"); tb.type = "button"; tb.className = "btn small";
+    tb.textContent = row.visible ? "Hide from players" : "Show to players";
+    tb.addEventListener("click", function(){ setVaultVisible(row, !row.visible, tb); });
+    tools.appendChild(tb);
+    var eb = document.createElement("button"); eb.type = "button"; eb.className = "btn small"; eb.textContent = "Edit this page";
+    eb.addEventListener("click", function(){ openVaultEditor(row); });
+    tools.appendChild(eb);
+  }
+  if (!vaultEditing){
+    document.getElementById("vault-view").hidden = false;
+    document.getElementById("vault-editwrap").hidden = true;
+    var body = document.getElementById("vault-body");
+    body.innerHTML = renderMarkdown(row.content || "");
+    wireVaultLinks(body);
+  }
+}
+function wireVaultLinks(body){
+  var keys = vaultKey();
+  body.querySelectorAll("a[href]").forEach(function(a){
+    var slug = a.getAttribute("data-vslug");
+    if (!slug){
+      var href = a.getAttribute("href") || "";
+      if (!/^(https?:|mailto:|#)/i.test(href)){
+        var row = keys[decodeURIComponent(href).replace(/\.md$/, "").toLowerCase()];
+        if (row){ slug = row.slug; a.setAttribute("data-vslug", slug); a.setAttribute("href", "#"); }
+        else { a.removeAttribute("href"); a.classList.add("wlink-miss"); }
+      }
+    }
+    if (slug){
+      a.addEventListener("click", function(evt){
+        evt.preventDefault();
+        if (findVaultRow(slug)){ vaultSlug = slug; vaultEditing = false; renderVault(); window.scrollTo({ top:0 }); }
+      });
+    }
+  });
+}
+function openVaultEditor(row){
+  vaultEditing = true;
+  document.getElementById("vault-view").hidden = true;
+  var wrap = document.getElementById("vault-editwrap");
+  wrap.hidden = false;
+  document.getElementById("vault-edit").value = row.content || "";
+  document.getElementById("vault-savenote").textContent = "";
+  document.getElementById("vault-edit").focus();
+}
+document.getElementById("vault-back").addEventListener("click", function(){ vaultSlug = null; vaultEditing = false; renderVault(); });
+document.getElementById("vault-cancel").addEventListener("click", function(){
+  vaultEditing = false;
+  var row = findVaultRow(vaultSlug);
+  if (row) renderVaultReader(row);
+});
+document.getElementById("vault-save").addEventListener("click", function(){
+  var row = findVaultRow(vaultSlug);
+  var note = document.getElementById("vault-savenote");
+  var btn = document.getElementById("vault-save");
+  if (!row || !sb) return;
+  var txt = document.getElementById("vault-edit").value;
+  btn.disabled = true; note.textContent = "Saving…";
+  sb.from("vault_pages").update({ content:txt, updated_at:new Date().toISOString() }).eq("slug", row.slug).select().then(function(res){
+    btn.disabled = false;
+    if (res.error || !res.data || !res.data.length){ note.textContent = "Could not save. Check the connection and try again."; return; }
+    row.content = txt;
+    if (res.data[0].updated_at) row.updated_at = res.data[0].updated_at;
+    vaultEditing = false;
+    renderVault();
+  });
+});
+function setVaultVisible(row, vis, btn){
+  var statusEl = document.getElementById("vault-status");
+  if (!sb) return;
+  if (btn) btn.disabled = true;
+  sb.from("vault_pages").update({ visible:vis, updated_at:new Date().toISOString() }).eq("slug", row.slug).select().then(function(res){
+    if (btn) btn.disabled = false;
+    if (res.error || !res.data || !res.data.length){
+      if (statusEl){ statusEl.className = "status"; statusEl.textContent = "That change could not be saved. Check the connection and try again."; }
+      return;
+    }
+    row.visible = vis;
+    renderVault();
+  });
+}
+function loadVault(){
+  if (!sb){ vaultErr = true; renderVault(); return; }
+  sb.from("vault_pages").select("slug,path,title,folder,content,visible,updated_at").order("path", { ascending:true }).then(function(res){
+    if (res.error){ vaultErr = true; vaultRows = null; }
+    else { vaultErr = false; vaultRows = res.data || []; }
+    renderVault();
+  });
+}
+
+/* ---------- GM auth wiring ---------- */
+function applyGM(){
+  var reviewTab = document.getElementById("tab-review");
+  if (reviewTab) reviewTab.hidden = !window.isGM;
+  var chrReview = document.getElementById("chr-review");
+  if (chrReview) chrReview.hidden = !window.isGM;
+  var btn = document.getElementById("gm-btn");
+  var form = document.getElementById("gm-form");
+  var signed = document.getElementById("gm-signedin");
+  if (window.isGM){
+    btn.textContent = "GM: Signed In";
+    form.hidden = true; signed.hidden = false;
+    document.getElementById("gm-who").textContent = "Signed in as GM" + (gmUser && gmUser.email ? " (" + gmUser.email + ")" : "") + ".";
+  } else {
+    btn.textContent = "GM Sign In";
+    form.hidden = false; signed.hidden = true;
+    var reviewPage = document.getElementById("pg-review");
+    if (reviewPage && reviewPage.classList.contains("on")) go("home");
+  }
+  if (window.passwordSetupMode){
+    form.hidden = true;
+    signed.hidden = true;
+    var setupEl = document.getElementById("gm-setup");
+    if (setupEl) setupEl.hidden = false;
+    btn.textContent = "Set GM Password";
+  }
+  renderReview(); renderChronicle(); renderVault();
+}
+var gmBtn = document.getElementById("gm-btn");
+var gmPanel = document.getElementById("gm-panel");
+/* ---------- GM invite and recovery password setup ----------
+   Only runs when the page was opened from a real Supabase invite
+   or password recovery link: an access_token in the URL hash with
+   type=invite or type=recovery. Ordinary visitors never see it. */
+window.passwordSetupMode = false;
+var AUTH_TOKENS = (AUTH_HASH.access_token && AUTH_HASH.refresh_token) ? { access_token: AUTH_HASH.access_token, refresh_token: AUTH_HASH.refresh_token } : null;
+function cleanAuthHash(){
+  if (AUTH_HASH.access_token || AUTH_HASH.error || AUTH_HASH.error_code){
+    try { window.history.replaceState(null, "", window.location.pathname + window.location.search); } catch(e){}
+  }
+}
+function showPasswordSetup(){
+  window.passwordSetupMode = true;
+  gmPanel.hidden = false;
+  gmBtn.setAttribute("aria-expanded", "true");
+  gmBtn.textContent = "Set GM Password";
+  document.getElementById("gm-form").hidden = true;
+  document.getElementById("gm-signedin").hidden = true;
+  document.getElementById("gm-setup").hidden = false;
+  if (AUTH_HASH.type === "recovery") document.getElementById("gm-setup-title").textContent = "Choose a New GM Password";
+}
+if (AUTH_HASH.access_token && (AUTH_HASH.type === "invite" || AUTH_HASH.type === "recovery")){
+  showPasswordSetup();
+} else if (AUTH_HASH.error || AUTH_HASH.error_code){
+  gmPanel.hidden = false;
+  gmBtn.setAttribute("aria-expanded", "true");
+  document.getElementById("gm-note").textContent = "That sign-in link was invalid or has expired. Sign in with your email and password, or ask for a fresh invite link.";
+  cleanAuthHash();
+}
+document.getElementById("gm-setup").addEventListener("submit", function(evt){
+  evt.preventDefault();
+  var note = document.getElementById("gm-setup-note");
+  if (!sb || !sb.auth){ note.textContent = "Live sync is not connected, so the password cannot be saved right now."; return; }
+  var p1 = document.getElementById("gm-newpass").value;
+  var p2 = document.getElementById("gm-newpass2").value;
+  if (!p1 || p1.length < 6){ note.textContent = "Choose a password of at least 6 characters."; return; }
+  if (p1 !== p2){ note.textContent = "The two passwords do not match."; return; }
+  var sbtn = document.getElementById("gm-setup-btn");
+  sbtn.disabled = true;
+  note.textContent = "Saving your password…";
+  sb.auth.updateUser({ password: p1 }).then(function(res){
+    sbtn.disabled = false;
+    if (res.error){ note.textContent = "That password could not be saved: " + res.error.message; return; }
+    document.getElementById("gm-newpass").value = "";
+    document.getElementById("gm-newpass2").value = "";
+    window.passwordSetupMode = false;
+    document.getElementById("gm-setup").hidden = true;
+    applyGM();
+    document.getElementById("gm-who").textContent = "Password set. Signed in as GM" + (gmUser && gmUser.email ? " (" + gmUser.email + ")" : "") + ".";
+    cleanAuthHash();
+  });
+});
+gmBtn.addEventListener("click", function(){
+  if (window.passwordSetupMode){ gmPanel.hidden = false; gmBtn.setAttribute("aria-expanded", "true"); return; }
+  var open = gmPanel.hidden;
+  gmPanel.hidden = !open;
+  gmBtn.setAttribute("aria-expanded", open ? "true" : "false");
+});
+document.getElementById("gm-form").addEventListener("submit", function(evt){
+  evt.preventDefault();
+  var note = document.getElementById("gm-note");
+  if (!sb || !sb.auth){ note.textContent = "Live sync is not connected, so sign-in is unavailable right now."; return; }
+  var email = document.getElementById("gm-email").value.trim();
+  var pass = document.getElementById("gm-pass").value;
+  if (!email || !pass){ note.textContent = "Enter the GM email and password."; return; }
+  note.textContent = "Signing in…";
+  sb.auth.signInWithPassword({ email:email, password:pass }).then(function(res){
+    if (res.error){ note.textContent = "Sign-in failed: " + res.error.message; return; }
+    note.textContent = "";
+    document.getElementById("gm-pass").value = "";
+    gmPanel.hidden = true;
+    gmBtn.setAttribute("aria-expanded", "false");
+  });
+});
+document.getElementById("gm-signout").addEventListener("click", function(){
+  if (sb && sb.auth) sb.auth.signOut();
+});
+var gmSessionKey = "__none__";
+function setSession(session){
+  var user = session && session.user ? session.user : null;
+  var key = user ? user.id : "__anon__";
+  window.isGM = !!user;
+  gmUser = user;
+  applyGM();
+  if (key !== gmSessionKey){ gmSessionKey = key; loadVault(); }
+}
+if (sb && sb.auth){
+  sb.auth.getSession().then(function(res){
+    var session = res.data ? res.data.session : null;
+    if (!session && window.passwordSetupMode && AUTH_TOKENS){
+      sb.auth.setSession(AUTH_TOKENS).then(function(r2){
+        if (r2.error){
+          var sn = document.getElementById("gm-setup-note");
+          if (sn) sn.textContent = "This sign-in link could not be verified. It may have expired, so ask for a fresh invite link.";
+        }
+        setSession(r2.data ? r2.data.session : null);
+      });
+    } else {
+      setSession(session);
+    }
+  });
+  sb.auth.onAuthStateChange(function(evt, session){
+    if (evt === "PASSWORD_RECOVERY") showPasswordSetup();
+    setSession(session);
+  });
+} else {
+  applyGM();
+  loadVault();
+}
+</script>
+</body>
+</html>
