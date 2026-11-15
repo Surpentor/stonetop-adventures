@@ -1,0 +1,22 @@
+name: Rename uploaded file to index.html
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace index.html with uploaded file
+        run: |
+          rm index.html
+          mv stonetop-adventures.html index.html
+          git config user.name "Surpentor"
+          git config user.email "mjpisani@gmail.com"
+          git add -A
+          git commit -m "Replace index.html with newest Stonetop site (steading playbook build)"
+          git push
