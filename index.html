@@ -459,6 +459,36 @@ body.site-editing [data-site-key].site-editing-now{outline:2px solid var(--rust)
 .access-state{border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:2px;padding:12px 16px;color:var(--muted);font-size:16px;background:var(--panel2);margin-top:12px}
 .access-state.declined{border-left-color:var(--rust)}
 .access-state.pending{border-left-color:var(--gold)}
+/* breadcrumbs: the path through the archive, on every page */
+#crumbs{max-width:1080px;margin:0 auto;padding:10px 20px 0;display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:14.5px;color:var(--faint)}
+#crumbs:empty{display:none}
+#crumbs .crumb{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px 2px;min-height:32px;font-variant:small-caps;letter-spacing:1px;font-weight:600}
+#crumbs .crumb:hover{color:var(--ink);text-decoration:underline}
+#crumbs .crumb.cur{color:var(--ink);cursor:default;text-decoration:none}
+#crumbs .sep{color:var(--line);flex:none}
+/* topics: the full archive, one landing page per topic */
+.topic-layout{display:grid;grid-template-columns:290px 1fr;gap:18px;align-items:start;margin-top:16px}
+@media(max-width:820px){.topic-layout{grid-template-columns:1fr}}
+.topic-menu{background:var(--panel);border:1px solid var(--inkline);border-radius:2px;padding:14px}
+.topic-menu h3{margin:0 0 4px;font-size:19px}
+.topic-menu .tm-note{font-size:14.5px;color:var(--faint);font-style:italic;margin:0 0 10px}
+.topic-menu ul{list-style:none;margin:0;padding:0}
+.topic-menu li{margin:0}
+.tm-item{display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--line);padding:9px 8px;cursor:pointer;color:var(--ink);font-size:16.5px;min-height:44px}
+.tm-item:hover{background:var(--panel2)}
+.tm-item[aria-current="true"]{background:#f6ecd2;font-weight:700;box-shadow:inset 3px 0 0 var(--rust)}
+.tm-item .tm-meta{display:block;font-size:13.5px;color:var(--faint);font-weight:400}
+.tm-child{padding-left:22px;font-size:15.5px}
+.tm-group{font-size:12.5px;font-variant:small-caps;letter-spacing:2px;color:var(--rust);padding:14px 8px 4px;font-weight:700}
+.topic-main{min-width:0}
+.topic-main .card{margin-bottom:14px}
+.nested-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+@media(max-width:640px){.nested-grid{grid-template-columns:1fr}}
+.shop-card{background:#fffdf6;border:1px solid var(--line);border-radius:2px;padding:14px 16px;cursor:pointer;text-align:left;width:100%}
+.shop-card:hover{border-color:var(--inkline);background:var(--panel2)}
+.shop-card h4{margin:0 0 4px;font-size:18px;color:var(--ink)}
+.shop-card p{margin:0;color:var(--muted);font-size:15.5px}
+.topic-count{font-size:13px;font-variant:small-caps;letter-spacing:2px;color:var(--rust);border:1px solid var(--rust);border-radius:2px;padding:2px 10px;display:inline-block;margin-bottom:10px}
 @media(max-width:640px){.mappin .pinlab{display:none}}
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
@@ -486,6 +516,7 @@ body.site-editing [data-site-key].site-editing-now{outline:2px solid var(--rust)
   <button role="tab" data-tab="chronicle" aria-selected="false">Chronicle</button>
   <button role="tab" data-tab="timeline" aria-selected="false">Timeline</button>
   <button role="tab" data-tab="world" aria-selected="false">World</button>
+  <button role="tab" data-tab="topics" aria-selected="false">Topics</button>
   <button role="tab" data-tab="vault" aria-selected="false">Vault</button>
   <button role="tab" data-tab="steading" aria-selected="false">Steading</button>
   <button role="tab" data-tab="review" id="tab-review" aria-selected="false" hidden>GM Review</button>
@@ -561,6 +592,7 @@ body.site-editing [data-site-key].site-editing-now{outline:2px solid var(--rust)
   <span id="site-edit-savestate" style="color:#eae1c9;font-style:italic"></span>
   <button class="btn small" type="button" id="site-edit-done">Done editing</button>
 </div>
+<nav id="crumbs" aria-label="Breadcrumb"></nav>
 <div class="wrap">
 
 <!-- HOME -->
@@ -603,6 +635,21 @@ body.site-editing [data-site-key].site-editing-now{outline:2px solid var(--rust)
     <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="M12 6.5h7M12 12h-7M12 17.5h7"/><circle cx="12" cy="6.5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="17.5" r="1.6" fill="currentColor"/></svg><h3>Timeline</h3><p>From the fall of the tower to the march that has not happened yet: filter the eras, open each event, or walk the whole story in order.</p><button class="btn small" data-go="timeline">Walk the timeline</button></div>
     <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M16 4v3h3"/><path d="M8.5 11h7M8.5 14.5h7"/></svg><h3>Sessions</h3><p>Summaries of Sessions 3 through 7, and what Session 8 holds.</p><button class="btn small" data-go="sessions">Read summaries</button></div>
     <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5V21"/><path d="M8.5 21h7"/><path d="M4.5 6.5h15"/><path d="M7 6.5L5 12.5h4L7 6.5Z"/><path d="M17 6.5L15 12.5h4L17 6.5Z"/></svg><h3>The Judge's Chronicle</h3><p>The village record, kept by Wapner Sati in his own hand. The Judge can add new entries here; accepted entries stand as canon, word for word.</p><button class="btn small" data-go="chronicle">Open the Chronicle</button></div>
+  </div>
+
+  <h2 class="sec">Every Topic in the Vault</h2>
+  <p class="lede">The original landing page in the vault opened onto every subject at once. Each topic below has its own landing page and its own menu of articles, and the breadcrumbs at the top of the page show the path as you nest deeper, for example into a shop inside a settlement.</p>
+  <div class="grid g3" id="home-topics-grid">
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="3.2"/><path d="M12 2v1.5M4.5 19.5c1.2-3.4 4-5 7.5-5s6.3 1.6 7.5 5"/></svg><h3>Gods</h3><p>Helior's light, the Pavilion of the Gods, the Lady of Crows, and the godlike Tempest Lords.</p><button class="btn small" data-topic="gods">Open Gods</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V10l7-6 7 6v11M10 21v-5h4v5"/></svg><h3>Settlements</h3><p>Stonetop itself, with its shops and places nested inside it, plus Marshedge, Gordin's Delve, and Lygos.</p><button class="btn small" data-topic="settlements">Open Settlements</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.7 4.6L18 9.2l-4.3 1.6L12 15.5l-1.7-4.7L6 9.2l4.3-1.6z"/><path d="M18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg><h3>Arcana</h3><p>The Seed of Perpetual Prosperity, spirit talkers, the twisted spear, the flaming sword, and the cloak's cipher.</p><button class="btn small" data-topic="arcana">Open Arcana</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c-3 3.5-4.5 6.5-4.5 10a4.5 4.5 0 0 0 9 0C16.5 9.5 15 6.5 12 3Z"/><path d="M12 21v-6"/></svg><h3>Creatures</h3><p>Crynwin, the Pale Hunter, White Oak, the Fae, the Dusk People, Thistlewick, and Arrune.</p><button class="btn small" data-topic="creatures">Open Creatures</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3L2.5 20h19z"/><path d="M12 10v4.5M12 17.5v.5"/></svg><h3>Threats</h3><p>Ogmolok the Buried Horror, the Gathered Bands under a Hdor, and the portal beneath the tower.</p><button class="btn small" data-topic="threats">Open Threats</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V8l6-5 6 5v13M6 13h12M10 21v-4h4v4"/></svg><h3>Ruins</h3><p>The Ruined Tower and its undertower, the Old Wall, the Maker's road, and the sealed wheelhouse.</p><button class="btn small" data-topic="ruins">Open Ruins</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20l5-11 4 7 3-4 6 8z"/><path d="M8 9V5M16 8V4"/></svg><h3>Wilderness</h3><p>The Great Wood, the Flats, the Steplands, the Foothills, the lakes, the fen, and the Dread River.</p><button class="btn small" data-topic="wilderness">Open Wilderness</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7.3 4.4 4.5 4.5v13.8c2.8-.1 5.5.5 7.5 2 2-1.5 4.7-2.1 7.5-2V4.5C16.7 4.4 14 5 12 6.5zM12 6.5v13.8"/></svg><h3>Lore</h3><p>The Makers and the fall of the tower, the Forest Folk, and the books the Chronicle keeps.</p><button class="btn small" data-topic="lore">Open Lore</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5 21c.8-3.8 3.4-5.5 7-5.5s6.2 1.7 7 5.5"/></svg><h3>Roles</h3><p>The Judge, the Lightbearer, the Seeker, the Heavy, the elders, the watch, and the village trades.</p><button class="btn small" data-topic="roles">Open Roles</button></div>
+    <div class="card"><svg class="wic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16"/></svg><h3>All Topics</h3><p>Characters, Relationships, Timeline, Steading, Open Questions, and Chronicle, alongside the nine topics above: the whole landing page, in one index.</p><button class="btn small" data-go="topics">See every topic</button></div>
   </div>
 </section>
 
@@ -1372,6 +1419,27 @@ create policy "The GM decides requests, and a player can re-ask"
   <div id="players-status" class="status" style="margin:12px 0">Loading the player register…</div>
   <div id="players-list"></div>
   <p class="note" style="margin-top:12px">There is no box for typing in a player's email any more, on purpose: players request access with the email they signed in with, and approving their request is what puts them on this register.</p>
+</section>
+
+<!-- TOPICS INDEX -->
+<section class="page" id="pg-topics">
+  <h2 class="sec">Every Topic</h2>
+  <p class="lede">The vault's landing page, rebuilt as an index. The first group is the subjects that already had their own pages; the second is the topics added here, each with its own landing page and menu. Notes from the Vault join the topic their folder puts them in, as they load.</p>
+  <div class="searchrow"><input type="text" id="topics-q" placeholder="Filter topics and articles: try Ogmolok, Marshedge, Helior, spear" aria-label="Filter topics"><button class="btn small" type="button" id="topics-clear">Show all</button></div>
+  <h2 class="sec">Already on the Site</h2>
+  <div class="grid g3" id="topics-existing"></div>
+  <h2 class="sec">Topics from the Vault</h2>
+  <div class="grid g3" id="topics-grid"></div>
+  <div id="topics-vault-extra"></div>
+</section>
+
+<!-- TOPIC LANDING -->
+<section class="page" id="pg-topic">
+  <div id="topic-head"></div>
+  <div class="topic-layout">
+    <aside class="topic-menu" id="topic-menu" aria-label="Articles in this topic"></aside>
+    <div class="topic-main" id="topic-main"></div>
+  </div>
 </section>
 
 <!-- ARTICLE -->
@@ -4551,7 +4619,7 @@ function loadCustomPins(){
    card's own data: its text, its lists, and its open questions,
    which answer and collect exactly as they do in a note. */
 var artReturnTab = "home";
-var ART_BACK_NAMES = { home:"Home", people:"the People page", web:"the relationship web", sessions:"the Sessions page", chronicle:"the Chronicle", timeline:"the Timeline", world:"the World page", vault:"the Vault", steading:"the Steading page", review:"GM Review" };
+var ART_BACK_NAMES = { home:"Home", people:"the People page", web:"the relationship web", sessions:"the Sessions page", chronicle:"the Chronicle", timeline:"the Timeline", world:"the World page", vault:"the Vault", steading:"the Steading page", review:"GM Review", topics:"the Topics index", topic:"this topic" };
 function currentTab(){
   var on = document.querySelector("section.page.on");
   return on ? on.id.replace(/^pg-/, "") : "home";
@@ -5257,7 +5325,7 @@ function tagDataCards(){
   }
 }
 var SITE_CANDIDATES = ".hero h1, h2.sec, h3, h4, .lede, section.page > p, .card p, .sheet p, .sheet li, .imp li, figcaption, .tag, .role, .card .meta, .strip .lab, .strip .val, footer";
-var SITE_EXCLUDE = "#gm-panel, #access-panel, .topwrap, nav.tabs, #gsearch-bar, .propose-bar, .propose-panel, .secnav, .article-questions, .oq-block, .gm-addq, #vault-list, #vault-reader, #pg-article, .chr-full, #chr-canon, #chr-pending, #chr-dismissed-wrap, #review-list, #pin-review-list, #tl-review-list, #prop-review-list, #players-list, #access-requests-list, #access-review-status, #tl-heads, #tl-detail, #tl-addwrap, #web-panel, #web-box, .pinpanel, .pinlist, form, .review-item, .qitem, #st-stats, #st-debilities, #st-debdesc, #st-gmnote, #prob-list, #steading-log, #change-log, #sitetext-list, #site-edit-bar, .site-editor";
+var SITE_EXCLUDE = "#gm-panel, #access-panel, .topwrap, nav.tabs, #gsearch-bar, #crumbs, .propose-bar, .propose-panel, .secnav, .article-questions, .oq-block, .gm-addq, #vault-list, #vault-reader, #pg-article, #pg-topic, #pg-topics, .chr-full, #chr-canon, #chr-pending, #chr-dismissed-wrap, #review-list, #pin-review-list, #tl-review-list, #prop-review-list, #players-list, #access-requests-list, #access-review-status, #tl-heads, #tl-detail, #tl-addwrap, #web-panel, #web-box, .pinpanel, .pinlist, form, .review-item, .qitem, #st-stats, #st-debilities, #st-debdesc, #st-gmnote, #prob-list, #steading-log, #change-log, #sitetext-list, #site-edit-bar, .site-editor";
 function tagStaticText(){
   document.querySelectorAll(SITE_CANDIDATES).forEach(function(el){
     if (el.closest && el.closest(SITE_EXCLUDE)) return;
@@ -5507,6 +5575,436 @@ document.addEventListener("keydown", function(e){
   refreshSiteEditUI();
   renderSiteTextReview();
   loadSiteText();
+})();
+</script>
+
+<script>
+/* ---------- topics, topic menus, and breadcrumbs ----------
+   The vault's original landing page opened onto every subject:
+   Characters, Relationships, Timeline, Arcana, Gods, Creatures,
+   Threats, Ruins, Wilderness, Lore, Roles, Stonetop, Steading,
+   Open Questions, and Chronicle. The subjects that already had
+   pages keep them; the rest get a landing page here, each with
+   its own menu of articles. Nesting follows the vault itself:
+   a settlement holds its shops and places inside it, the way a
+   folder holds its notes, so the path reads Home > Settlements
+   > Stonetop > Public House & Stables. When the vault loads,
+   each note joins the topic its folder names, and a folder the
+   site has never seen becomes a topic of its own in the index. */
+function tSlug(s){ return String(s||"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
+function tTitle(s){ return String(s||"").replace(/[-_]+/g," ").replace(/\b\w/g,function(c){ return c.toUpperCase(); }); }
+var TOPICS = [
+ { id:"gods", name:"Gods", blurb:"Helior's light, the Pavilion where the village gathers, the Lady of Crows, and the godlike Makers who charted the seas and stars.", articles:[
+   { title:"Helior", meta:"The light Rory MacCullough bears", body:["Helior's light, steady as a hearthfire. Rory MacCullough, the Lightbearer, came back to Stonetop different, and better: he remembers your dog's name and leaves tea for your cough.","When Rory shone Helior's light on Ivan Grimshaw at the pavilion, Ivan sat calm and content in it, and whatever is in the man did not flinch from it. Ivan says things make more sense now."], source:null, link:{ label:"Rory MacCullough", person:"Rory MacCullough" } },
+   { title:"Pavilion of the Gods", meta:"Inside Stonetop · where the village gathers", body:["The Pavilion of the Gods is one of the places of interest lettered on the steading playbook, at the heart of the village by the Stone. The village gathered here on the first morning of spring to hear Ivan Grimshaw's tale, with the Judge's hammer under his chin."], source:null, link:{ label:"Chronicle Entry 1", page:"chronicle", el:"chr-e1" }, parent:"Stonetop" },
+   { title:"The Lady of Crows", meta:"Named in the Pale Hunter's story", body:["The Lady of Crows is named among the open questions around the Pale Hunter: what his relationship with her is, nobody in the village has yet said. She stands in the article on the Hunter, in the World pages."], source:"The Pale Hunter", link:{ label:"The Pale Hunter", page:"world", el:"creature-the-pale-hunter" } },
+   { title:"The Tempest Lords", meta:"Near-godlike Makers of the tower", body:["Once the domain of the Tempest Lords, near-godlike Makers, perhaps the first of them: prideful charters of the seas and the stars. The Ruined Tower was the mast of their ship, catching wind and lightning, now grounded and hollow.","The forge below remembered the old wars: when the Storm Lords' slaves rebelled and unleashed the things below, the forge-lord cities were buried, and the tower endured as a bastion."], source:null, link:{ label:"The Ruined Tower", page:"world", el:"world-tower" } },
+   { title:"The Old Stones", meta:"Where the Dusk People are met at dusk", body:["Brynna Lachlann meets the Dusk People at the old stones outside the Ringwall at dusk. They quiet the other voices she hears. What observances the Forest Folk used, and whether anyone in Stonetop still follows them, belongs to the same old worship."], source:"Dusk People", link:{ label:"The Dusk People", page:"world", el:"creature-dusk-people" } }
+ ]},
+ { id:"settlements", name:"Settlements", blurb:"Stonetop itself, with its shops and places nested inside it, and the settlements beyond: Marshedge, Gordin's Delve, and Lygos to the south.", articles:[
+   { title:"Stonetop", meta:"A hundred and fifty souls · inside the Ringwall", body:["Stonetop is a village of a hundred and fifty souls. Everyone knows everyone. Everyone has history with everyone. The Stone stands at its heart, ringed by the houses and the green, the granary, the public house and stables, the cistern, the Pavilion of the Gods, and the watchtowers on the Ringwall.","The shops and places inside the settlement are nested below, the way the vault nests them inside the settlement's own folder: open one and the breadcrumb grows a step."], source:null, link:{ label:"Open the Steading playbook", page:"steading" }, children:[
+     { title:"Public House & Stables", meta:"Shop inside Stonetop · Mister Fredd, publican", body:["Mister Fredd keeps the public house. Warm smile, ready ear. He came from somewhere he has never named thirty years ago, and has not left since. The public house offers a common room and shelter for a few horses, but it is hardly a proper inn; the Inn is one of the steading improvements the village has not yet gained.","Dirgge MacCullough is employed by Mister Fredd at the stables, and Ivan Grimshaw is currently lodging here, an unlikely lodger under Fredd's watch."], source:"Mister Fredd", link:{ label:"Mister Fredd", person:"Mister Fredd" } },
+     { title:"The Forge", meta:"Shop inside Stonetop · Dirgge and Penny MacCullough, smiths", body:["Stonetop's one forge has two smiths: Dirgge MacCullough, who runs the forge and the stables, and Penny MacCullough, the second smith. Dirgge keeps Brynna's ironwork sound and mends the still for Coren."], source:null, link:{ label:"Dirgge MacCullough", person:"Dirgge MacCullough" } },
+     { title:"The Granary", meta:"Inside Stonetop · Kaelyn Steadhurst, tally-keeper", body:["Where the village grain is kept, and where Kaelyn Steadhurst keeps the tallies, and a good share of the village's secrets with them. Who was taking grain before the raid, and what Kaelyn threatens with the stranger's knife in her kitchen drawer, are open questions."], source:"Kaelyn Steadhurst", link:{ label:"Kaelyn Steadhurst", person:"Kaelyn Steadhurst" } },
+     { title:"The Still", meta:"Shop inside Stonetop · Coren Hearthwise, distiller", body:["Coren Hearthwise keeps the still. Kind to a fault, with two ribs that never fully healed. Hilde supplies botanicals to the still, and Mirgan comes by late, asking for less ordinary things."], source:"Coren Hearthwise", link:{ label:"Coren Hearthwise", person:"Coren Hearthwise" } },
+     { title:"The Tanner's", meta:"Shop inside Stonetop · Aldwin Cleary, tanner", body:["Aldwin Cleary is Stonetop's tanner. He keeps his own counsel, and has a quiet unease about Mirgan he doesn't put into words."], source:null, link:{ label:"Aldwin Cleary", person:"Aldwin Cleary" } },
+     { title:"Weaver & Dyer", meta:"Shop inside Stonetop · Joren Cleary", body:["Joren Cleary is the village weaver and dyer: practical and efficient, aware of more than she lets on. Hilde is her trading partner, botanicals for the dye-pots, and she supplies herbs to Brynna for dyes."], source:null, link:{ label:"Joren Cleary", person:"Joren Cleary" } },
+     { title:"The Stone", meta:"Inside Stonetop · the heart of the village", body:["The Stone at the heart of the village, ringed by the houses and the green, and the mark the steading playbook is drawn around."], source:null, link:{ label:"Places of interest", page:"steading", el:"steading-places" } },
+     { title:"The Cistern", meta:"Inside Stonetop · filled with rain and snow", body:["The village cistern, one of the steading's resources, filled with rain and snow. Filling it takes so much work that Raincatching stands among the village's ungained improvements."], source:null, link:{ label:"Places of interest", page:"steading", el:"steading-places" } },
+     { title:"Watchtowers & the Ringwall", meta:"Inside Stonetop · the village watch", body:["The Ringwall is low and stone, with three watchtowers. Its captain's post stood unfilled since Selen Gethin vanished two years ago; this spring he came home, and Aedre told him the post was his whenever he was ready."], source:"Selen Gethin", link:{ label:"Selen Gethin", person:"Selen Gethin" } }
+   ]},
+   { title:"Marshedge", meta:"On the edge of the Manmarch", body:["Marshedge, on the edge of the Manmarch. Brennan Blackthorne, who built the Claws and ran them for two decades before selling the company to the council that had been hunting him, is the law here now. Ivan Grimshaw rides to Marshedge to seek allies from him."], source:null, link:{ label:"Brennan Blackthorne", person:"Brennan Blackthorne" } },
+   { title:"Gordin's Delve", meta:"At the end of the West Road", body:["West along the road from Stonetop, at the end of the West Road. Stonetop trades with Gordin's Delve for metal and tools, and Cynebald Saer traded Maker objects there in his Seeker years."], source:null, link:{ label:"Find it on the World's End map", fig:"fig-map-worldsend" } },
+   { title:"Lygos", meta:"And other points south", body:["Lygos stands on the road south, beyond Marshedge, among the points the steading playbook names when it lists the names of other places. Little has come into the story from there yet."], source:null, link:{ label:"Find the road south on the map", fig:"fig-map-worldsend" } },
+   { title:"Barrier Pass", meta:"Through the Whitefang Mountains", body:["The pass through the Whitefang Mountains, at the top of the Highway from Stonetop, named among Stonetop's notable neighbors in the playbook."], source:null, link:{ label:"Find it on the World's End map", fig:"fig-map-worldsend" } }
+ ]},
+ { id:"arcana", name:"Arcana", blurb:"Things of power and the people who break taboos to wield them: the Seed, the spear, the sword, the cloak, and the idol.", articles:[
+   { title:"Seed of Perpetual Prosperity", meta:"Somewhere in the tunnels beneath the tower", body:["Something in the tunnels beneath the tower, spoken of in the old stories: a seed, or a cache, that asks minimal tending. Nothing in the old stories is free. Where it lies, whether the Forgemaster knew of it, and what the tending costs are all open questions."], source:"Seed of Perpetual Prosperity", link:{ label:"Read it in the World pages", page:"world", el:"world-seed" } },
+   { title:"Spirit Talkers", meta:"And the Hdor who breaks the taboos", body:["Among the Hillfolk, a spirit talker who breaks the old taboos is called a Hdor. The Ash Herd whispered the word for the man uniting the bands. Such beings summon spirits and beasts to attend and spy for them, and hoard arcana, or hunt for more."], source:"Spirit Talkers", link:{ label:"Read it in the World pages", page:"world", el:"world-spirit-talkers" } },
+   { title:"Mirgan's Twisted Spear", meta:"The spear he won't explain", body:["Mirgan Steadhurst carries a twisted spear he won't explain, and the flaming spear killed the Forgemaster. Brannick asked to see it, studied it, named it powerful arcana, and gave it back."], source:null, link:{ label:"Mirgan Steadhurst", person:"Mirgan Steadhurst" } },
+   { title:"The Flaming Sword", meta:"Blood-bronze, drawn this spring", body:["The flaming blood-bronze sword stands among Cynebald Saer's open questions: what it is, and when he last drew it before now. This spring, the flaming sword was drawn."], source:"Cynebald Saer", link:{ label:"Cynebald Saer", person:"Cynebald Saer" } },
+   { title:"The Pale Hunter's Cloak", meta:"Embroidered with clouds, damp with rain and ozone", body:["Selen Gethin came home carrying the Pale Hunter's cloak for Mirgan, embroidered with clouds, damp with rain and ozone. The embroidery is a cipher, slowly yielding, and Mirgan keeps working it. Between sessions he learned the entity's name: Arrune."], source:"Arrune", link:{ label:"Arrune", page:"world", el:"creature-arrune" } },
+   { title:"The CORE", meta:"Seized in the undertower", body:["In the Chronicle's third part of the Broken Tower, Wapner seized a CORE: glowing, humming, heavy with secrets, and the party ascended from the basement with it."], source:null, link:{ label:"Chronicle Entry 5", page:"chronicle", el:"chr-e5" } },
+   { title:"Thistlewick", meta:"An idol with claims nobody has confirmed", body:["An idol with claims nobody has confirmed, except one the party takes seriously: kill the Forgemaster and you could loose Ogmolok. What charged up means, and what Mirgan took away from that floor, are open questions."], source:"Thistlewick", link:{ label:"Thistlewick", page:"world", el:"creature-thistlewick" } },
+   { title:"Maker Objects", meta:"Traded to Gordin's Delve in the Seeker years", body:["Cynebald Saer traded Maker objects to Gordin's Delve in his Seeker years. Whether any of them came from the Ruined Tower is an open question in the tower's own article."], source:"The Ruined Tower", link:{ label:"The Ruined Tower", page:"world", el:"world-tower" } }
+ ]},
+ { id:"creatures", name:"Creatures", blurb:"The supernatural creatures of the World's End, as the World page keeps them: each one opens its full article there.", articles:[] },
+ { id:"threats", name:"Threats", blurb:"What is coming for the village, and what is waiting under it.", articles:[
+   { title:"Ogmolok, the Buried Horror", meta:"Contained, or not contained", body:["What the Forgemaster remembered, under the Ruined Tower: the cultists of Ogmolok drove the defenders out, and Ogmolok came up from below. The Storm Catcher cast the spell that turned the things below to glass, and the same spell shattered her.","What the Dusk People told Brynna: Ogmolok lives. It is only contained, held by the Guardians and by those repairing the tower's defenses. The Forgemaster is already dead, by Mirgan's spear. Whether the containment still holds is the question the whole campaign now rests on."], source:"Ogmolok", link:{ label:"Read the full threat in the World pages", page:"world", el:"world-ogmolok" } },
+   { title:"The Gathered Bands", meta:"A thousand marching under a Hdor", body:["Seven Hillfolk tribes folded in under a Hdor, a thousand marching, four hundred soldiers, gathering nearer Stonetop than anywhere. Chief Yannic of the Wolf Fang refused publicly, was taken, and came back two days later kneeling."], source:null, link:{ label:"Read it in the World pages", page:"world", el:"world-bands" } },
+   { title:"Brannick, the Hdor", meta:"Uniter of the Hillfolk", body:["The Hdor who leads the Gathered Bands. A big man with scarred hands, a bronze ram's-head brooch, and a black stone medallion. What he is hunting in the tower and its tunnels, nobody in Stonetop knows."], source:"Brannick", link:{ label:"Brannick", person:"Brannick" } },
+   { title:"The Crynwin Raids", meta:"Bolder and more organized since Selen vanished", body:["The Crynwin raided the village and took Hilde. Their raids have grown bolder and more organized since Selen disappeared, and Aedre believes something is leading them, or teaching them."], source:"Crynwin", link:{ label:"The Crynwin", page:"world", el:"creature-crynwin" } },
+   { title:"The Portal Beneath the Tower", meta:"Where did it lead? Is it still open?", body:["Thistlewick warned that killing the Forgemaster could loose Ogmolok and his horde through the portal. The portal beneath the tower, where it led and whether it is still open, stands among the tower's open questions."], source:"The Ruined Tower", link:{ label:"The Ruined Tower", page:"world", el:"world-tower" } }
+ ]},
+ { id:"ruins", name:"Ruins", blurb:"What the Makers left standing, and what fell.", articles:[
+   { title:"The Ruined Tower", meta:"Stormcatcher's Tower, about a day from town", body:["Stormcatcher's Tower, bastion of the old wars, brought down by the Storm Catcher's own spell. The village knows the undertower has been delved and the Forgemaster slain there. What repairs to the tower's defenses continue, and who is doing them now, nobody in the village can say."], source:"The Ruined Tower", link:{ label:"Read it in the World pages", page:"world", el:"world-tower" } },
+   { title:"The Undertower", meta:"Delved in Sessions 4 and 5", body:["Beneath the tower: the great hall, the parlor of cloud-ships, the chamber of foul waters, and the forge of the thirty-foot hammer-wielder, the Forgemaster, slain by Mirgan's spear."], source:null, link:{ label:"Session 4: The Undertower", page:"sessions", el:"session-1" } },
+   { title:"The Old Wall", meta:"Stone collected from it built the village", body:["Stone, collected from the Old Wall, stands in the steading's list of resources. Beyond the Old Wall, the prairie grass of the Flats chokes out any crops the village tries to grow."], source:null, link:{ label:"The Steading playbook", page:"steading" } },
+   { title:"The Maker's Road", meta:"Broken by the Storm Catcher's spell", body:["The roads the party walked to the tower were crafted by the ancient Makers themselves, and are seldom host to violence. The Storm Catcher's spell broke the Maker's road for a stretch when it brought the tower down."], source:null, link:{ label:"Chronicle Entry 3", page:"chronicle", el:"chr-e3" } },
+   { title:"The Sealed Wheelhouse", meta:"Stood in, rarely, and never for long", body:["The sealed wheelhouse stands in the open questions of both Hilde Saer and Goldina Cleary: what Hilde would find if she spent real time in it instead of rarely and never for long, and whether Goldina will ever go in instead of just standing in the doorway."], source:"Hilde Saer", link:{ label:"Hilde Saer", person:"Hilde Saer" } }
+ ]},
+ { id:"wilderness", name:"Wilderness", blurb:"The country around the village, as Book II maps it: wood, flats, steppe, fen, lakes, and mountains.", articles:[
+   { title:"The Great Wood", meta:"East of the village: the Maw and Red Grove", body:["The Great Wood crowds the east of the village: the Maw, Red Grove, and the fae circle where White Oak the dryad named her price."], source:null, link:{ label:"White Oak", page:"world", el:"creature-white-oak" } },
+   { title:"The Flats", meta:"Prairie grass beyond the Old Wall", body:["Beyond the Old Wall, the prairie grass of the Flats chokes out any crops. Large herds of aurochs form on the Flats in spring; the Hillfolk hunt them, but Stonetop has never learned to do so."], source:null, link:{ label:"Aurochs Hunting, in the playbook", page:"steading" } },
+   { title:"The Steplands", meta:"Home of the Hillfolk bands", body:["The Steplands, where the Gathered Bands of the Hillfolk are marching under a Hdor, nearer Stonetop than anywhere."], source:null, link:{ label:"The Gathered Bands", page:"world", el:"world-bands" } },
+   { title:"The Foothills", meta:"Where Bren Steadhurst died", body:["Out past the Foothills is where Ivan Grimshaw had been these last four years, living among herders and the Hillfolk. What Cynebald and Bren encountered in the Foothills the week Bren died is an open question."], source:"Cynebald Saer", link:{ label:"Cynebald Saer", person:"Cynebald Saer" } },
+   { title:"Whitefang Mountains & Tor's Fist", meta:"The north of the World's End", body:["Tor's Fist and the Whitefang Mountains stand in the north of the World's End map, with Barrier Pass through them at the top of the Highway."], source:null, link:{ label:"See them on the map", fig:"fig-map-worldsend" } },
+   { title:"Blackwater Lake & Three Coven Lake", meta:"East, toward the Manmarch", body:["Blackwater Lake and Three Coven Lake stand east on the World's End map, toward the North and South Manmarch along the Dread River."], source:null, link:{ label:"See them on the map", fig:"fig-map-worldsend" } },
+   { title:"Ferrier's Fen", meta:"On the World's End map", body:["Ferrier's Fen stands on the World's End map, in the country between Stonetop and Marshedge."], source:null, link:{ label:"See it on the map", fig:"fig-map-worldsend" } },
+   { title:"The Dread River & the Manmarch", meta:"The eastern edge of the map", body:["The North and South Manmarch run along the Dread River to the east, and Marshedge stands on the Manmarch's edge."], source:null, link:{ label:"Marshedge, in Settlements", topic:"settlements", article:"Marshedge" } }
+ ]},
+ { id:"lore", name:"Lore", blurb:"The old stories and the books that keep them: Makers, Forest Folk, and the fall of the tower.", articles:[
+   { title:"The Fall of the Tower", meta:"Long ago · the deep past", body:["The Storm Lords' slaves rebel, the forge-lord cities are buried, and the Storm Catcher's spell turns the things below to glass and brings the tower down."], source:null, link:{ label:"See it on the Timeline", page:"timeline" } },
+   { title:"The Tempest Lords & the Makers", meta:"Charters of the seas and the stars", body:["Near-godlike Makers, perhaps the first of them, who built floating castles and storm-catching vessels, and the roads the village still walks. Mirgan told their history in the tower's parlor of cloud-ships."], source:null, link:{ label:"Chronicle Entry 4", page:"chronicle", el:"chr-e4" } },
+   { title:"The Forest Folk", meta:"Gone, and their arrangements with them", body:["Now that the Forest Folk are gone, oaths and arrangements between them and the Fae may have lapsed, or turned dangerous. The story the Forest Folk told about the Fae is why the village takes the Fae seriously."], source:"Fae", link:{ label:"The Fae", page:"world", el:"creature-the-fae" } },
+   { title:"Strange Migrations of the Hill Folk", meta:"A tome in the Chronicle", body:["The tome Wapner found in the Chronicle's shifting shelves, whose pages spoke of Spirit Talkers: sorcerers bound by taboo, feared for their communion with unseen forces, and of the Hdor who breaks those laws."], source:"Spirit Talkers", link:{ label:"Chronicle Entry 1", page:"chronicle", el:"chr-e1" } },
+   { title:"A Treatise on the Forest Folk", meta:"Wapner Sati's reading", body:["Wapner has been reading A Treatise on the Forest Folk: the compact with the tree folk, Fistle Wick and Marrowfen (not true names), and a referenced second volume on how to contact them. What he does with it is an open question."], source:"Wapner Sati", link:{ label:"Wapner Sati", person:"Wapner Sati" } },
+   { title:"Spirit Talkers", meta:"The lore of the Hillfolk", body:["Among the Hillfolk, a spirit talker who breaks the old taboos is called a Hdor. What the taboos are, exactly, and what they prevent, stands among the open questions."], source:"Spirit Talkers", link:{ label:"Read it in the World pages", page:"world", el:"world-spirit-talkers" } }
+ ]},
+ { id:"roles", name:"Roles", blurb:"The parts people play in the village and in the game: the playbooks the adventurers carry, and the offices and trades the village runs on.", articles:[
+   { title:"The Judge", meta:"Wapner Sati, of the Sati line", body:["Stonetop's Judge, of the Sati line. Carries the hammer, keeps the Chronicle, an interdimensional office with no index and no mercy. The office is not entirely in the village, or entirely anywhere."], source:"Wapner Sati", link:{ label:"Wapner Sati", person:"Wapner Sati" } },
+   { title:"The Lightbearer", meta:"Rory MacCullough · soul on fire", body:["Helior's light, steady as a hearthfire. Rory remembers your dog's name and leaves tea for your cough. He came back to Stonetop different, and better."], source:null, link:{ label:"Rory MacCullough", person:"Rory MacCullough" } },
+   { title:"The Seeker", meta:"Mirgan Steadhurst · Cynebald Saer, retired", body:["The village intellectual: the man you go to when the problem has no ordinary solution. Cynebald held the role before him, and is still his mentor, a difficult man with a long memory."], source:null, link:{ label:"Mirgan Steadhurst", person:"Mirgan Steadhurst" } },
+   { title:"The Heavy", meta:"Aedre Lachlann · the town sheriff", body:["Stonetop's constable in everything but name. She keeps the peace, breaks up the fights, and walks past Kaelyn's house twice a night since the knife appeared on the table."], source:null, link:{ label:"Aedre Lachlann", person:"Aedre Lachlann" } },
+   { title:"Village Elder", meta:"Kaelyn Steadhurst and Cynebald Saer", body:["The elder circle: lifelong contemporaries who keep the grain tallies, the household knowledge, and the village's secrets in equal measure, and who laid out the elders' plan on the night of Ivan's warning."], source:null, link:{ label:"Meet the People", page:"people" } },
+   { title:"Watch Captain", meta:"Selen Gethin · post unfilled, returned", body:["Head of Stonetop's watch before he vanished for two years. The post was never filled. He asked this spring, and Aedre said it was his whenever he was ready."], source:"Selen Gethin", link:{ label:"Selen Gethin", person:"Selen Gethin" } },
+   { title:"Spirit Talker & Hdor", meta:"Bound by taboo, or broken from it", body:["Spirit talkers are sorcerers bound by taboo, feared for their communion with unseen forces. A Hdor is one who breaks those sacred laws, wielding power for himself until it consumes him."], source:"Spirit Talkers", link:{ label:"Spirit Talkers, in Lore", topic:"lore", article:"Spirit Talkers" } },
+   { title:"Tradesfolk of Stonetop", meta:"Publican, smith, tanner, potter, midwife", body:["The trades already in the village, from the steading playbook: publican (Mister Fredd), smith (Dirgge and Penny), tanner (Aldwin), potter (Mereda, the last), midwife (Lena), distiller (Coren), weaver and dyer (Joren), and gatherer and herbalist (Hilde). Their shops are nested inside Stonetop, in Settlements."], source:null, link:{ label:"Stonetop and its shops", topic:"settlements", article:"Stonetop" } }
+ ]}
+];
+/* Creatures articles come straight from the Creatures data, so the
+   topic menu and the World page can never disagree. */
+(function(){
+  var t = TOPICS.filter(function(x){ return x.id==="creatures"; })[0];
+  if (t && typeof CREATURES!=="undefined") t.articles = CREATURES.map(function(c){
+    return { title:c.n, meta:"Supernatural Creatures · the World page", body:[c.d], source:(c.n==="The Fae"?"Fae":c.n), link:{ label:"Read it in the World pages", page:"world", el:"creature-"+personSlug(c.n) } };
+  });
+})();
+var EXISTING_TOPICS = [
+ { name:"Characters", blurb:"The adventurers, the elders, the villagers, outsiders, and the dead.", tab:"people", cta:"The People" },
+ { name:"Relationships", blurb:"Family, love, work, mentorship, secrets, and threats, drawn as a web.", tab:"web", cta:"Explore the web" },
+ { name:"Timeline", blurb:"From the fall of the tower to the march that has not happened yet.", tab:"timeline", cta:"Walk the timeline" },
+ { name:"Stonetop", blurb:"The settlement itself: its shops, places, and people, nested in one place.", topic:"settlements", article:"Stonetop", cta:"Open Stonetop" },
+ { name:"Steading", blurb:"The village playbook, with this table's live tracker.", tab:"steading", cta:"Open the playbook" },
+ { name:"Open Questions", blurb:"Questions live in their articles now, each with its answer form.", tab:"people", cta:"Start with the People" },
+ { name:"Chronicle", blurb:"The Judge's Chronicle, kept by Wapner Sati in his own hand.", tab:"chronicle", cta:"Open the Chronicle" },
+ { name:"Sessions", blurb:"Summaries of Sessions 3 through 7, and what Session 8 holds.", tab:"sessions", cta:"Read summaries" },
+ { name:"World", blurb:"The maps from Book II, and the wider world they show.", tab:"world", cta:"Open the world" }
+];
+var curTopic = null, curArticle = null, curChild = null;
+var DYN_TOPICS = {};
+function findTopic(id){ var h = TOPICS.filter(function(t){ return t.id===id; })[0]; return h || DYN_TOPICS[id] || null; }
+function topicArticles(t){
+  var out = [];
+  (t.articles||[]).forEach(function(a){ out.push(a); (a.children||[]).forEach(function(c){ out.push(c); }); });
+  return out;
+}
+/* --- vault notes join topics by their folder and path --- */
+function classifyVaultRow(r){
+  var hay = ((r.folder||"")+" "+(r.slug||"")+" "+(r.title||"")).toLowerCase();
+  function has(){ for (var i=0;i<arguments.length;i++) if (hay.indexOf(arguments[i])>-1) return true; return false; }
+  if (has("god","helio","pavilion of")) return "gods";
+  if (has("creature","beast","crynwin","pale hunter","white oak","dusk people","arrune","thistlewick","fae")) return "creatures";
+  if (has("threat","ogmolok","gathered bands","hdor")) return "threats";
+  if (has("ruin","undertower","ruined tower")) return "ruins";
+  if (has("arcana","artifact","relic","seed of","twisted spear","cloak","flaming sword")) return "arcana";
+  if (has("settlement","village","marshedge","gordin","lygos","steading")) return "settlements";
+  if (has("wilderness","great wood","forest","lake","mountain","fen","river","flats","stepland","foothill")) return "wilderness";
+  if (has("role","playbook","lightbearer","seeker","judge")) return "roles";
+  if (has("lore","history","maker","forest folk","tempest")) return "lore";
+  if (has("character","people","person")) return "people";
+  var f = (r.folder||"").trim();
+  if (f){
+    var id = tSlug(f);
+    if (!findTopic(id) && !DYN_TOPICS[id]) DYN_TOPICS[id] = { id:id, name:tTitle(f), blurb:"Notes from the Vault folder “"+f+"”, gathered here as their own topic.", articles:[], dynamic:true };
+    return id;
+  }
+  return null;
+}
+function vaultForTopic(id){
+  var rows = (typeof vaultRows!=="undefined" && vaultRows) ? vaultRows : [];
+  var out = [];
+  rows.forEach(function(r){
+    if (!window.isGM && !r.visible) return;
+    if (classifyVaultRow(r)===id) out.push(r);
+  });
+  return out;
+}
+function vaultParentFor(r, t){
+  var parts = (r.slug||"").split("/").filter(Boolean);
+  if (parts.length<2) return null;
+  var want = tSlug(parts[parts.length-2]);
+  var hit = null;
+  topicArticles(t).forEach(function(a){ if (tSlug(a.title)===want) hit = a.title; });
+  return hit;
+}
+/* --- breadcrumbs --- */
+var crumbActions = [];
+var PAGE_LABELS = { home:"Home", people:"People", web:"Relationship Web", sessions:"Sessions", chronicle:"Chronicle", timeline:"Timeline", world:"World", vault:"Vault", steading:"Steading", review:"GM Review", topics:"Topics", topic:"Topic", article:"Article" };
+function setCrumbs(segs){
+  var bar = document.getElementById("crumbs"); if (!bar) return;
+  bar.innerHTML = ""; crumbActions = [];
+  segs.forEach(function(s, i){
+    if (i){ var sep = document.createElement("span"); sep.className="sep"; sep.textContent="›"; bar.appendChild(sep); }
+    var b = document.createElement("button"); b.type="button"; b.className="crumb"+(i===segs.length-1?" cur":""); b.textContent=s.label;
+    var act = s.action; crumbActions.push(act);
+    if (i<segs.length-1 && act) b.addEventListener("click", function(){ act(); });
+    bar.appendChild(b);
+  });
+}
+function homeCrumb(){ return { label:"Home", action:function(){ go("home"); } }; }
+function topicsCrumb(){ return { label:"Topics", action:function(){ go("topics"); } }; }
+function pageCrumbs(tab){
+  if (!tab || tab==="home"){ setCrumbs([{ label:"Home" }]); return; }
+  if (tab==="topic" || tab==="topics") return;
+  setCrumbs([homeCrumb(), { label: PAGE_LABELS[tab]||tTitle(tab) }]);
+}
+/* --- topic pages --- */
+function openTopic(id, articleTitle, childTitle){
+  var t = findTopic(id); if (!t) return;
+  curTopic = t;
+  curArticle = null; curChild = null;
+  if (articleTitle){
+    (t.articles||[]).forEach(function(a){
+      if (a.title===articleTitle) curArticle = a;
+      (a.children||[]).forEach(function(c){ if (c.title===articleTitle){ curArticle = a; curChild = c; } if (childTitle && c.title===childTitle){ curArticle = a; curChild = c; } });
+    });
+    if (childTitle && curArticle && !curChild) (curArticle.children||[]).forEach(function(c){ if (c.title===childTitle) curChild = c; });
+  }
+  renderTopicPage();
+  go("topic");
+  renderTopicCrumbs();
+  window.scrollTo({ top:0 });
+}
+function renderTopicCrumbs(){
+  if (!curTopic) return;
+  var segs = [homeCrumb(), topicsCrumb(), { label:curTopic.name, action:function(){ openTopic(curTopic.id); } }];
+  if (curChild && curArticle){ segs.push({ label:curArticle.title, action:function(){ openTopic(curTopic.id, curArticle.title); } }); segs.push({ label:curChild.title }); }
+  else if (curArticle) segs.push({ label:curArticle.title });
+  setCrumbs(segs);
+}
+function renderTopicPage(){
+  var t = curTopic; if (!t) return;
+  var head = document.getElementById("topic-head");
+  var menu = document.getElementById("topic-menu");
+  var main = document.getElementById("topic-main");
+  if (!head || !menu || !main) return;
+  var vrows = vaultForTopic(t.id);
+  var total = topicArticles(t).length + vrows.length;
+  head.innerHTML = "<p class='art-kicker'>Topic</p><h2 class='sec' style='margin-top:0'>"+esc(t.name)+"</h2><p class='lede'>"+esc(t.blurb)+"</p><span class='topic-count'>"+total+(total===1?" article":" articles")+" in this topic</span>";
+  /* menu: every article in the topic, children nested under parents */
+  menu.innerHTML = "<h3>Articles in "+esc(t.name)+"</h3><p class='tm-note'>Pick an article to read it here. Places inside a settlement sit nested under it.</p>";
+  var ul = document.createElement("ul");
+  function menuBtn(a, isChild, parent){
+    var li = document.createElement("li");
+    var b = document.createElement("button"); b.type="button"; b.className="tm-item"+(isChild?" tm-child":"");
+    var cur = isChild ? (curChild===a) : (curArticle===a && !curChild);
+    if (cur) b.setAttribute("aria-current","true");
+    b.innerHTML = esc(a.title)+(a.meta?"<span class='tm-meta'>"+esc(a.meta)+"</span>":"");
+    b.addEventListener("click", function(){ openTopic(t.id, parent ? parent.title : a.title, isChild ? a.title : null); if (!isChild && !parent) { curArticle=a; curChild=null; renderTopicPage(); renderTopicCrumbs(); } });
+    li.appendChild(b); ul.appendChild(li);
+  }
+  (t.articles||[]).forEach(function(a){
+    menuBtn(a, false, null);
+    (a.children||[]).forEach(function(c){
+      var g = document.createElement("li"); g.className="tm-group"; g.textContent="Inside "+a.title; if ((a.children||[]).indexOf(c)===0) ul.appendChild(g);
+      menuBtn(c, true, a);
+    });
+  });
+  if (vrows.length){
+    var g2 = document.createElement("li"); g2.className="tm-group"; g2.textContent="From the Vault"; ul.appendChild(g2);
+    vrows.forEach(function(r){
+      var li = document.createElement("li");
+      var parent = vaultParentFor(r, t);
+      var b = document.createElement("button"); b.type="button"; b.className="tm-item"+(parent?" tm-child":"");
+      b.innerHTML = esc(r.title||r.slug)+"<span class='tm-meta'>"+esc(parent ? ("Inside "+parent+" · Vault note") : ((r.folder||"Vault")+" · Vault note"))+"</span>";
+      b.addEventListener("click", function(){ vaultSlug = r.slug; vaultEditing = false; renderVault(); go("vault"); window.scrollTo({ top:0 }); });
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+  menu.appendChild(ul);
+  /* main pane */
+  main.innerHTML = "";
+  var sel = curChild || curArticle;
+  if (!sel){
+    var card = document.createElement("div"); card.className="card";
+    card.innerHTML = "<h3 style='margin-top:0'>All of "+esc(t.name)+"</h3><p>Every article in this topic, in one menu. Open one from the menu, or from the list below.</p>";
+    main.appendChild(card);
+    var grid = document.createElement("div"); grid.className="nested-grid";
+    (t.articles||[]).forEach(function(a){
+      var sc = document.createElement("button"); sc.type="button"; sc.className="shop-card";
+      sc.innerHTML = "<h4>"+esc(a.title)+"</h4><p>"+esc(a.meta||"")+"</p><p>"+esc((a.body||[])[0]||"")+"</p>"+((a.children&&a.children.length)?"<p style='margin-top:6px'><b style='color:var(--ink)'>"+a.children.length+" places nested inside</b></p>":"");
+      sc.addEventListener("click", function(){ openTopic(t.id, a.title); });
+      grid.appendChild(sc);
+    });
+    main.appendChild(grid);
+    if (vrows.length){
+      var vc = document.createElement("div"); vc.className="card"; vc.style.marginTop="14px";
+      vc.innerHTML = "<h3 style='margin-top:0'>From the Vault</h3><p>"+vrows.length+(vrows.length===1?" note":" notes")+" from the vault "+(window.isGM?"are":"the GM has shown are")+" filed under this topic by folder and path. Open one to read it whole in the Vault.</p>";
+      main.appendChild(vc);
+    }
+    return;
+  }
+  var d = document.createElement("div"); d.className="card";
+  var kick = curChild ? (t.name+" · inside "+curArticle.title) : t.name;
+  d.innerHTML = "<p class='art-kicker'>"+esc(kick)+"</p><h3 style='margin-top:0;font-size:26px'>"+esc(sel.title)+"</h3>"+(sel.meta?"<p class='art-meta'>"+esc(sel.meta)+"</p>":"");
+  (sel.body||[]).forEach(function(p){ var pp = document.createElement("p"); pp.textContent = p; d.appendChild(pp); });
+  if (sel.link){
+    var lb = document.createElement("div"); lb.style.marginTop="10px";
+    var l = sel.link;
+    if (l.topic){ var b1 = document.createElement("button"); b1.type="button"; b1.className="btn small"; b1.textContent=l.label; b1.addEventListener("click", function(){ openTopic(l.topic, l.article||null); }); lb.appendChild(b1); }
+    else if (typeof linkButton==="function") lb.appendChild(linkButton(l, "btn small"));
+    d.appendChild(lb);
+  }
+  if (sel.source){ var q = document.createElement("div"); q.className="article-questions"; q.setAttribute("data-source", sel.source); d.appendChild(q); }
+  main.appendChild(d);
+  if (!curChild && curArticle && curArticle.children && curArticle.children.length){
+    var nc = document.createElement("div"); nc.className="card";
+    nc.innerHTML = "<h3 style='margin-top:0'>Inside "+esc(curArticle.title)+"</h3><p>Shops and places nested inside this settlement. The breadcrumb above grows a step for each one: Home › Topics › "+esc(t.name)+" › "+esc(curArticle.title)+" › the place itself.</p>";
+    var ng = document.createElement("div"); ng.className="nested-grid";
+    curArticle.children.forEach(function(c){
+      var sc2 = document.createElement("button"); sc2.type="button"; sc2.className="shop-card";
+      sc2.innerHTML = "<h4>"+esc(c.title)+"</h4><p>"+esc(c.meta||"")+"</p>";
+      sc2.addEventListener("click", function(){ openTopic(t.id, curArticle.title, c.title); });
+      ng.appendChild(sc2);
+    });
+    nc.appendChild(ng); main.appendChild(nc);
+  }
+  if (curChild && curArticle){
+    var back = document.createElement("button"); back.type="button"; back.className="btn small"; back.textContent="← Back to "+curArticle.title;
+    back.addEventListener("click", function(){ openTopic(t.id, curArticle.title); });
+    main.appendChild(back);
+  }
+  if (typeof renderQuestions==="function") renderQuestions();
+}
+function renderTopicsIndex(){
+  var ex = document.getElementById("topics-existing"); var gr = document.getElementById("topics-grid"); var extra = document.getElementById("topics-vault-extra");
+  if (ex && !ex.children.length){
+    EXISTING_TOPICS.forEach(function(x){
+      var c = document.createElement("div"); c.className="card topic-card";
+      c.innerHTML = "<h3>"+esc(x.name)+"</h3><p>"+esc(x.blurb)+"</p>";
+      var b = document.createElement("button"); b.type="button"; b.className="btn small"; b.textContent=x.cta;
+      b.addEventListener("click", function(){ if (x.topic) openTopic(x.topic, x.article||null); else go(x.tab); });
+      c.appendChild(b); ex.appendChild(c);
+    });
+  }
+  if (gr){
+    gr.innerHTML = "";
+    TOPICS.forEach(function(t){
+      var n = topicArticles(t).length + vaultForTopic(t.id).length;
+      var c = document.createElement("div"); c.className="card topic-card"; c.setAttribute("data-topic-search", (t.name+" "+t.blurb+" "+topicArticles(t).map(function(a){ return a.title; }).join(" ")).toLowerCase());
+      c.innerHTML = "<span class='topic-count'>"+n+(n===1?" article":" articles")+"</span><h3>"+esc(t.name)+"</h3><p>"+esc(t.blurb)+"</p><p class='note' style='margin:0 0 10px'>"+topicArticles(t).slice(0,4).map(function(a){ return esc(a.title); }).join(" · ")+(topicArticles(t).length>4?" · …":"")+"</p>";
+      var b = document.createElement("button"); b.type="button"; b.className="btn small"; b.textContent="Open "+t.name;
+      b.addEventListener("click", function(){ openTopic(t.id); });
+      c.appendChild(b); gr.appendChild(c);
+    });
+  }
+  if (extra){
+    extra.innerHTML = "";
+    var dyn = Object.keys(DYN_TOPICS).map(function(k){ return DYN_TOPICS[k]; }).filter(function(t){ return vaultForTopic(t.id).length; });
+    if (dyn.length){
+      var h = document.createElement("h2"); h.className="sec"; h.textContent="More Topics from the Vault"; extra.appendChild(h);
+      var g = document.createElement("div"); g.className="grid g3";
+      dyn.forEach(function(t){
+        var c = document.createElement("div"); c.className="card topic-card";
+        c.innerHTML = "<h3>"+esc(t.name)+"</h3><p>"+esc(t.blurb)+"</p>";
+        var b = document.createElement("button"); b.type="button"; b.className="btn small"; b.textContent="Open "+t.name;
+        b.addEventListener("click", function(){ openTopic(t.id); });
+        c.appendChild(b); g.appendChild(c);
+      });
+      extra.appendChild(g);
+    }
+  }
+}
+/* --- wiring: go(), article and vault breadcrumbs, search --- */
+var topicOrigGo = go;
+go = function(tab){
+  topicOrigGo(tab);
+  if (tab==="topics"){ renderTopicsIndex(); setCrumbs([homeCrumb(), { label:"Topics" }]); }
+  else if (tab==="topic"){ renderTopicCrumbs(); }
+  else if (tab==="vault" && typeof renderVault==="function"){ pageCrumbs(tab); renderVault(); }
+  else pageCrumbs(tab);
+};
+if (typeof openArticleView==="function"){
+  var topicOrigArt = openArticleView;
+  openArticleView = function(d){
+    var ok = topicOrigArt(d);
+    if (ok && d) setCrumbs([homeCrumb(), { label: PAGE_LABELS[artReturnTab]||"Back", action:function(){ go(artReturnTab||"home"); } }, { label:d.title }]);
+    return ok;
+  };
+}
+if (typeof renderVault==="function"){
+  var topicOrigVault = renderVault;
+  renderVault = function(){
+    topicOrigVault();
+    var on = document.getElementById("pg-vault");
+    if (on && on.classList.contains("on")){
+      if (typeof vaultSlug!=="undefined" && vaultSlug && typeof findVaultRow==="function"){
+        var row = findVaultRow(vaultSlug);
+        if (row){
+          var tid = classifyVaultRow(row); var t = tid ? findTopic(tid) : null;
+          var segs = [homeCrumb(), { label:"Vault", action:function(){ vaultSlug=null; renderVault(); go("vault"); } }];
+          if (t) segs.push({ label:t.name, action:function(){ openTopic(t.id); } });
+          if (row.folder) segs.push({ label:row.folder });
+          segs.push({ label:row.title||row.slug });
+          setCrumbs(segs); return;
+        }
+      }
+      setCrumbs([homeCrumb(), { label:"Vault" }]);
+    }
+  };
+}
+(function initTopics(){
+  document.querySelectorAll("[data-topic]").forEach(function(b){ b.addEventListener("click", function(){ openTopic(b.getAttribute("data-topic")); }); });
+  renderTopicsIndex();
+  setCrumbs([{ label:"Home" }]);
+  var q = document.getElementById("topics-q");
+  var clear = document.getElementById("topics-clear");
+  function filterTopics(){
+    var v = q ? q.value.trim().toLowerCase() : "";
+    document.querySelectorAll(".topic-card").forEach(function(c){
+      var hay = (c.getAttribute("data-topic-search")||c.textContent).toLowerCase();
+      c.style.display = (!v || hay.indexOf(v)>-1) ? "" : "none";
+    });
+  }
+  if (q) q.addEventListener("input", filterTopics);
+  if (clear) clear.addEventListener("click", function(){ if (q) q.value=""; filterTopics(); });
+  /* propose bars for the two new pages, wired like every other page */
+  [["topics","the Topics index"],["topic","this topic"]].forEach(function(pair){
+    var pg = document.getElementById("pg-"+pair[0]); if (!pg || pg.querySelector(":scope > .propose-bar")) return;
+    var bar = document.createElement("div"); bar.className="propose-bar"; bar.setAttribute("data-context", pair[1]); bar.setAttribute("data-page", pair[0]);
+    bar.innerHTML = "<span class='pb-text'><b>Propose a change</b> to "+pair[1]+", or a brand-new entry.<span class='pb-hint'></span></span><button class='btn propose-btn' type='button'>Propose a change</button>";
+    pg.insertBefore(bar, pg.firstChild);
+    var panel = document.createElement("div"); panel.className="propose-panel"; panel.hidden = true;
+    pg.insertBefore(panel, bar.nextSibling);
+    if (typeof wireProposeBar==="function") wireProposeBar(bar);
+  });
+  if (typeof refreshProposeUI==="function") refreshProposeUI();
+  /* global search also finds topics and their articles */
+  var gs = document.getElementById("gsearch"); var gbox = document.getElementById("gsearch-results");
+  if (gs && gbox) gs.addEventListener("input", function(){
+    setTimeout(function(){
+      var v = gs.value.trim().toLowerCase(); if (v.length<2 || gbox.hidden) return;
+      var toks = v.split(/\s+/);
+      TOPICS.forEach(function(t){
+        topicArticles(t).forEach(function(a){
+          var hay = (t.name+" "+a.title+" "+(a.body||[]).join(" ")).toLowerCase();
+          if (!toks.every(function(x){ return hay.indexOf(x)>-1; })) return;
+          var b = document.createElement("button"); b.type="button"; b.className="gs-item";
+          b.innerHTML = "<span class='gs-type'>Topic · "+esc(t.name)+"</span><span class='gs-title'>"+esc(a.title)+"</span><span class='gs-snip'>"+esc((a.body||[])[0]||"")+"</span>";
+          b.addEventListener("click", function(){ gbox.hidden = true; var parent = null; (t.articles||[]).forEach(function(x){ (x.children||[]).forEach(function(c){ if (c===a) parent = x; }); }); openTopic(t.id, parent ? parent.title : a.title, parent ? a.title : null); });
+          gbox.appendChild(b);
+        });
+      });
+    }, 60);
+  });
+  /* when the vault arrives, topics gain its notes: refresh counts */
+  var tries = 0;
+  var iv = setInterval(function(){
+    tries++;
+    if (typeof vaultRows!=="undefined" && vaultRows){ renderTopicsIndex(); if (curTopic && document.getElementById("pg-topic").classList.contains("on")) renderTopicPage(); clearInterval(iv); }
+    if (tries>40) clearInterval(iv);
+  }, 500);
 })();
 </script>
 </body>
