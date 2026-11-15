@@ -305,34 +305,63 @@ section.page.on{animation:pagein .45s ease both}
 .ev2-body p{color:var(--muted);margin:2px 0 10px;max-width:720px}
 .ev2-links{display:flex;gap:8px;flex-wrap:wrap}
 .ev2-era{display:inline-block;font-size:11.5px;font-variant:small-caps;letter-spacing:1.5px;border:1px solid var(--line);border-radius:2px;padding:1px 8px;color:var(--muted)}
-/* the timeline, horizontal: event headings run along the top,
-   and the chosen event opens in the detail box beneath them */
-.tlh{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 14px;position:relative}
-.tlh::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--line);z-index:0}
-.tlhead{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:1px;background:var(--panel);border:1px solid var(--inkline);border-radius:2px;padding:8px 12px 9px;cursor:pointer;text-align:left;color:var(--ink);min-height:44px;max-width:250px}
+/* the timeline, horizontal: one ruled line runs sideways through
+   a scrolling track, oldest on the left and still to come on the
+   right. Each event box stands on a stem over the diamond that
+   marks its exact place on the line, and the chosen event opens
+   in the detail box beneath the track */
+.tl-scrollrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:16px 0 0}
+.tl-scrollrow .btn{min-height:40px}
+.tl-scroll{overflow-x:auto;overflow-y:hidden;max-width:100%;padding:2px 2px 10px;scroll-behavior:smooth;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.tl-scroll:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
+.tlh{display:flex;flex-wrap:nowrap;gap:54px;width:max-content;min-width:100%;margin:4px 0 2px;padding:8px 30px 60px;position:relative;align-items:stretch}
+.tlh::before{content:"";position:absolute;left:0;right:0;bottom:27px;height:2px;background:var(--inkline);z-index:0}
+.tlh::after{content:"";position:absolute;right:3px;bottom:22px;width:11px;height:11px;border-top:2px solid var(--inkline);border-right:2px solid var(--inkline);transform:rotate(45deg);z-index:0}
+.tlhead{position:relative;z-index:1;flex:0 0 232px;width:232px;max-width:232px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:flex-start;gap:1px;background:var(--panel);border:1px solid var(--inkline);border-radius:2px;padding:10px 14px 12px;cursor:pointer;text-align:left;color:var(--ink);min-height:44px}
+.tlhead::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:26px;background:var(--line);transform:translateX(-50%)}
 .tlhead .when{font-size:12px;font-variant:small-caps;letter-spacing:1.8px;font-weight:700}
 .tlhead[data-era="deep"] .when{color:#55482e}
 .tlhead[data-era="village"] .when{color:#8a6d1f}
 .tlhead[data-era="spring"] .when{color:var(--rust)}
 .tlhead[data-era="ahead"] .when{color:var(--good)}
 .tlhead .tlt{font-size:16.5px;font-weight:600;line-height:1.2}
-.tlhead .tldot{position:absolute;top:-6px;right:-6px;width:11px;height:11px;background:var(--panel);border:2px solid var(--inkline);transform:rotate(45deg)}
+.tlhead .tldot{position:absolute;left:50%;bottom:-39px;width:13px;height:13px;background:var(--panel);border:2px solid var(--inkline);transform:translateX(-50%) rotate(45deg);z-index:2}
 .tlhead[data-era="deep"] .tldot{background:#55482e}
 .tlhead[data-era="village"] .tldot{background:#8a6d1f}
 .tlhead[data-era="spring"] .tldot{background:var(--rust)}
 .tlhead[data-era="ahead"] .tldot{background:var(--good)}
 .tlhead:hover{background:var(--panel2)}
 .tlhead[aria-selected="true"]{background:#f6ecd2;box-shadow:0 0 0 2px var(--rust)}
+.tlhead[aria-selected="true"]::after{background:var(--rust)}
+.tlhead[aria-selected="true"] .tldot{box-shadow:0 0 0 5px rgba(156,52,24,.25)}
 .tlhead.now{box-shadow:0 0 0 2px var(--rust)}
+.tlhead.now .tldot{box-shadow:0 0 0 6px rgba(156,52,24,.3)}
+@media(max-width:560px){.tlhead{flex-basis:208px;width:208px;max-width:208px}.tlh{gap:44px;padding-left:22px;padding-right:22px}}
 .tl-detail{border:2px solid var(--inkline);outline:1px solid var(--inkline);outline-offset:4px;background:var(--panel);padding:18px 22px;min-height:120px;animation:pagein .3s ease both}
 .tl-detail h3{margin:2px 0 6px;font-size:24px;color:var(--ink)}
 .tl-detail p{color:var(--muted);margin:0 0 12px;max-width:760px}
 .tl-detail .ev2-links{display:flex;gap:8px;flex-wrap:wrap}
 .tl-detail .byline{font-size:14px;color:var(--faint);font-variant:small-caps;letter-spacing:1px}
 /* a jump menu for pages with several sections */
-.secnav{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 2px 12px;border-bottom:3px double var(--inkline);margin-bottom:8px}
+.secnav{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 2px 12px;border-bottom:3px double var(--inkline);margin-bottom:8px;position:sticky;top:var(--stick-top,108px);z-index:15;background:var(--bg)}
 .secnav .flab{font-size:13px;font-variant:small-caps;letter-spacing:2px;color:var(--faint)}
 .secnav .chipbtn{min-height:36px}
+h2.sec{scroll-margin-top:calc(var(--stick-top,108px) + 64px)}
+/* cards that open a full article */
+.card.art-click{cursor:pointer}
+.card.art-click:hover{background:var(--panel2)}
+.card.art-click:hover h3{text-decoration:underline}
+.card.art-click:focus-visible{outline:2px solid var(--rust);outline-offset:3px}
+.imp.art-click{cursor:pointer}
+.imp.art-click:hover{background:#f6efdb}
+.imp.art-click:focus-visible{outline:2px solid var(--rust);outline-offset:3px}
+/* the full-article view: one page that any card can open, built
+   from the card's own data when no vault note stands for it */
+#pg-article .art-body p{color:var(--muted);max-width:760px}
+#pg-article .art-body p b,#pg-article .art-body li b{color:var(--ink)}
+#pg-article .art-kicker{font-size:13px;font-variant:small-caps;letter-spacing:2.5px;color:var(--rust);margin-bottom:4px}
+#pg-article .art-meta{font-size:15px;color:var(--faint);font-style:italic;margin:0 0 12px}
+#pg-article .art-note{border:1px solid var(--line);background:var(--panel);padding:12px 16px;color:var(--muted);font-size:16px;max-width:760px}
 h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
 .badge.pending{color:var(--gold);border:1px solid var(--gold);background:transparent}
 /* map pins: every plate can carry pins that open an article,
@@ -390,6 +419,7 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
   section.page.on,.pinpanel,.tl-detail{animation:none}
+  .tl-scroll{scroll-behavior:auto}
   .ev2{opacity:1;transform:none;transition:none}
   .mappin{animation:none}
   .mappin.pulse .pinhead{animation:none}
@@ -713,7 +743,7 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
 <!-- TIMELINE -->
 <section class="page" id="pg-timeline">
   <h2 class="sec">The Timeline of Stonetop</h2>
-  <p class="lede">From the fall of the tower to the march that has not happened yet. The events run along the top; pick one and its story opens in the box below, with the threads that lead to the people, places, and sessions it touches. Or press Walk the timeline and let the story play itself in order, one event at a time. The GM can add events outright; signed-in players the GM has approved can propose additions, and the GM settles them in GM Review.</p>
+  <p class="lede">From the fall of the tower to the march that has not happened yet. The events sit on a single line that runs sideways, oldest on the left and still to come on the right: scroll along the line, and each event's box stands on a stem over the diamond that marks its place. Pick one and its story opens in the box below, with the threads that lead to the people, places, and sessions it touches. Or press Walk the timeline and let the story play itself in order, one event at a time. The GM can add events outright; signed-in players the GM has approved can propose additions, and the GM settles them in GM Review.</p>
   <div class="tl-tools">
     <div class="filterrow"><span class="flab">Eras</span><span id="tl-erafilters" style="display:contents">
       <button class="chipbtn" data-era="all" aria-pressed="true">All eras</button>
@@ -729,7 +759,16 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
     <div class="tl-progress" aria-hidden="true"><div id="tl-progress-fill"></div></div>
     <p class="note" id="tl-status" style="margin:8px 0 0">Nine events, from long ago to next session.</p>
   </div>
-  <div class="tlh" id="tl-heads" role="tablist" aria-label="Timeline events"></div>
+  <div class="tl-scrollrow">
+    <span class="note" style="font-style:normal">Scroll sideways along the line: each box stands over the diamond that marks where it belongs.</span>
+    <span style="display:inline-flex;gap:8px">
+      <button class="btn small" type="button" id="tl-prev" aria-label="Scroll the timeline back">← Earlier</button>
+      <button class="btn small" type="button" id="tl-next" aria-label="Scroll the timeline forward">Later →</button>
+    </span>
+  </div>
+  <div class="tl-scroll" id="tl-scroll" tabindex="0" aria-label="Timeline events, scroll sideways">
+    <div class="tlh" id="tl-heads" role="tablist" aria-label="Timeline events"></div>
+  </div>
   <div class="tl-detail" id="tl-detail"></div>
   <p class="note" id="tl-empty" hidden>Nothing in the story matches that. Clear the filter to see the whole timeline again.</p>
   <div id="tl-addwrap" style="margin-top:18px"></div>
@@ -739,11 +778,12 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
 <!-- STEADING -->
 <section class="page" id="pg-steading">
   <h2 class="sec">The Steading: Stonetop</h2>
-  <p class="lede">The steading playbook for the village itself, from Book I (pages 154 to 165), printed in full below, with this table's tracker kept live at the top. When the GM is signed in, the tracker is the playbook in play: set the stat tracks, count Surplus, mark the village's size and debilities, note the improvements the village has gained, and work the problems and claims board. When a problem or claim is dealt with, it leaves the board and is written into the Steading Log, the running history of what the village has faced and settled.</p>
+  <p class="lede">The steading playbook for the village itself, from Book I (pages 154 to 165), with this table's tracker kept live at the top. The stats, Surplus, Size, and debilities live in the tracker, and the rest of the playbook is printed below it, so each piece of it appears on this page once. When the GM is signed in, the tracker is the playbook in play: set the stat tracks, count Surplus, mark the village's size and debilities, note the improvements the village has gained, and work the problems and claims board. When a problem or claim is dealt with, it leaves the board and is written into the Steading Log, the running history of what the village has faced and settled.</p>
   <div id="sb-status" class="status" style="margin:16px 0">Live sync is not connected yet. Changes made here last for this sitting on this device until live sync connects.</div>
   <div class="sheet" id="st-tracker">
     <h3>Stonetop, as it stands</h3>
     <p class="note" id="st-gmnote" style="margin-top:0">Sign in as GM to run the playbook: the tracks, marks, and boards below are yours to change while you are signed in.</p>
+    <p class="note" style="margin-top:0">The stats each range from -1 to +3. Fortunes started at +1, the other three stats at +0, Surplus at 1, and Size at village.</p>
     <div id="st-stats"></div>
     <h4 style="margin-top:16px">Debilities</h4>
     <p style="margin-top:0">The steading suffers debilities much like a PC does. They last until a move like Return Triumphant clears them, or until the GM says so.</p>
@@ -783,36 +823,7 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
   <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="copy-steading">Copy steading summary</button><span class="note" id="copy-note" style="align-self:center"></span></div></div>
 
   <h2 class="sec">The Steading Playbook, from Book I</h2>
-  <p class="lede">Pages 154 to 165 of Book I print a version of the steading playbook for Stonetop itself. Use it to track the village's stats, debilities, resources, improvements, and the rest. What follows is the playbook as the book gives it, starting values and all; the tracker at the top of this page is where this table's village actually stands.</p>
-
-  <div class="sheet">
-    <h3>Stonetop</h3>
-    <p style="margin-top:0">The steading's stats each range from -1 to +3. Fortunes start at +1 and change frequently during play; the other three stats start at +0.</p>
-    <div class="pbgrid">
-      <div class="pbbox">
-        <h4>Fortunes <span class="note" style="text-transform:none;letter-spacing:0">starts at +1</span></h4>
-        <div class="track"><span class="pip"><span class="box"></span>-1</span><span class="pip"><span class="box"></span>+0</span><span class="pip"><span class="box full"></span>+1</span><span class="pip"><span class="box"></span>+2</span><span class="pip"><span class="box"></span>+3</span></div>
-        <p>Morale, social cohesion, and just how it's going. Roll +Fortunes when Seasons Change, to see what happens in the coming months, or when you Requisition one of the village's assets.</p>
-        <h4 style="margin-top:14px">Surplus <span class="note" style="text-transform:none;letter-spacing:0">starts at 1</span></h4>
-        <p>Food in the granary and in household larders, livestock ready for slaughter, whisky that's ready to drink, fur that's ready to trade or be fashioned into garments. The village generates Surplus each summer and autumn, and consumes it each winter. There is no upper limit.</p>
-        <h4 style="margin-top:14px">Size <span class="note" style="text-transform:none;letter-spacing:0">starts at village</span></h4>
-        <ul class="blist">
-          <li><b>Hamlet:</b> fewer than 50 people</li>
-          <li><b>Village:</b> 150 to 350 people</li>
-          <li><b>Town:</b> 500 to 1500 people</li>
-          <li><b>City:</b> 2500 or more</li>
-        </ul>
-      </div>
-      <div class="pbbox">
-        <h4>Population <span class="note" style="text-transform:none;letter-spacing:0">starts at +0</span></h4>
-        <p>The number of able bodies in town, relative to its Size. Population is a double-edged sword: add it to rolls to Muster or Pull Together, but also add it to the amount of Surplus consumed each winter.</p>
-        <h4 style="margin-top:14px">Prosperity <span class="note" style="text-transform:none;letter-spacing:0">starts at +0</span></h4>
-        <p>The quality and variety of services and household goods, tools and weapons, finery and little luxuries. Roll +Prosperity to Trade &amp; Barter, and add it to the uses you get from supplies, the HP you regain when you Recover, and the piercing value of your iron weapons.</p>
-        <h4 style="margin-top:14px">Defenses <span class="note" style="text-transform:none;letter-spacing:0">starts at +0</span></h4>
-        <p>The martial prowess and readiness of the steading: how well-trained and well-armed the inhabitants are. Roll +Defenses to Deploy.</p>
-      </div>
-    </div>
-  </div>
+  <p class="lede">Pages 154 to 165 of Book I print the steading playbook for Stonetop itself. Its stats, Surplus, Size, and debilities are the tracker at the top of this page, where this table's village actually stands, so they are not printed again here. What follows is the rest of the playbook as the book gives it: resources and fortifications, assets, improvements, and the residents and neighbors lists.</p>
 
   <div class="sheet">
     <h3>Resources &amp; Fortifications</h3>
@@ -842,16 +853,6 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
         </ul>
       </div>
     </div>
-  </div>
-
-  <div class="sheet">
-    <h3>Debilities</h3>
-    <p style="margin-top:0">During play, the steading can suffer debilities much like a PC can. They last until a move like Return Triumphant clears them, or until the GM says so.</p>
-    <ul class="rlist">
-      <li><b>Diminished</b>, by injury, sickness, or doubt: disadvantage to Deploy, Muster, or Pull Together.</li>
-      <li><b>Lacking</b>, due to shortages, hoarding, or distrust: treat Prosperity as if it's 1 lower than it is.</li>
-      <li><b>Malcontent</b>, from fear, anger, or despair: Fortunes reset to +0 each season, not +1, and folks need Persuading more often than usual.</li>
-    </ul>
   </div>
 
   <div class="sheet">
@@ -1208,6 +1209,17 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
   </div>
 </section>
 
+<!-- ARTICLE -->
+<section class="page" id="pg-article">
+  <button class="btn small" type="button" id="art-back">&larr; Back</button>
+  <p class="art-kicker" id="art-kicker" style="margin-top:18px"></p>
+  <h2 class="sec" id="art-title" style="margin-top:0"></h2>
+  <p class="art-meta" id="art-meta"></p>
+  <div class="art-body" id="art-body"></div>
+  <div id="art-questions"></div>
+  <div id="art-extra" style="margin-top:16px"></div>
+</section>
+
 </div>
 <footer>These notes update as the campaign unfolds. Open Questions throughout mark things the village doesn't know yet, or knows, but hasn't faced.</footer>
 
@@ -1312,15 +1324,16 @@ OUTS.forEach(function(p){ document.getElementById("out-grid").appendChild(person
 DEAD.forEach(function(p){ document.getElementById("dead-grid").appendChild(personCard(p,"dead")); });
 
 /* ---------- person cards open their full article ----------
-   A character's full article is their vault note: the note whose
-   title is their name, or whose slug ends with their name as a
-   slug. Clicking a person card opens that note in the Vault
-   reader, where the character's open questions live in full.
-   The vault rows load from Supabase after the cards are drawn,
-   so which cards are clickable is refreshed every time the
-   vault renders (load, sign-in, visibility change). A player
-   only ever receives the notes the GM has chosen to show, so a
-   hidden note can never be a card's destination for them. */
+   A character's full article is their vault note where one
+   stands for them: the note whose title is their name, or whose
+   slug ends with their name as a slug. Clicking a person card
+   opens that note in the Vault reader, where the character's
+   open questions live in full. Where no such note exists (or
+   none the reader may see), the article opens from the card's
+   own data on the Article page instead, so every person card
+   opens a full article. A player only ever receives the notes
+   the GM has chosen to show, so a hidden note can never be a
+   card's destination for them. */
 function findPersonArticle(name){
   var rows = (typeof vaultRows !== "undefined" && vaultRows) ? vaultRows : [];
   var slug = personSlug(name), low = name.toLowerCase(), hit = null;
@@ -1335,18 +1348,25 @@ function findPersonArticle(name){
 }
 function openPersonArticle(name){
   var row = findPersonArticle(name);
-  if (!row || typeof renderVault !== "function") return false;
-  vaultSlug = row.slug; vaultEditing = false;
-  renderVault(); go("vault"); window.scrollTo({ top:0 });
-  return true;
+  if (row && typeof renderVault === "function"){
+    vaultSlug = row.slug; vaultEditing = false;
+    renderVault(); go("vault"); window.scrollTo({ top:0 });
+    return true;
+  }
+  /* No vault note stands for this person (or none the reader may
+     see): the full article opens from the card's own data instead,
+     so the click always lands on an article. */
+  if (typeof openNamedArticle === "function") return openNamedArticle(name, "people");
+  return false;
 }
 function refreshPersonCards(){
   document.querySelectorAll(".card.person").forEach(function(el){
-    var name = el.getAttribute("data-person-name") || "";
-    var row = name ? findPersonArticle(name) : null;
-    el.classList.toggle("clickable", !!row);
+    /* Every person card opens a full article: the vault note where
+       one exists and may be seen, the card-data article otherwise,
+       so every card is clickable and carries its article link. */
+    el.classList.add("clickable");
     var link = el.querySelector(".full-article");
-    if (link) link.hidden = !row;
+    if (link) link.hidden = false;
   });
 }
 
@@ -1803,10 +1823,10 @@ function renderPanel(){
     html += "</details>";
   });
   if (n.g === "entity"){
-    html += "<div style='margin-top:14px'><button class='btn small' id='web-page-btn'>See " + n.id + " in the World pages</button></div>";
+    html += "<div style='margin-top:14px;display:flex;gap:10px;flex-wrap:wrap'><button class='btn small' id='web-article-btn'>Read the full article</button><button class='btn small' id='web-page-btn'>See " + n.id + " in the World pages</button></div>";
   } else {
     html += "<div style='margin-top:14px;display:flex;gap:10px;flex-wrap:wrap'>";
-    if (findPersonArticle(n.full)) html += "<button class='btn small' id='web-article-btn'>Read the full article</button>";
+    html += "<button class='btn small' id='web-article-btn'>Read the full article</button>";
     html += "<button class='btn small' id='web-page-btn'>See " + n.id + " on the People page</button></div>";
   }
   panel.innerHTML = html;
@@ -1814,9 +1834,13 @@ function renderPanel(){
   var ab = document.getElementById("web-article-btn");
   if (ab) ab.addEventListener("click", function(){
     var row = findPersonArticle(n.full);
-    if (!row) return;
-    window.webReturnId = n.id; window.webReturnSlug = row.slug;
-    openPersonArticle(n.full);
+    if (row){
+      window.webReturnId = n.id; window.webReturnSlug = row.slug;
+      openPersonArticle(n.full);
+    } else if (typeof openNamedArticle === "function"){
+      window.webReturnId = n.id; window.webReturnSlug = null;
+      openNamedArticle(n.full, "web");
+    }
   });
   var pb = document.getElementById("web-page-btn");
   if (pb) pb.addEventListener("click", function(){
@@ -1897,8 +1921,8 @@ var steading = { fortunes:1, prosperity:0, population:0, defenses:0, surplus:1, 
 var probSeed = ["Ogmolok's containment is in question, now that the Forgemaster is dead","Hilde is held by the Crynwin, somewhere west","The Gathered Bands: a thousand Hillfolk marching under a Hdor","White Oak's price: a memory given, and a favor owed"];
 steading.problems = probSeed.map(function(t){ return {text:t, done:false}; });
 var ST_STATS = [
-  ["fortunes","Fortunes","Morale, social cohesion, and just how it is going. Roll +Fortunes when Seasons Change, or when you Requisition one of the village's assets."],
-  ["prosperity","Prosperity","The quality and variety of services and household goods, tools and weapons, finery and little luxuries. Roll +Prosperity to Trade & Barter."],
+  ["fortunes","Fortunes","Morale, social cohesion, and just how it is going. Roll +Fortunes when Seasons Change, to see what happens in the coming months, or when you Requisition one of the village's assets."],
+  ["prosperity","Prosperity","The quality and variety of services and household goods, tools and weapons, finery and little luxuries. Roll +Prosperity to Trade & Barter, and add it to the uses you get from supplies, the HP you regain when you Recover, and the piercing value of your iron weapons."],
   ["population","Population","The number of able bodies in town, relative to its Size. Add it to rolls to Muster or Pull Together, and to the Surplus consumed each winter."],
   ["defenses","Defenses","The martial prowess and readiness of the steading. Roll +Defenses to Deploy."]
 ];
@@ -1953,7 +1977,7 @@ function buildSteadingTracker(){
   plus.addEventListener("click", function(){ if (!stCanEdit()) return; steading.surplus = steading.surplus + 1; logChange("Surplus gained: now " + steading.surplus); saveSteading(); renderSteading(); });
   surp.appendChild(minus); surp.appendChild(val); surp.appendChild(plus);
   left.appendChild(surp);
-  var sp = document.createElement("p"); sp.textContent = "Food in the granary and in household larders, livestock ready for slaughter, whisky ready to drink. Generated each summer and autumn, consumed each winter. There is no upper limit."; left.appendChild(sp);
+  var sp = document.createElement("p"); sp.textContent = "Food in the granary and in household larders, livestock ready for slaughter, whisky ready to drink, fur ready to trade or be fashioned into garments. Generated each summer and autumn, consumed each winter. There is no upper limit."; left.appendChild(sp);
   var zh = document.createElement("h4"); zh.textContent = "Size"; zh.style.marginTop = "14px"; left.appendChild(zh);
   var zrow = document.createElement("div"); zrow.className = "searchrow"; zrow.style.margin = "4px 0";
   ST_SIZES.forEach(function(z){
@@ -1965,6 +1989,7 @@ function buildSteadingTracker(){
     zrow.appendChild(b);
   });
   left.appendChild(zrow);
+  var zr = document.createElement("p"); zr.className = "smalllist"; zr.textContent = "Hamlet: fewer than 50 people · Village: 150 to 350 · Town: 500 to 1500 · City: 2500 or more."; left.appendChild(zr);
   var zp = document.createElement("p"); zp.id = "st-size-note"; left.appendChild(zp);
   grid.appendChild(left); grid.appendChild(right);
   host.appendChild(grid);
@@ -3154,6 +3179,7 @@ function goToFigure(figId){
 }
 function goToPerson(name){
   if (typeof openPersonArticle === "function" && openPersonArticle(name)) return;
+  if (typeof openNamedArticle === "function" && openNamedArticle(name, "people")) return;
   goToEl("people", "person-" + personSlug(name));
 }
 function followLink(l){
@@ -3481,7 +3507,10 @@ function tlWalkStep(){
   renderTimeline();
   document.querySelectorAll("#tl-heads .tlhead").forEach(function(el){ el.classList.toggle("now", el.id === "tl-ev-" + x.i); });
   var head = document.getElementById("tl-ev-" + x.i);
-  if (head) head.scrollIntoView({ block:"nearest", behavior: REDUCED_MOTION ? "auto" : "smooth" });
+  var scroller = document.getElementById("tl-scroll");
+  if (head && scroller){
+    scroller.scrollTo({ left: Math.max(0, head.offsetLeft - scroller.clientWidth / 2 + head.offsetWidth / 2), behavior: REDUCED_MOTION ? "auto" : "smooth" });
+  } else if (head) head.scrollIntoView({ block:"nearest", inline:"center", behavior: REDUCED_MOTION ? "auto" : "smooth" });
   var fill = document.getElementById("tl-progress-fill");
   if (fill) fill.style.width = Math.round(((tlState.step + 1) / vis.length) * 100) + "%";
   var status = document.getElementById("tl-status");
@@ -3529,6 +3558,11 @@ function startTlWalk(){
   });
   var play = document.getElementById("tl-play");
   if (play) play.addEventListener("click", function(){ tlState.playing ? stopTlWalk() : startTlWalk(); });
+  var scroller = document.getElementById("tl-scroll");
+  var prev = document.getElementById("tl-prev");
+  var next = document.getElementById("tl-next");
+  if (prev && scroller) prev.addEventListener("click", function(){ scroller.scrollBy({ left:-320, behavior: REDUCED_MOTION ? "auto" : "smooth" }); });
+  if (next && scroller) next.addEventListener("click", function(){ scroller.scrollBy({ left:320, behavior: REDUCED_MOTION ? "auto" : "smooth" }); });
 })();
 
 
@@ -4022,6 +4056,253 @@ function loadCustomPins(){
 </script>
 
 <script>
+/* ---------- every card opens its full article ----------
+   Clicking a card, creature, person, place, or thing opens its
+   full article. Where a vault note stands for it (title or slug
+   match, and visible to this reader), the article is that note,
+   opened in the Vault reader. Where no note stands for it, the
+   article still opens, on the Article page, built from the
+   card's own data: its text, its lists, and its open questions,
+   which answer and collect exactly as they do in a note. */
+var artReturnTab = "home";
+var ART_BACK_NAMES = { home:"Home", people:"the People page", web:"the relationship web", sessions:"the Sessions page", chronicle:"the Chronicle", timeline:"the Timeline", world:"the World page", vault:"the Vault", steading:"the Steading page", review:"GM Review" };
+function currentTab(){
+  var on = document.querySelector("section.page.on");
+  return on ? on.id.replace(/^pg-/, "") : "home";
+}
+function findArticleNote(title){
+  if (typeof findPersonArticle === "function") return findPersonArticle(title);
+  return null;
+}
+function openArticleView(d){
+  var pg = document.getElementById("pg-article");
+  if (!pg || !d || !d.title) return false;
+  artReturnTab = (d.backTab && d.backTab !== "article") ? d.backTab : (currentTab() === "article" ? artReturnTab : currentTab());
+  document.getElementById("art-back").textContent = "\u2190 Back to " + (ART_BACK_NAMES[artReturnTab] || "where you were");
+  document.getElementById("art-kicker").textContent = d.kicker || "";
+  document.getElementById("art-title").textContent = d.title;
+  document.getElementById("art-meta").textContent = d.meta || "";
+  var body = document.getElementById("art-body");
+  body.innerHTML = "";
+  function addPara(t){ if (!t) return; var p = document.createElement("p"); p.textContent = t; body.appendChild(p); }
+  function addList(L){
+    if (!L || !L.items || !L.items.length) return;
+    if (L.title){ var h = document.createElement("h3"); h.textContent = L.title; h.style.margin = "16px 0 6px"; body.appendChild(h); }
+    var ul = document.createElement("ul"); ul.className = L.ordered ? "rlist" : "blist";
+    L.items.forEach(function(it){
+      var li = document.createElement("li");
+      if (it && typeof it === "object"){ if (it.b){ var b = document.createElement("b"); b.textContent = it.b; li.appendChild(b); } li.appendChild(document.createTextNode(it.t || "")); }
+      else li.textContent = String(it);
+      ul.appendChild(li);
+    });
+    body.appendChild(ul);
+  }
+  if (d.blocks && d.blocks.length){
+    d.blocks.forEach(function(bl){
+      if (bl.p) addPara(bl.p);
+      else if (bl.list) addList(bl.list);
+    });
+  } else {
+    (d.paras || []).forEach(addPara);
+    (d.lists || []).forEach(addList);
+  }
+  var q = document.getElementById("art-questions");
+  q.innerHTML = "";
+  q.className = "";
+  if (d.source){
+    q.className = "article-questions";
+    q.setAttribute("data-source", d.source);
+  } else q.removeAttribute("data-source");
+  var ex = document.getElementById("art-extra");
+  ex.innerHTML = "";
+  if (d.note){ var np = document.createElement("p"); np.className = "art-note"; np.textContent = d.note; ex.appendChild(np); }
+  if (d.cardElId){
+    var bb = document.createElement("button"); bb.type = "button"; bb.className = "btn small"; bb.textContent = "See the card this article came from";
+    bb.addEventListener("click", function(){
+      var dest = d.cardPage || artReturnTab;
+      if (typeof goToEl === "function") goToEl(dest, d.cardElId); else go(dest);
+    });
+    ex.appendChild(bb);
+  }
+  go("article");
+  if (typeof renderQuestions === "function") renderQuestions();
+  window.scrollTo({ top:0 });
+  return true;
+}
+/* Build an article's data from a name, wherever that name lives:
+   the people lists, the creatures, the sessions, a World card,
+   or a steading improvement. */
+function articleDataForName(name, backTab){
+  var low = String(name || "").toLowerCase();
+  var lists = [PCS, NPCS, OUTS, DEAD];
+  for (var i = 0; i < lists.length; i++) for (var j = 0; j < lists[i].length; j++){
+    var p = lists[i][j];
+    if (p.n.toLowerCase() === low) return { title:p.n, kicker:p.role || "People of Stonetop", meta:p.meta || "", paras:[p.d], source:p.n, backTab:backTab, cardElId:"person-" + personSlug(p.n), cardPage:"people" };
+  }
+  for (var k = 0; k < CREATURES.length; k++){
+    var c = CREATURES[k];
+    if (c.n.toLowerCase() === low) return { title:c.n, kicker:"Supernatural Creatures", paras:[c.d], source:(c.n === "The Fae" ? "Fae" : c.n), backTab:backTab, cardElId:"creature-" + personSlug(c.n), cardPage:"world" };
+  }
+  for (var s = 0; s < SESSIONS.length; s++){
+    if (SESSIONS[s].t.toLowerCase() === low) return { title:SESSIONS[s].t, kicker:"Sessions", paras:[SESSIONS[s].d], lists:[{ title:"In this session", items:SESSIONS[s].parts }], source:SESSIONS[s].t, backTab:backTab, cardElId:"session-" + s, cardPage:"sessions" };
+  }
+  var wc = null;
+  document.querySelectorAll("#pg-world .card").forEach(function(el){
+    var h = el.querySelector("h3");
+    if (h && h.textContent.trim().toLowerCase() === low) wc = el;
+  });
+  if (wc) return articleDataFromCard(wc, backTab);
+  var imp = null;
+  document.querySelectorAll("#pg-steading .imp").forEach(function(el){
+    var h = el.querySelector("h4");
+    if (h && h.textContent.trim().toLowerCase() === low) imp = el;
+  });
+  if (imp) return articleDataFromImp(imp, backTab);
+  return null;
+}
+/* Build an article from a card element's own contents: its
+   heading, its tag or role line, and its paragraphs, skipping
+   the open-questions block (the article carries its own). */
+function articleDataFromCard(card, backTab){
+  var h = card.querySelector("h3");
+  if (!h) return null;
+  var title = h.textContent.trim();
+  var kick = card.querySelector(".tag, .role");
+  var meta = card.querySelector(".meta");
+  var paras = [];
+  card.querySelectorAll(":scope > p").forEach(function(p){
+    if (p.classList.contains("note") && /^Sections:/.test(p.textContent)) return;
+    var t = p.textContent.trim();
+    if (t) paras.push(t);
+  });
+  var src = null;
+  var q = card.querySelector(".article-questions");
+  if (q) src = q.getAttribute("data-source");
+  var oc = card.querySelector(".oq-count");
+  if (!src && oc) src = oc.getAttribute("data-source");
+  if (!src && card.classList.contains("person")) src = title;
+  var page = card.closest("section.page");
+  return { title:title, kicker:kick ? kick.textContent.trim() : "", meta:meta ? meta.textContent.trim() : "", paras:paras, source:src || title, backTab:backTab, cardElId:card.id || null, cardPage:page ? page.id.replace(/^pg-/, "") : backTab };
+}
+function articleDataFromImp(imp, backTab){
+  var h = imp.querySelector("h4");
+  if (!h) return null;
+  var title = h.textContent.trim();
+  var blocks = [], pendingList = null;
+  imp.querySelectorAll(":scope > p, :scope > ul").forEach(function(node){
+    if (node.tagName === "P"){
+      if (node.classList.contains("req")){ pendingList = { title:node.textContent.trim(), items:[], ordered:true }; blocks.push({ list:pendingList }); return; }
+      var t = node.textContent.trim();
+      if (t) blocks.push({ p:t });
+    } else {
+      var items = [];
+      node.querySelectorAll(":scope > li").forEach(function(li){
+        var b = li.querySelector("b");
+        if (b) items.push({ b:b.textContent, t:li.textContent.slice(b.textContent.length) });
+        else items.push(li.textContent.trim());
+      });
+      if (pendingList){ pendingList.items = items; pendingList = null; }
+      else blocks.push({ list:{ title:"", items:items, ordered:node.classList.contains("rlist") } });
+    }
+  });
+  blocks = blocks.filter(function(bl){ return bl.p || (bl.list && bl.list.items.length); });
+  return { title:title, kicker:"Steading Improvement", blocks:blocks, source:null, backTab:backTab, note:"This improvement stands in full in the Steading playbook on the Steading page, where the GM can mark it as gained for the village." };
+}
+/* The one door every named thing opens through: vault note if
+   there is one, the card-data article if there is not. */
+function openNamedArticle(name, backTab){
+  var row = findArticleNote(name);
+  if (row && typeof renderVault === "function"){
+    vaultSlug = row.slug; vaultEditing = false;
+    renderVault(); go("vault"); window.scrollTo({ top:0 });
+    return true;
+  }
+  var d = articleDataForName(name, backTab || currentTab());
+  if (d) return openArticleView(d);
+  return false;
+}
+function wireCardArticle(card, getData){
+  if (!card || card.dataset.artWired) return;
+  card.dataset.artWired = "1";
+  card.classList.add("art-click");
+  card.setAttribute("tabindex", "0");
+  card.setAttribute("role", "button");
+  var h = card.querySelector("h3, h4");
+  card.setAttribute("aria-label", "Open the full article: " + (h ? h.textContent.trim() : "article"));
+  if (!card.querySelector(".full-article")){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "full-article"; b.innerHTML = "Read the full article &rarr;";
+    card.appendChild(b);
+  }
+  function open(){
+    var row = null;
+    var title = h ? h.textContent.trim() : "";
+    if (title) row = findArticleNote(title);
+    if (row && typeof renderVault === "function"){
+      vaultSlug = row.slug; vaultEditing = false;
+      renderVault(); go("vault"); window.scrollTo({ top:0 });
+      return;
+    }
+    var d = getData();
+    if (d) openArticleView(d);
+  }
+  card.addEventListener("click", function(evt){
+    if (evt.target.closest("button, a, textarea, input, select, summary, details, .article-questions, .impctl")) return;
+    open();
+  });
+  var fa = card.querySelector(".full-article");
+  if (fa) fa.addEventListener("click", function(evt){ evt.stopPropagation(); open(); });
+  card.addEventListener("keydown", function(evt){
+    if ((evt.key === "Enter" || evt.key === " ") && evt.target === card){ evt.preventDefault(); open(); }
+  });
+}
+(function initCardArticles(){
+  document.getElementById("art-back").addEventListener("click", function(){
+    var dest = artReturnTab || "home";
+    go(dest);
+    if (dest === "web" && typeof reheat === "function") setTimeout(reheat, 30);
+  });
+  /* creatures and sessions, from their data */
+  CREATURES.forEach(function(c){
+    var el = document.getElementById("creature-" + personSlug(c.n));
+    wireCardArticle(el, function(){ return articleDataForName(c.n, "world"); });
+  });
+  SESSIONS.forEach(function(s, si){
+    var el = document.getElementById("session-" + si);
+    wireCardArticle(el, function(){ return articleDataForName(s.t, "sessions"); });
+  });
+  /* the World page's own cards: lore, threats, and places */
+  document.querySelectorAll("#pg-world .card").forEach(function(card){
+    if (card.querySelector("[data-go]")) return;
+    wireCardArticle(card, function(){ return articleDataFromCard(card, "world"); });
+  });
+  /* steading improvements, in full */
+  document.querySelectorAll("#pg-steading .imp").forEach(function(imp){
+    wireCardArticle(imp, function(){ return articleDataFromImp(imp, "steading"); });
+  });
+  /* any other static card that names a thing: the Session 8 card */
+  document.querySelectorAll("#pg-sessions .card").forEach(function(card){
+    if (card.id) return;
+    wireCardArticle(card, function(){ return articleDataFromCard(card, "sessions"); });
+  });
+  /* Chronicle entry cards: the full entry stands on the same
+     page, so clicking the card goes straight to it */
+  document.querySelectorAll("#pg-chronicle .card").forEach(function(card){
+    var a = card.querySelector("a[href^='#chr-e']");
+    if (!a) return;
+    card.classList.add("art-click");
+    card.addEventListener("click", function(evt){
+      if (evt.target.closest("button, a, textarea, input, select, summary, details")) return;
+      var t = document.querySelector(a.getAttribute("href"));
+      if (t && typeof flashTargetEl === "function") flashTargetEl(t);
+      else if (t) t.scrollIntoView({ block:"start" });
+    });
+  });
+  if (typeof refreshPersonCards === "function") refreshPersonCards();
+})();
+</script>
+
+<script>
 /* ---------- section menus ----------
    Pages with several sections get a jump menu under their
    heading: one button per section on the page, scrolling
@@ -4029,6 +4310,18 @@ function loadCustomPins(){
    so it stays right as sections come and go. */
 (function(){
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* The section menus stick just under the pinned site header
+     (tabs plus search bar). That header's height changes when
+     the tabs wrap on a narrow screen, so measure it and keep
+     the --stick-top variable honest. */
+  function stickTop(){
+    var tw = document.querySelector(".topwrap");
+    if (tw) document.documentElement.style.setProperty("--stick-top", tw.offsetHeight + "px");
+  }
+  stickTop();
+  window.addEventListener("resize", stickTop);
+  window.addEventListener("load", stickTop);
+  setTimeout(stickTop, 350);
   function slug(t){ return t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
   document.querySelectorAll("section.page").forEach(function(pg){
     var heads = Array.prototype.slice.call(pg.querySelectorAll("h2.sec"));
