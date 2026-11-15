@@ -2160,17 +2160,81 @@ applySteading();
 
 /* ---------- open questions ----------
    Questions live in the articles they belong to: every person,
-   creature, world card, session, and vault note carries its own
-   Open Questions block at its foot, rendered from BASE_OQ (the
-   questions from the published notes) plus any questions the GM
-   adds in an article. GM-added questions save to the Supabase
-   table open_questions (source_page, question) when that table
-   exists; until it does, they are kept for this sitting only,
-   the same fallback the Chronicle uses. Answers still go
-   through question_submissions and GM Review. */
+   creature, world card, session, and vault note carries exactly
+   one Open Questions block at its foot, with the questions and
+   the answer form together in that one place. The block renders
+   from BASE_OQ (the questions from the published notes), any
+   questions a vault note carries in its own Open Questions
+   section (lifted out of the note's body by
+   extractOpenQuestions, so they never show twice: once as a
+   plain list in the note and again with the form), plus any
+   questions the GM adds in an article. GM-added questions save
+   to the Supabase table open_questions (source_page, question)
+   when that table exists; until it does, they are kept for this
+   sitting only, the same fallback the Chronicle uses. Answers
+   still go through question_submissions and GM Review. */
 var BASE_OQ = {"Ivan Grimshaw": ["Where has Ivan actually been these last four years? Answered: out past the Foothills, living among herders and the Hillfolk.", "Why did he come back now? Answered, and judged truthful: to warn Stonetop of the gathering bands, and because he is sorry.", "Was it coincidence that he arrived the same morning Selen Gethin returned?", "What did Rory's light actually do to him? What \"makes more sense\" now?", "How will Brennan receive him in Marshedge, four years after Ivan refused the wage?", "Can he be trusted with Stonetop's ask, alone on the road?"], "Brannick": ["What is Brannick actually hunting in the tower and its tunnels?", "What happened to Chief Yannic of the Wolf Fang, who refused him publicly and came back kneeling two days later?", "Does Brannick mean the trade agreement, or is it a courtesy extended to people he expects to outlast?", "What would it take for the thousand gathered Hillfolk to turn from defense to something else?"], "Brynna Lachlann": ["What is in the clay bowl by the goat pen, and who or what is it left for?", "What does Mirgan actually see in Brynna that the rest of the village doesn't?", "What is she doing at the old stones outside the Ringwall at dusk, and are her explanations the truth?", "Will she and Mirgan ever formalize the relationship, and does either of them actually want that?"], "Coren Hearthwise": ["What exactly does Mirgan come by asking for in the late hours, and what does Coren give him?", "Why does Coren leave the first pour of every run as an offering, and has it ever mattered that he didn't?", "Will Coren and Lena's childlessness ever come to a head, or stay quietly unspoken forever?", "Does Hilde know how much her windowsill flowers mean to Coren, given he never says thank you?"], "Cynebald Saer": ["What is in the journal, and what is the other hand it is partly written in?", "What did Cynebald see when he examined Urbgen's body, and why did he say nothing?", "What does he actually believe happened to Mereda? Does he blame himself, or something else, or both?", "He has hidden objects from his Seeker years in places he has not shared. What are they, and where?", "He says he has \"nothing left\" from those years. Is that true?", "What is his suspicion about Mister Fredd, the thing thirty years of watching has built, and that he has never acted on?", "What did he and Bren actually encounter in the Foothills the week Bren died?", "What is the flaming blood-bronze sword, and when did he last draw it before now?"], "Dirgge MacCullough": ["Where did Penny come from, and how did she and Dirgge actually meet?", "Does the timing, moving into Selen's old house the very morning Selen came home, bother Dirgge at all? He hasn't said.", "What does Dirgge really think of Rory's new faith, beyond what he's willing to say out loud?", "What is Dirgge not telling anyone about the years Rory disappeared in Marshedge?"], "Goldina Cleary": ["What is Mirgan actually preparing Goldina for, and does he have an end point in mind?", "What did she read in the stranger books that she hasn't told anyone about?", "Will she ever go into the sealed wheelhouse instead of just standing in the doorway?", "What does Cynebald see in her that makes him say, unprompted, that she listens?"], "Hilde Saer": ["What would Hilde find if she spent real time in the sealed wheelhouse instead of rarely and never for long?", "What does Hilde actually feel - for Rory, and for Wapner? The kiss on the cheek says one thing; the betrothal says another.", "Does Rory know about the betrothal? Does Wapner know about the sunset?", "What does Cynebald know about Mereda's death, or the wheelhouse, that he's never told his daughter?", "Does Hilde's gentleness, so unlike her father's, come only from Mereda, or is some of it a choice she's made against him?", "Which Crynwin encampment holds Hilde, and what do the Crynwin actually want with her?", "Did she go willingly? What did she think she was doing?"], "Kaelyn Steadhurst": ["Who left the knife on Kaelyn's table, and what was the message meant to be?", "What really happened to Bren in The Foothills, and does it connect to what Kaelyn saw when she washed his body?", "Will Kaelyn ever teach Mereda's potter's invocations to Hilde, or has she decided against it for good?", "What does Kaelyn know about the village's secrets that she has never once used, and would she, if it came to it?", "Who was taking grain before the raid, and what does Kaelyn threaten with that knife?"], "Mister Fredd": ["What is Mister Fredd running from? What happened to him before Stonetop?", "Why does he keep the lamp burning all night, every night, for thirty years? Is it truly for travelers?", "Why did he keep the broken shards of Mereda's jug in a sealed box? What does that box mean to him?", "He has never left Stonetop in thirty years. Is that grief, safety, or something that won\u2019t let him go?", "Cynebald has watched him for thirty years and never acted. What does Cynebald suspect, and is he right?", "Which god, if any, does Fredd actually pray to? What is he asking for?", "What is the thing he flinches at, the sounds that find him on bad nights?"], "Penny MacCullough": ["Where did Penny come from, and how did she and Dirgge meet?", "How does Penny feel about living in a dead man's house, now that the dead man has come home?", "Does Penny have any reaction to Selen Gethin's return beyond the practical one?"], "Selen Gethin": ["Was the Pale Hunter abroad the night Selen vanished? Confirmed: yes, and Selen followed him for two years.", "What exactly did Selen do during those two years beyond \"hunting\"? What did he see that he hasn't said yet?", "The Hunter told Selen, specifically, that Mirgan would need the cloak. How did the Hunter know Mirgan's name, or that this day was coming?", "The cloak smells of rain and ozone and stays damp. What is it, and what does Mirgan need it for?", "Selen doesn't shiver on a cold morning after days of walking. Is that nothing, or is it something?", "Is Selen still betrothed to Aedre in the ways that matter? They have agreed, in so many words, to pretend things didn't change. Whether pretending works is another question.", "Selen's post on the Watch was never filled. Answered: he asked, and Aedre said it was his whenever he was ready.", "What are the nightmares? What does he see when he can't sleep?", "What did the creatures Selen hunted look like up close, the ones that had been in the village? Were any of them recognized?", "Selen thought he was tracking Crynwin, and the Crynwin have grown bolder and more organized since he vanished. Was something using his trail, or his absence, on purpose?"], "Wapner Sati": ["How old is Wapner, and what does he look like beyond the hammer and the speed-walk?", "What battle against unnatural chaos did he and Mirgan fight together? What did it cost?", "What was his judgement in the Aedre and Coren matter, and does Aedre think it was fair?", "Where, exactly, is the Chronicle? Who built an interdimensional office for a village judge?", "How does his betrothal to Hilde square with Rory's courtship of her - and who knows about whom?", "Wapner has been reading \"A Treatise on the Forest Folk\": the compact with the tree folk, Fistle Wick and Marrowfen (not true names), and a referenced second volume on how to contact them. What does he do with it?", "What happened to the previous Judge of the Sati line?"], "Seed of Perpetual Prosperity": ["Where in the tunnels is it? Did the Forgemaster know about it?", "Is it one seed, or a cache? Who planted it, and why at the tower?", "What does \"minimal tending\" cost, in the end? Nothing in the old stories is free."], "Spirit Talkers": ["What are the taboos, exactly? What do they prevent?", "Is the curse on a Hdor's killer real, or a fear the Hdor cultivate?", "Has a Hdor ever come near Stonetop before? Would the Chronicle know?", "Can a Hdor's sent spirits and beasts be detected? Has one already been watching the village?"], "The Ruined Tower": ["Which of you has braved these ruins before? What kept you from going very far?", "What wondrous trinket back in Stonetop supposedly came from here? Who has it now?", "What marvel is said to lie below the tower? From whom did you hear such tales?", "When the nightmares come and you dream of the tower's fall, are you one of the doomed defenders, or part of the slavering horde?", "The portal beneath the tower, where did it lead? Is it still open?", "Cynebald Saer traded Maker objects to Gordin's Delve in his Seeker years. Did any of them come from here?", "With the Forgemaster dead, what repairs to the tower's defenses continue, and who is doing them?"], "Arrune": ["What is Arrune? What does it want with Mirgan?", "Why did the Pale Hunter decide Mirgan would need this cloak?", "What does the embroidery say, once the cipher breaks?"], "Crynwin": ["What odd noise, heard in the night, is attributed to the crynwin? What is it said to mean?", "What common thing do these vermin seem to covet above all else?", "When did the crynwin last openly raid the village? What did they take?", "What's the surest sign that crynwin have been nearby?", "Who among you hates them most, more than anyone else does? Why?", "What makes you think they might be more than simple beasts, despite what everyone else says?", "There's something that everyone agrees will keep crynwin at bay, a smell, a charm, a sound, a little ritual. What is it? And why is everyone secretly sure it's next to worthless?", "Where did they come from? Were they made, escaped, cursed, or something else entirely?", "Aedre believes their raids are becoming organized, planned. What is leading them, or teaching them?", "The crynwin near Stonetop have been growing bolder since Selen Gethin disappeared. Is that a coincidence? Selen has since returned and says what took him that night was not crynwin, only a trail he mistook for one. If crynwin didn't take him, why have the raids grown bolder and more organized in his absence?"], "Dusk People": ["Who or what are the Dusk People?", "What are Brynna's \"other voices,\" and why do the Dusk People quiet them?", "Should the village fear them?", "What else have they told Brynna that she hasn't passed on?"], "Fae": ["Have any of you dealt with a Fae directly? What were the terms, and were they honored?", "What story did the Forest Folk tell about the Fae that made the village take them seriously?", "Are there Fae in The Great Wood right now, and if so, what do they want?", "The Fae cannot break a promise. Has anyone in the village ever tried to use that?", "Who is White Oak, the papery-white dryad of the fae circle in the Greatwood, and what was the tragedy that befell the fae? She asks a price: a memory, given, and a favor for the future.", "Now that the Forest Folk are gone, what oaths or arrangements between them and the Fae might have lapsed, or turned dangerous?", "What is the correct way to refuse a Fae offer without giving insult?"], "The Pale Hunter": ["Was the Pale Hunter abroad the night Selen Gethin vanished? Confirmed by Selen's own account, two years later.", "What is he? Spirit, ghost, Fae, primordial, or something else?", "How is he connected to the moon? Which nights does he roam, and why those nights?", "What exactly are his hounds, and are they vulnerable to the same things he is?", "What is his relationship with the Lady of Crows?", "What hero won his respect, and how? What reward did they earn?", "What grisly fate befell someone who stood against him?", "What observances did the Forest Folk use to appease him, and does anyone in Stonetop still follow them?", "Who never came home from the Wood, and is said to have crossed his path?", "How did the Hunter know Mirgan Steadhurst by name, and what does he need the cloak for?", "Is there a way to make deliberate contact with the Hunter, now that Selen has returned as a possible thread?"], "Thistlewick": ["What is Thistlewick, and what does the idol actually want?", "Is any part of the Crynwin-curse claim true? Who would know?", "What does \"charged up\" mean, and what did Mirgan actually take away from that floor?"], "White Oak": ["What was the tragedy that befell the fae?", "What is the trinket in Mirgan's hand, and who are \"those who can keep it safe\"?", "Will White Oak return to the child-price, and what happens if she does?", "What does a dryad do with a memory once it is given?"], "Ogmolok": ["What is Ogmolok? What does it want?", "Who are the Guardians? Are they still holding?", "Who is repairing the tower's defenses, now that the Forgemaster is dead?", "Is the portal beneath the tower still open?"]};
 var customQuestions = []; /* questions the GM has added, from the open_questions table when it exists */
 var oqTableOk = false;
+var vaultOQ = {}; /* questions lifted out of vault notes' own Open Questions sections, keyed by article source; filled as each note is opened */
+function oqCleanText(s){
+  return String(s || "")
+    .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, function(m, t, l){ return (l || t.split("/").pop()).trim(); })
+    .replace(/\[([^\]]+)\]\([^)\s]+\)/g, "$1")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/__([^_]+)__/g, "$1")
+    .replace(/\*([^*\n]+)\*/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+function oqNorm(s){ return oqCleanText(s).toLowerCase().replace(/\.+$/, ""); }
+/* Find a note's own Open Questions section (a heading, or a bold
+   line standing alone, that reads "Open Questions") and lift its
+   list out of the body. Returns { body, questions } with the
+   section removed from the body, or null when the note has no
+   such section with a list in it, so the body renders untouched.
+   Prose lines before the first list item are kept in the body;
+   wrapped lines after an item join that item's question. */
+function extractOpenQuestions(md){
+  var lines = String(md || "").split(/\r?\n/);
+  var start = -1;
+  for (var i = 0; i < lines.length; i++){
+    var t = lines[i].trim();
+    var h = t.match(/^#{1,6}\s+(.*)$/);
+    var title = (h ? h[1] : t.replace(/^\*\*\s*/, "").replace(/\s*\*\*$/, "")).trim();
+    if (!/^open questions\s*:?$/i.test(title)) continue;
+    if (!h && t !== title && !/^\*\*/.test(t)){
+      /* a plain line only counts when a list follows it closely */
+      var follows = false;
+      for (var k = i + 1; k < Math.min(lines.length, i + 3); k++){
+        if (!lines[k].trim()) continue;
+        follows = /^\s*(?:[-*+]\s+|\d+[.)]\s+)/.test(lines[k]);
+        break;
+      }
+      if (!follows) continue;
+    }
+    start = i; break;
+  }
+  if (start < 0) return null;
+  var questions = [], prose = [], cur = null, end = lines.length;
+  for (var j = start + 1; j < lines.length; j++){
+    var raw = lines[j], tt = raw.trim();
+    if (/^#{1,6}\s+/.test(tt) || /^(-{3,}|\*{3,}|_{3,})$/.test(tt)){ end = j; break; }
+    if (!tt) continue;
+    var li = raw.match(/^\s*(?:[-*+]\s+|\d+[.)]\s+)(.*)$/);
+    if (li){
+      cur = li[1].replace(/^\[[ xX]?\]\s*/, "").trim();
+      if (cur) questions.push(cur);
+      continue;
+    }
+    if (cur !== null && questions.length){ questions[questions.length - 1] += " " + tt; continue; }
+    prose.push(raw);
+  }
+  if (!questions.length) return null;
+  var body = lines.slice(0, start).concat(prose, lines.slice(end)).join("\n");
+  return { body: body, questions: questions.map(oqCleanText).filter(function(q){ return !!q; }) };
+}
 function getOQ(){
   var out = {};
   Object.keys(BASE_OQ).forEach(function(k){ out[k] = BASE_OQ[k].slice(); });
@@ -2178,6 +2242,15 @@ function getOQ(){
     if (!r.source_page || !r.question) return;
     if (!out[r.source_page]) out[r.source_page] = [];
     if (out[r.source_page].indexOf(r.question) === -1) out[r.source_page].push(r.question);
+  });
+  Object.keys(vaultOQ).forEach(function(k){
+    if (!out[k]) out[k] = [];
+    var seen = {};
+    out[k].forEach(function(q){ seen[oqNorm(q)] = 1; });
+    vaultOQ[k].forEach(function(q){
+      var n = oqNorm(q);
+      if (n && !seen[n]){ out[k].push(q); seen[n] = 1; }
+    });
   });
   return out;
 }
@@ -2805,7 +2878,24 @@ function renderVaultReader(row){
     document.getElementById("vault-view").hidden = false;
     document.getElementById("vault-editwrap").hidden = true;
     var body = document.getElementById("vault-body");
-    body.innerHTML = renderMarkdown(row.content || "");
+    /* One Open Questions block per article: if the note carries
+       its own Open Questions section, lift its list out of the
+       body and into the block below, where each question stands
+       with its answer form. The note text itself is untouched;
+       only this reading view moves the section. */
+    var displayMd = row.content || "";
+    if (typeof extractOpenQuestions === "function" && typeof oqSourceFor === "function"){
+      var lifted = extractOpenQuestions(displayMd);
+      if (lifted){
+        var oqSrc = oqSourceFor(row.title || row.slug);
+        if (!vaultOQ[oqSrc]) vaultOQ[oqSrc] = [];
+        lifted.questions.forEach(function(q){
+          if (vaultOQ[oqSrc].indexOf(q) === -1) vaultOQ[oqSrc].push(q);
+        });
+        displayMd = lifted.body;
+      }
+    }
+    body.innerHTML = renderMarkdown(displayMd);
     wireVaultLinks(body);
     if (typeof renderVaultQuestions === "function") renderVaultQuestions();
   }
