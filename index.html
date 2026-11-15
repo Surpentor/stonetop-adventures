@@ -776,10 +776,9 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
     <label class="fl" for="prob-new">Add a problem or claim</label>
     <div class="searchrow" style="margin:0"><input type="text" id="prob-new" placeholder="For example: The grain tallies do not add up"><button class="btn" id="prob-add">Add</button></div>
   </div>
-  <h2 class="sec">The Steading Log</h2>
+  <h2 class="sec">Steading Log</h2>
   <p class="lede">The running history of the village: every problem and claim the steading has dealt with, in the order they were settled, newest first. What is written here stays written.</p>
   <div id="steading-log"></div>
-  <h2 class="sec">Change Log</h2>
   <div class="card"><div id="change-log"><p class="note">No changes yet this sitting.</p></div>
   <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="copy-steading">Copy steading summary</button><span class="note" id="copy-note" style="align-self:center"></span></div></div>
 
@@ -2126,7 +2125,7 @@ document.getElementById("copy-steading").addEventListener("click", function(){
     "Improvements gained: " + (steading.improvements.length ? steading.improvements.join(", ") : "none"),
     "Problems and claims:"];
   steading.problems.forEach(function(p){ lines.push("- " + p.text); });
-  lines.push("The Steading Log (dealt with):");
+  lines.push("Steading Log (dealt with):");
   steading.log.forEach(function(e){ lines.push("- [" + (e.date || "") + "] " + e.text); });
   var txt = lines.join("\n");
   if (navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){ document.getElementById("copy-note").textContent = "Copied."; });
