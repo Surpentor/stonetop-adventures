@@ -398,6 +398,26 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
 .mapwrap.placing .mappin{pointer-events:none;opacity:.4}
 .pinform .fld{margin-bottom:10px}
 .pinform select{width:100%}
+/* the way in, never hidden: a clear Add a pin button on every
+   map, and a Propose a change bar on every page and article.
+   The public view stays read-only, but both controls are always
+   visible; signed out, they explain that sign-in is needed and
+   open the sign-in panel; signed in as the GM or an approved
+   player, they start the work. */
+.addpin-btn{border-color:var(--rust);color:var(--rust);font-weight:700;background:var(--panel)}
+.addpin-btn:hover{background:var(--rust);color:var(--panel)}
+.pinlist .addpin-hint{flex-basis:100%;font-size:14.5px;color:var(--faint);font-style:italic}
+.propose-bar{display:flex;gap:10px 14px;align-items:center;flex-wrap:wrap;border:1px solid var(--inkline);background:var(--panel);padding:10px 14px;margin:0 0 18px}
+.propose-bar .pb-text{flex:1;min-width:210px;color:var(--muted);font-size:16px}
+.propose-bar .pb-text b{color:var(--ink)}
+.propose-bar .pb-hint{display:block;font-size:14.5px;color:var(--faint);font-style:italic}
+.propose-btn{border-color:var(--rust);color:var(--rust);flex:none}
+.propose-btn:hover{background:var(--rust);color:var(--panel)}
+.propose-panel{border:1px solid var(--inkline);background:var(--panel2);padding:12px 16px 14px;margin:-8px 0 18px;animation:pagein .3s ease both}
+.propose-panel h4{margin:0 0 4px;font-size:19px;color:var(--ink)}
+.propose-panel p{margin:0 0 10px;color:var(--muted);font-size:16px;max-width:720px}
+#vault-reader .propose-bar{margin-top:14px}
+#vault-reader .propose-panel{margin-top:-8px}
 /* the live steading tracker: the book's tracks, clickable in
    GM mode, with debility marks and the Steading Log */
 .stattrack{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}
@@ -1160,6 +1180,11 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
     <button class="btn small" id="vault-back">&larr; All notes</button>
     <button class="btn small" id="vault-back-web" hidden>&larr; Back to the relationship web</button>
     <div class="vault-tools" id="vault-tools"></div>
+    <div class="propose-bar" data-context="this note" data-context-from="vault-title">
+      <span class="pb-text"><b>Propose a change</b> to this note, or a brand-new entry.<span class="pb-hint"></span></span>
+      <button class="btn propose-btn" type="button">Propose a change</button>
+    </div>
+    <div class="propose-panel" hidden></div>
     <h2 class="sec" id="vault-title" style="margin-top:10px"></h2>
     <p class="note" id="vault-path" style="margin-top:-8px"></p>
     <div id="vault-view">
@@ -1198,6 +1223,10 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
   <h2 class="sec">Timeline Proposals</h2>
   <p class="lede">Events that approved players have proposed for the timeline. Approve one and it joins the timeline for everyone; dismiss it and it stays in this record only.</p>
   <div id="tl-review-list"></div>
+  <h2 class="sec">Page Proposals</h2>
+  <p class="lede">Changes and brand-new entries proposed from the Propose a change button that stands on every page and article. A player's proposal waits here with their name on it; the GM's own proposals stand at once, as their pins and timeline events do. Approving a proposal records it here as agreed; carrying the words into the page itself is still done the usual way, in the Vault or the page's own editor.</p>
+  <div id="prop-review-status" class="status" style="margin:16px 0">Loading page proposals…</div>
+  <div id="prop-review-list"></div>
   <h2 class="sec">Players</h2>
   <p class="lede">Players sign in with accounts the GM invites by email (in Supabase, under Authentication). Register a player's email here, ideally before their first sign-in, so they arrive as a player rather than with GM access. A registered player can read everything at once; approve them and they can edit and propose across the site. Revoke approval and they are back to reading.</p>
   <div id="players-status" class="status" style="margin:16px 0">Loading the player register…</div>
@@ -1212,6 +1241,11 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
 <!-- ARTICLE -->
 <section class="page" id="pg-article">
   <button class="btn small" type="button" id="art-back">&larr; Back</button>
+  <div class="propose-bar" data-context="this article" data-context-from="art-title" style="margin-top:16px">
+    <span class="pb-text"><b>Propose a change</b> to this article, or a brand-new entry.<span class="pb-hint"></span></span>
+    <button class="btn propose-btn" type="button">Propose a change</button>
+  </div>
+  <div class="propose-panel" hidden></div>
   <p class="art-kicker" id="art-kicker" style="margin-top:18px"></p>
   <h2 class="sec" id="art-title" style="margin-top:0"></h2>
   <p class="art-meta" id="art-meta"></p>
@@ -3127,6 +3161,8 @@ function applyGM(){
   if (typeof renderTlAdd === "function") renderTlAdd();
   if (typeof renderTlReview === "function") renderTlReview();
   if (typeof renderPlayers === "function") renderPlayers();
+  if (typeof renderPageProposals === "function") renderPageProposals();
+  if (typeof refreshProposeUI === "function") refreshProposeUI();
 }
 var gmBtn = document.getElementById("gm-btn");
 var gmPanel = document.getElementById("gm-panel");
@@ -3784,6 +3820,21 @@ function cancelPlacing(){
   if (wrap) wrap.classList.remove("placing");
   placing = null;
 }
+/* Open the sign-in panel at the top of the page, with a line
+   saying what the sign-in is for. Used by the Add a pin and
+   Propose a change controls when a signed-out visitor tries
+   them: the way in is explained, never hidden. */
+function openSignInPrompt(why){
+  var panel = document.getElementById("gm-panel");
+  var btn = document.getElementById("gm-btn");
+  if (panel) panel.hidden = false;
+  if (btn) btn.setAttribute("aria-expanded", "true");
+  var note = document.getElementById("gm-note");
+  if (note && why) note.textContent = why;
+  if (panel) panel.scrollIntoView({ block:"start", behavior: (typeof REDUCED_MOTION !== "undefined" && REDUCED_MOTION) ? "auto" : "smooth" });
+  var email = document.getElementById("gm-email");
+  if (email) setTimeout(function(){ try { email.focus({ preventScroll:true }); } catch(e){} }, 450);
+}
 function startPlacing(key, plate){
   var panel = plate.querySelector("[data-pinpanel]");
   if (!pinCanPropose()){
@@ -3793,10 +3844,16 @@ function startPlacing(key, plate){
       var p = document.createElement("p");
       p.textContent = window.isPlayer
         ? "You are signed in, but the GM has not approved you yet. Once they do, you can pin places on the maps and propose them for everyone."
-        : "Sign in above to suggest a pin. Players the GM has approved can pin places on any map; the GM approves each pin before it shows to everyone.";
+        : "You need to sign in to add a pin. The sign-in panel is open at the top of the page: sign in as the GM, or as a player the GM has approved, then come back to this map and press Add a pin again. The GM approves each player's pin before it shows to everyone.";
       panel.appendChild(p);
+      if (!window.isPlayer){
+        var sb2 = document.createElement("button"); sb2.type = "button"; sb2.className = "btn small rust"; sb2.textContent = "Sign in";
+        sb2.addEventListener("click", function(){ openSignInPrompt("Sign in to add a pin. The GM, and players the GM has approved, can pin places on the maps."); });
+        panel.appendChild(sb2);
+      }
       panel.hidden = false;
     }
+    if (!window.isPlayer) openSignInPrompt("Sign in to add a pin. The GM, and players the GM has approved, can pin places on the maps.");
     return;
   }
   cancelPlacing();
@@ -3917,9 +3974,15 @@ function renderMapPins(){
       strip.appendChild(t);
     }
     var add = document.createElement("button");
-    add.type = "button"; add.className = "chipbtn"; add.textContent = "Add a pin";
+    add.type = "button"; add.className = "btn small addpin-btn"; add.textContent = "Add a pin";
+    add.setAttribute("aria-label", "Add a pin to " + (MAP_NAMES[key] || "this map"));
     add.addEventListener("click", function(){ if (plate) startPlacing(key, plate); });
     strip.appendChild(add);
+    var hint = document.createElement("span"); hint.className = "addpin-hint";
+    hint.textContent = pinCanPropose()
+      ? (window.isGM ? "Pins you add go straight onto the map." : "Your pin goes to the GM with your name on it, and shows once the GM approves it.")
+      : (window.isPlayer ? "You are signed in; once the GM approves you, you can add pins here." : "Signed out? Press Add a pin and sign in: the GM, and players the GM has approved, can pin places on this map.");
+    strip.appendChild(hint);
   });
 }
 function setPinStatus(pin, status){
@@ -4437,6 +4500,216 @@ function wireCardArticle(card, getData){
     if (anchor && anchor.nodeType === 1 && anchor.classList.contains("lede")) anchor = anchor.nextSibling;
     pg.insertBefore(nav, anchor);
   });
+})();
+</script>
+
+<script>
+/* ---------- propose a change: the way in, on every page ----------
+   Every page and every article carries a visible Propose a
+   change bar. The public view stays read-only, but the bar is
+   never hidden: a signed-out visitor who presses it is told
+   plainly that sign-in is needed, and the sign-in panel opens
+   at the top of the page. A signed-in player the GM has not
+   approved yet is told approval is what opens it. The GM, and
+   players the GM has approved, get the form: a change to this
+   page, or a brand-new entry. A player's proposal goes to the
+   GM with their name on it and waits in GM Review under Page
+   Proposals; the GM's own proposals stand at once, as their
+   pins and timeline events do. Proposals save to the Supabase
+   table page_proposals; until that table exists, they are kept
+   for this sitting only, which GM Review says plainly. */
+var pageProposals = [];   /* {id, kind, page, context, title, text, submitted_by, status} */
+var proposalsTableOk = false;
+var proposeUid = 0;
+function proposeCanSend(){ return !!(window.isGM || window.canEdit); }
+function proposeHintText(){
+  if (window.isGM) return "You are the GM: your proposals stand at once.";
+  if (window.canEdit) return "Send it to the GM with your name on it.";
+  if (window.isPlayer) return "You are signed in; the GM's approval opens proposing.";
+  return "Signed out? Press the button and sign in: the GM, and players the GM has approved, can propose.";
+}
+function refreshProposeUI(){
+  document.querySelectorAll(".propose-bar .pb-hint").forEach(function(h){ h.textContent = proposeHintText(); });
+}
+function proposeContextFor(bar){
+  if (!bar) return "This page";
+  var from = bar.getAttribute("data-context-from");
+  if (from){
+    var el = document.getElementById(from);
+    if (el && el.textContent.trim()) return el.textContent.trim();
+  }
+  return bar.getAttribute("data-context") || "This page";
+}
+function proposePanelFor(bar){
+  var n = bar.nextElementSibling;
+  if (n && n.classList && n.classList.contains("propose-panel")) return n;
+  var p = document.createElement("div"); p.className = "propose-panel"; p.hidden = true;
+  bar.parentNode.insertBefore(p, bar.nextSibling);
+  return p;
+}
+function showProposeSignIn(panel){
+  panel.innerHTML = "";
+  var h = document.createElement("h4"); h.textContent = "Propose a change"; panel.appendChild(h);
+  var p = document.createElement("p");
+  p.textContent = "You need to sign in to propose a change or a new entry. The sign-in panel is open at the top of the page: sign in as the GM, or as a player the GM has approved, then press Propose a change again and the form opens here. Reading stays open to everyone; proposing is for the table.";
+  panel.appendChild(p);
+  var b = document.createElement("button"); b.type = "button"; b.className = "btn small rust"; b.textContent = "Sign in";
+  b.addEventListener("click", function(){ openSignInPrompt("Sign in to propose a change. The GM, and players the GM has approved, can propose changes and new entries on every page."); });
+  panel.appendChild(b);
+  panel.hidden = false;
+  openSignInPrompt("Sign in to propose a change. The GM, and players the GM has approved, can propose changes and new entries on every page.");
+}
+function showProposeApproval(panel){
+  panel.innerHTML = "";
+  var h = document.createElement("h4"); h.textContent = "Propose a change"; panel.appendChild(h);
+  var p = document.createElement("p");
+  p.textContent = "You are signed in, but the GM has not approved you yet. Once they approve you in GM Review, under Players, this button opens the proposal form: a change to this page, or a brand-new entry, sent to the GM with your name on it.";
+  panel.appendChild(p);
+  panel.hidden = false;
+}
+function showProposeForm(panel, bar){
+  var context = proposeContextFor(bar);
+  proposeUid++;
+  var uid = proposeUid;
+  panel.innerHTML = "";
+  var h = document.createElement("h4"); h.textContent = "Propose a change"; panel.appendChild(h);
+  var about = document.createElement("p"); about.className = "note"; about.style.margin = "0 0 10px";
+  about.textContent = "About: " + context + ". " + (window.isGM ? "You are the GM, so this proposal stands at once in GM Review." : "This goes to the GM with your name on it, and waits in GM Review.");
+  panel.appendChild(about);
+  var form = document.createElement("div"); form.className = "pinform";
+  form.innerHTML =
+    "<div class='fld'><label class='fl' for='pp-kind-" + uid + "'>What are you proposing?</label><select id='pp-kind-" + uid + "'>" +
+    "<option value='change'>A change to this page</option><option value='new'>A brand-new entry</option></select></div>" +
+    "<div class='fld'><label class='fl' for='pp-title-" + uid + "'>Title or subject</label><input type='text' id='pp-title-" + uid + "' placeholder='For a new entry, its name; for a change, a few words for it'></div>" +
+    "<div class='fld'><label class='fl' for='pp-text-" + uid + "'>The change, or the new entry in full</label><textarea id='pp-text-" + uid + "' placeholder='Write it as it should stand, or say plainly what should change and why'></textarea></div>";
+  panel.appendChild(form);
+  var row = document.createElement("div"); row.className = "pinlinks";
+  var send = document.createElement("button"); send.type = "button"; send.className = "btn small"; send.textContent = window.isGM ? "Save proposal" : "Send to the GM";
+  var note = document.createElement("span"); note.className = "note"; note.style.alignSelf = "center";
+  send.addEventListener("click", function(){
+    var kind = document.getElementById("pp-kind-" + uid).value;
+    var title = document.getElementById("pp-title-" + uid).value.trim();
+    var text = document.getElementById("pp-text-" + uid).value.trim();
+    if (!title || !text){ note.textContent = "Give the proposal a title and write the change or entry first."; return; }
+    var by = (typeof gmUser !== "undefined" && gmUser && gmUser.email) || (window.isGM ? "the GM" : "a player");
+    var rec = { kind:kind, page:bar.getAttribute("data-page") || "", context:context, title:title, text:text, submitted_by:by, status: window.isGM ? "accepted" : "pending" };
+    pageProposals.push(rec);
+    if (sb){
+      sb.from("page_proposals").insert({ kind:kind, page:rec.page, context_title:context, title:title, text:text, submitted_by:by, status:rec.status }).select().then(function(res){
+        if (res && !res.error && res.data && res.data[0]){ rec.id = res.data[0].id; proposalsTableOk = true; }
+        renderPageProposals();
+      });
+    }
+    renderPageProposals();
+    panel.innerHTML = "";
+    var h2 = document.createElement("h4"); h2.textContent = title; panel.appendChild(h2);
+    var p = document.createElement("p");
+    p.textContent = window.isGM
+      ? "Saved. Your proposal stands in GM Review under Page Proposals."
+      : "Thank you. Your proposal is with the GM for review, with your name on it." +
+        ((sb && !proposalsTableOk) ? " One caution: the page_proposals table does not exist in Supabase yet, so for now this proposal is kept for this sitting only." : (!sb ? " One caution: live sync is not connected, so for now this proposal is kept for this sitting only." : ""));
+    panel.appendChild(p);
+    panel.hidden = false;
+  });
+  var cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "btn small"; cancel.textContent = "Cancel";
+  cancel.addEventListener("click", function(){ panel.hidden = true; });
+  row.appendChild(send); row.appendChild(cancel); row.appendChild(note);
+  panel.appendChild(row);
+  panel.hidden = false;
+  var t = document.getElementById("pp-title-" + uid);
+  if (t) t.focus();
+}
+function wireProposeBar(bar){
+  if (!bar || bar.dataset.proposeWired) return;
+  bar.dataset.proposeWired = "1";
+  var btn = bar.querySelector(".propose-btn");
+  if (!btn) return;
+  btn.addEventListener("click", function(){
+    var panel = proposePanelFor(bar);
+    if (!panel.hidden && panel.dataset.mode === "form" && proposeCanSend()){ panel.hidden = true; return; }
+    if (proposeCanSend()){ panel.dataset.mode = "form"; showProposeForm(panel, bar); }
+    else if (window.isPlayer){ panel.dataset.mode = "approval"; showProposeApproval(panel); }
+    else { panel.dataset.mode = "signin"; showProposeSignIn(panel); }
+  });
+}
+function setProposalStatus(rec, status){
+  rec.status = status;
+  if (sb && proposalsTableOk && rec.id) sb.from("page_proposals").update({ status:status }).eq("id", rec.id).then(function(){});
+  renderPageProposals();
+}
+function renderPageProposals(){
+  var st = document.getElementById("prop-review-status");
+  var list = document.getElementById("prop-review-list");
+  if (st){
+    if (sb && proposalsTableOk){ st.className = "status ok"; st.textContent = "Live sync is connected. Page proposals save to Supabase, and decisions here are shared with the whole table."; }
+    else if (sb){ st.className = "status"; st.textContent = "The page_proposals table does not exist in Supabase yet, so page proposals and decisions are kept for this sitting only."; }
+    else { st.className = "status"; st.textContent = "Live sync is not connected, so page proposals and decisions are kept for this sitting only."; }
+  }
+  if (!list) return;
+  list.innerHTML = "";
+  if (!window.isGM) return;
+  var pending = pageProposals.filter(function(r){ return r.status === "pending"; });
+  var accepted = pageProposals.filter(function(r){ return r.status === "accepted"; });
+  if (!pending.length && !accepted.length){ list.innerHTML = "<p class='note'>No page proposals yet. Proposals sent from the Propose a change button on any page or article will wait here.</p>"; return; }
+  function kindLabel(r){ return r.kind === "new" ? "Brand-new entry" : "Change to a page"; }
+  pending.forEach(function(rec){
+    var row = document.createElement("div"); row.className = "review-item";
+    row.innerHTML = "<div class='rmeta'>" + escTl(kindLabel(rec)) + " · about " + escTl(rec.context || rec.page || "a page") + " · proposed by " + escTl(rec.submitted_by || "a player") + "<span class='badge pending'>Awaiting GM review</span></div>" +
+      "<div class='rq'>" + escTl(rec.title) + "</div><div class='ra'>" + escTl(rec.text) + "</div>";
+    var ctl = document.createElement("div"); ctl.className = "review-actions";
+    var ok = document.createElement("button"); ok.type = "button"; ok.className = "btn small good"; ok.textContent = "Approve";
+    ok.addEventListener("click", function(){ setProposalStatus(rec, "accepted"); });
+    var no = document.createElement("button"); no.type = "button"; no.className = "btn small rust"; no.textContent = "Dismiss";
+    no.addEventListener("click", function(){ setProposalStatus(rec, "dismissed"); });
+    ctl.appendChild(ok); ctl.appendChild(no);
+    row.appendChild(ctl);
+    list.appendChild(row);
+  });
+  accepted.forEach(function(rec){
+    var row = document.createElement("div"); row.className = "review-item";
+    row.innerHTML = "<div class='rmeta'>" + escTl(kindLabel(rec)) + " · about " + escTl(rec.context || rec.page || "a page") + " · proposed by " + escTl(rec.submitted_by || "a player") + "<span class='badge accepted'>Approved</span></div>" +
+      "<div class='rq'>" + escTl(rec.title) + "</div><div class='ra'>" + escTl(rec.text) + "</div>";
+    list.appendChild(row);
+  });
+}
+function loadPageProposals(){
+  if (!sb){ renderPageProposals(); return; }
+  sb.from("page_proposals").select("*").order("id", { ascending:true }).then(function(res){
+    if (res && !res.error){
+      proposalsTableOk = true;
+      pageProposals = (res.data || []).map(function(r){
+        return { id:r.id, kind:r.kind || "change", page:r.page || "", context:r.context_title || r.context || "", title:r.title || "", text:r.text || "", submitted_by:r.submitted_by || "", status:r.status || "pending" };
+      }).filter(function(r){ return r.status !== "dismissed"; });
+    }
+    renderPageProposals();
+  });
+}
+(function initPropose(){
+  var PAGES = [
+    ["home", "the Home page"], ["people", "the People page"], ["web", "the Relationship Web"],
+    ["sessions", "the Sessions page"], ["chronicle", "the Chronicle"], ["world", "the World page"],
+    ["timeline", "the Timeline"], ["steading", "the Steading page"], ["vault", "the Vault"]
+  ];
+  PAGES.forEach(function(pair){
+    var pg = document.getElementById("pg-" + pair[0]);
+    if (!pg || pg.querySelector(":scope > .propose-bar")) return;
+    var bar = document.createElement("div");
+    bar.className = "propose-bar";
+    bar.setAttribute("data-context", pair[1]);
+    bar.setAttribute("data-page", pair[0]);
+    bar.innerHTML = "<span class='pb-text'><b>Propose a change</b> to " + pair[1] + ", or a brand-new entry.<span class='pb-hint'></span></span><button class='btn propose-btn' type='button'>Propose a change</button>";
+    pg.insertBefore(bar, pg.firstChild);
+    var panel = document.createElement("div"); panel.className = "propose-panel"; panel.hidden = true;
+    pg.insertBefore(panel, bar.nextSibling);
+  });
+  var artBar = document.querySelector("#pg-article .propose-bar");
+  if (artBar) artBar.setAttribute("data-page", "article");
+  var vaultBar = document.querySelector("#vault-reader .propose-bar");
+  if (vaultBar) vaultBar.setAttribute("data-page", "vault");
+  document.querySelectorAll(".propose-bar").forEach(wireProposeBar);
+  refreshProposeUI();
+  renderPageProposals();
+  loadPageProposals();
 })();
 </script>
 </body>
