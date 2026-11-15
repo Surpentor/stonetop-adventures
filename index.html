@@ -435,6 +435,19 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
 .imp .impctl{margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .gainedbadge{display:inline-block;font-size:12.5px;font-variant:small-caps;letter-spacing:2px;color:var(--panel);background:var(--good);border:1px solid var(--good);border-radius:2px;padding:2px 10px}
 .imp.gained{box-shadow:inset 3px 0 0 var(--good)}
+/* site text editing: in GM mode, the site's own wording is
+   outlined and clickable; the editor opens in place, and a bar
+   along the foot of the screen carries the state of the work */
+body.site-editing{padding-bottom:76px}
+body.site-editing [data-site-key]{outline:1.5px dashed var(--rust);outline-offset:2px;cursor:text}
+body.site-editing [data-site-key]:hover{outline-style:solid;background:rgba(156,52,24,.07)}
+body.site-editing [data-site-key].site-edited{outline-color:var(--good)}
+body.site-editing [data-site-key].site-editing-now{outline:2px solid var(--rust);background:rgba(156,52,24,.07)}
+.site-editor{border:2px solid var(--rust);background:#fffdf6;padding:12px 14px;margin:10px 0;text-align:left;position:relative;z-index:5}
+.site-editor textarea{min-height:88px;width:100%}
+.site-editor .serow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+#site-edit-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--ink);color:var(--panel);padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:16px;box-shadow:0 -4px 18px rgba(34,29,19,.35)}
+#site-edit-bar .btn{background:var(--panel);flex:none}
 @media(max-width:640px){.mappin .pinlab{display:none}}
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
@@ -450,7 +463,7 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
 </head>
 <body>
 <header class="hero">
-  <h1><svg class="hicon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="38" cy="10" r="4.6" fill="#c9962e"/><g stroke="#c9962e" stroke-width="1.8" stroke-linecap="round"><path d="M38 1.6v2.6M38 15.8v2.6M29.6 10h2.6M43.8 10h2.6M32.1 4.1l1.8 1.8M42.1 14.1l1.8 1.8M43.9 4.1l-1.8 1.8"/></g><path d="M20.2 9.5c-1.9 5.8-2.4 15.8-1.9 29.5h11.4c.5-13.7 0-23.7-1.9-29.5-1.1-3.4-6.5-3.4-7.6 0z" fill="#8d8272" stroke="#55482e" stroke-width="1.6"/><path d="M2 39.5Q24 30.5 46 39.5V45H2z" fill="#6d7f3e"/></svg>Heroes of Stonetop</h1>
+  <h1 data-site-key="hero.title"><svg class="hicon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="38" cy="10" r="4.6" fill="#c9962e"/><g stroke="#c9962e" stroke-width="1.8" stroke-linecap="round"><path d="M38 1.6v2.6M38 15.8v2.6M29.6 10h2.6M43.8 10h2.6M32.1 4.1l1.8 1.8M42.1 14.1l1.8 1.8M43.9 4.1l-1.8 1.8"/></g><path d="M20.2 9.5c-1.9 5.8-2.4 15.8-1.9 29.5h11.4c.5-13.7 0-23.7-1.9-29.5-1.1-3.4-6.5-3.4-7.6 0z" fill="#8d8272" stroke="#55482e" stroke-width="1.6"/><path d="M2 39.5Q24 30.5 46 39.5V45H2z" fill="#6d7f3e"/></svg>Heroes of Stonetop</h1>
   <div class="rule"></div>
 </header>
 <div class="topwrap">
@@ -498,17 +511,26 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
       <span id="gm-who" style="color:var(--gold2)"></span>
       <button class="btn small" type="button" id="gm-signout" style="margin-left:12px">Sign out</button>
       <p class="note" id="gm-signedin-note" style="margin:8px 0 0"></p>
+      <div id="site-edit-controls" hidden style="margin-top:12px">
+        <button class="btn small rust" type="button" id="site-edit-toggle">Edit site text</button>
+        <span class="note" id="site-edit-note" style="margin-left:10px">The site's own wording: the landing strip, the hero, headings, introductions, card text, map captions, and the playbook text. Vault notes keep their own editor in the Vault.</span>
+      </div>
     </div>
   </div>
+</div>
+<div id="site-edit-bar" hidden>
+  <span style="flex:1;min-width:220px"><b>Editing site text.</b> Click any outlined wording to change it. Changes save at once, players see them on their next visit, and each change is recorded in GM Review under Site Text Changes.</span>
+  <span id="site-edit-savestate" style="color:#eae1c9;font-style:italic"></span>
+  <button class="btn small" type="button" id="site-edit-done">Done editing</button>
 </div>
 <div class="wrap">
 
 <!-- HOME -->
 <section class="page on" id="pg-home">
   <div class="strip">
-    <div class="cell"><span class="lab">Current Date</span><span class="val">First of Spring, Year 150</span></div>
-    <div class="cell"><span class="lab">Next Session</span><span class="val">October 23rd, 2026</span></div>
-    <div class="cell"><span class="lab">The Village</span><span class="val">A hundred and fifty souls</span></div>
+    <div class="cell"><span class="lab" data-site-key="strip.date.label">Current Date</span><span class="val" data-site-key="strip.date">First of Spring, Year 150</span></div>
+    <div class="cell"><span class="lab" data-site-key="strip.next.label">Next Session</span><span class="val" data-site-key="strip.next">October 23rd, 2026</span></div>
+    <div class="cell"><span class="lab" data-site-key="strip.village.label">The Village</span><span class="val" data-site-key="strip.village">A hundred and fifty souls</span></div>
   </div>
   <figure class="plate" id="fig-map-village-home">
     <div class="mapwrap">
@@ -1227,6 +1249,27 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
   <p class="lede">Changes and brand-new entries proposed from the Propose a change button that stands on every page and article. A player's proposal waits here with their name on it; the GM's own proposals stand at once, as their pins and timeline events do. Approving a proposal records it here as agreed; carrying the words into the page itself is still done the usual way, in the Vault or the page's own editor.</p>
   <div id="prop-review-status" class="status" style="margin:16px 0">Loading page proposals…</div>
   <div id="prop-review-list"></div>
+  <h2 class="sec">Site Text Changes</h2>
+  <p class="lede">The record of the GM's edits to the site's own wording: the landing strip, the hero, section headings and introductions, card text, map captions, and the playbook text. Edit them from the sign-in panel at the top of the page, with Edit site text. Each change below stands with who made it and when, and any of them can be put back to the site's original wording. Vault notes are not site text; they keep their own editing in the Vault.</p>
+  <div id="sitetext-status" class="status" style="margin:16px 0">Loading site text…</div>
+  <div id="sitetext-list"></div>
+  <details class="code" id="sitetext-sql" hidden>
+    <summary>Creating the site_text table in Supabase (one time)</summary>
+    <p style="color:var(--muted)">Until this table exists, site text edits are kept for the sitting only. Run this once in the Supabase SQL editor for the stonetop project, and edits will save and persist for every visitor:</p>
+    <pre>create table public.site_text (
+  text_key text primary key,
+  value text not null,
+  updated_by text,
+  updated_at timestamptz default now()
+);
+alter table public.site_text enable row level security;
+create policy "Site text is readable by everyone"
+  on public.site_text for select using (true);
+create policy "Signed-in GM can write site text"
+  on public.site_text for all
+  using (auth.role() = 'authenticated')
+  with check (auth.role() = 'authenticated');</pre>
+  </details>
   <h2 class="sec">Players</h2>
   <p class="lede">Players sign in with accounts the GM invites by email (in Supabase, under Authentication). Register a player's email here, ideally before their first sign-in, so they arrive as a player rather than with GM access. A registered player can read everything at once; approve them and they can edit and propose across the site. Revoke approval and they are back to reading.</p>
   <div id="players-status" class="status" style="margin:16px 0">Loading the player register…</div>
@@ -1255,7 +1298,7 @@ h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
 </section>
 
 </div>
-<footer>These notes update as the campaign unfolds. Open Questions throughout mark things the village doesn't know yet, or knows, but hasn't faced.</footer>
+<footer data-site-key="footer.line">These notes update as the campaign unfolds. Open Questions throughout mark things the village doesn't know yet, or knows, but hasn't faced.</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
@@ -4752,6 +4795,428 @@ function loadPageProposals(){
   refreshProposeUI();
   renderPageProposals();
   loadPageProposals();
+})();
+</script>
+
+<script>
+/* ---------- site text: the GM edits the site's own wording ----------
+   Every piece of hand-built site text carries a data-site-key:
+   the landing strip (its labels and its values, keyed in the
+   markup itself), the hero title and the footer line (also keyed
+   in the markup), the people, creature, and session cards (keyed
+   from their data, so an edit here is also the text their full
+   articles are built from), the built-in timeline events (keyed
+   from TL_EVENTS, shown in the timeline's detail box), and every
+   other heading, introduction, card, caption, list, and playbook
+   paragraph on the hand-built pages (keyed by its place in the
+   page, which does not change when only wording changes).
+   Vault notes are not site text: they keep their own editing in
+   the Vault. The Chronicle's entries are not site text either:
+   they stand word for word. Dynamic boards (questions, pins,
+   proposals, the steading tracker, review lists) keep their own
+   controls and are not touched here.
+   When the GM is signed in, Edit site text in the sign-in panel
+   turns editing on: outlined wording can be clicked and changed
+   in place. A change saves at once to the Supabase table
+   site_text (text_key, value, updated_by, updated_at), so every
+   visitor sees the new wording on their next visit, and the
+   change stands recorded in GM Review under Site Text Changes,
+   with who made it and when, and a way to restore the original
+   wording. Until that table exists, edits are kept for the
+   sitting only, which GM Review says plainly, with the one-time
+   table setup spelled out there. */
+var siteText = {};       /* key -> {value, updated_by, updated_at, original} */
+var siteOriginals = {};  /* key -> the site's built-in wording */
+var siteLabels = {};     /* key -> a friendly name for the record */
+var siteDataRefs = {};   /* key -> {obj, field} for data-built text */
+var siteTextTableOk = false;
+var siteTextLoaded = false;
+var siteEditing = false;
+var siteEditorPanel = null, siteEditorEl = null;
+var SITE_PAGE_NAMES = { home:"Home", people:"People", web:"Relationship Web", sessions:"Sessions", chronicle:"Chronicle", timeline:"Timeline", world:"World", vault:"Vault", steading:"Steading", review:"GM Review", article:"Article" };
+var SITE_EXPLICIT_LABELS = {
+  "hero.title":"Hero · the site title",
+  "strip.date.label":"Home · landing strip label", "strip.date":"Home · landing strip: Current Date",
+  "strip.next.label":"Home · landing strip label", "strip.next":"Home · landing strip: Next Session",
+  "strip.village.label":"Home · landing strip label", "strip.village":"Home · landing strip: The Village",
+  "footer.line":"Footer · the closing line"
+};
+function heroTextNode(h1){
+  if (!h1) return null;
+  for (var i = 0; i < h1.childNodes.length; i++){
+    var n = h1.childNodes[i];
+    if (n.nodeType === 3 && n.nodeValue.trim()) return n;
+  }
+  return null;
+}
+function getSiteText(el){
+  if (!el) return "";
+  if (el.getAttribute("data-site-key") === "hero.title"){
+    var tn = heroTextNode(el);
+    return tn ? tn.nodeValue.replace(/\s+/g, " ").trim() : "";
+  }
+  var clone = el.cloneNode(true);
+  clone.querySelectorAll("a.full").forEach(function(a){ a.remove(); });
+  return clone.textContent.replace(/\s+/g, " ").trim();
+}
+function setSiteText(el, value){
+  if (!el) return;
+  var key = el.getAttribute("data-site-key");
+  if (key === "hero.title"){
+    var tn = heroTextNode(el);
+    if (tn) tn.nodeValue = value;
+    else el.appendChild(document.createTextNode(value));
+  } else {
+    var links = Array.prototype.slice.call(el.querySelectorAll("a.full"));
+    el.textContent = value;
+    links.forEach(function(a){ el.appendChild(document.createElement("br")); el.appendChild(a); });
+  }
+  el.classList.toggle("site-edited", !!(key && siteText[key]));
+}
+function siteLabelFor(el, key){
+  if (SITE_EXPLICIT_LABELS[key]) return SITE_EXPLICIT_LABELS[key];
+  var pg = el.closest ? el.closest("section.page") : null;
+  var pageName = pg ? (SITE_PAGE_NAMES[pg.id.replace(/^pg-/, "")] || "Page") : "Page";
+  var kind = "Text", t = el.tagName;
+  if (t === "H2" || t === "H3" || t === "H4") kind = "Heading";
+  else if (el.classList.contains("lede")) kind = "Introduction";
+  else if (el.classList.contains("tag")) kind = "Card label";
+  else if (el.classList.contains("role")) kind = "Card role line";
+  else if (el.classList.contains("meta")) kind = "Card detail line";
+  else if (t === "FIGCAPTION") kind = "Map caption";
+  else if (t === "LI") kind = "List item";
+  else if (el.classList.contains("lab")) kind = "Landing strip label";
+  else if (el.classList.contains("val")) kind = "Landing strip value";
+  var orig = siteOriginals[key] || getSiteText(el);
+  var snip = orig.length > 52 ? orig.slice(0, 52) + "…" : orig;
+  return pageName + " · " + kind + " · “" + snip + "”";
+}
+function tagEl(el, key){
+  if (!el || !key) return;
+  if (!el.getAttribute("data-site-key")) el.setAttribute("data-site-key", key);
+  if (el.getAttribute("data-site-key") !== key) return;
+  if (!(key in siteOriginals)) siteOriginals[key] = getSiteText(el);
+  if (!siteLabels[key]) siteLabels[key] = siteLabelFor(el, key);
+}
+function autoKeyFor(el){
+  var parts = [], node = el;
+  while (node && node !== document.body){
+    if (node.id){ parts.unshift("#" + node.id); break; }
+    var parent = node.parentNode;
+    if (!parent || !parent.children) break;
+    var count = 0, my = 0;
+    for (var i = 0; i < parent.children.length; i++){
+      if (parent.children[i].tagName === node.tagName){
+        if (parent.children[i] === node) my = count;
+        count++;
+      }
+    }
+    parts.unshift(node.tagName.toLowerCase() + ":" + my);
+    node = parent;
+  }
+  return "auto:" + parts.join("/");
+}
+function tagDataCards(){
+  [PCS, NPCS, OUTS, DEAD].forEach(function(list){
+    list.forEach(function(p){
+      var slug = personSlug(p.n);
+      var card = document.getElementById("person-" + slug);
+      var fields = [["name", "n", "h3"], ["role", "role", ".role"], ["meta", "meta", ".meta"], ["desc", "d", "p"]];
+      fields.forEach(function(f){
+        var key = "person." + slug + "." + f[0];
+        siteDataRefs[key] = { obj:p, field:f[1] };
+        if (card) tagEl(card.querySelector(f[2]), key);
+        if (!siteLabels[key]) siteLabels[key] = "People · " + p.n + " (" + f[0] + ")";
+      });
+    });
+  });
+  CREATURES.forEach(function(c){
+    var slug = personSlug(c.n);
+    var el = document.getElementById("creature-" + slug);
+    var nk = "creature." + slug + ".name", dk = "creature." + slug + ".desc";
+    siteDataRefs[nk] = { obj:c, field:"n" };
+    siteDataRefs[dk] = { obj:c, field:"d" };
+    if (el){ tagEl(el.querySelector("h3"), nk); tagEl(el.querySelector("p"), dk); }
+    if (!siteLabels[nk]) siteLabels[nk] = "World · " + c.n + " (name)";
+    if (!siteLabels[dk]) siteLabels[dk] = "World · " + c.n + " (text)";
+  });
+  SESSIONS.forEach(function(s, i){
+    var el = document.getElementById("session-" + i);
+    var tk = "session." + i + ".title", dk = "session." + i + ".desc";
+    siteDataRefs[tk] = { obj:s, field:"t" };
+    siteDataRefs[dk] = { obj:s, field:"d" };
+    if (el){
+      tagEl(el.querySelector("h3"), tk);
+      var ps = el.querySelectorAll("p"), descEl = null;
+      ps.forEach(function(p){ if (!descEl && !p.classList.contains("note")) descEl = p; });
+      tagEl(descEl, dk);
+    }
+    if (!siteLabels[tk]) siteLabels[tk] = "Sessions · " + s.t + " (title)";
+    if (!siteLabels[dk]) siteLabels[dk] = "Sessions · " + s.t + " (text)";
+  });
+  if (typeof TL_EVENTS !== "undefined"){
+    TL_EVENTS.forEach(function(ev, i){
+      var names = { when:"date line", title:"title", text:"story" };
+      ["when", "title", "text"].forEach(function(f){
+        var k = "timeline." + i + "." + f;
+        siteOriginals[k] = ev[f];
+        siteDataRefs[k] = { obj:ev, field:f };
+        siteLabels[k] = "Timeline · " + ev.title + " (" + names[f] + ")";
+      });
+    });
+  }
+}
+var SITE_CANDIDATES = ".hero h1, h2.sec, h3, h4, .lede, section.page > p, .card p, .sheet p, .sheet li, .imp li, figcaption, .tag, .role, .card .meta, .strip .lab, .strip .val, footer";
+var SITE_EXCLUDE = "#gm-panel, .topwrap, nav.tabs, #gsearch-bar, .propose-bar, .propose-panel, .secnav, .article-questions, .oq-block, .gm-addq, #vault-list, #vault-reader, #pg-article, .chr-full, #chr-canon, #chr-pending, #chr-dismissed-wrap, #review-list, #pin-review-list, #tl-review-list, #prop-review-list, #players-list, #tl-heads, #tl-detail, #tl-addwrap, #web-panel, #web-box, .pinpanel, .pinlist, form, .review-item, .qitem, #st-stats, #st-debilities, #st-debdesc, #st-gmnote, #prob-list, #steading-log, #change-log, #sitetext-list, #site-edit-bar, .site-editor";
+function tagStaticText(){
+  document.querySelectorAll(SITE_CANDIDATES).forEach(function(el){
+    if (el.closest && el.closest(SITE_EXCLUDE)) return;
+    var anc = el.parentElement, nested = false;
+    while (anc){
+      if (anc.getAttribute && anc.getAttribute("data-site-key")){ nested = true; break; }
+      anc = anc.parentElement;
+    }
+    if (nested) return;
+    if (el.querySelector && el.querySelector("button, input, textarea, select")) return;
+    if (el.querySelector && el.querySelector("a") && el.tagName !== "FIGCAPTION") return;
+    if (el.querySelector && el.querySelector("#qcount-home")) return;
+    if (!getSiteText(el)) return;
+    tagEl(el, el.getAttribute("data-site-key") || autoKeyFor(el));
+  });
+}
+function tagTimelineDetail(){
+  var detail = document.getElementById("tl-detail");
+  if (!detail || typeof tlVisibleEvents !== "function" || typeof TL_EVENTS === "undefined") return;
+  var vis = tlVisibleEvents(), sel = null;
+  vis.forEach(function(x){ if (x.i === tlState.sel) sel = x; });
+  if (!sel) sel = vis[0];
+  if (!sel || sel.custom || sel.i >= TL_EVENTS.length) return;
+  var h = detail.querySelector("h3");
+  tagEl(h, "timeline." + sel.i + ".title");
+  if (h){
+    var p = h.nextElementSibling;
+    if (p && p.tagName === "P") tagEl(p, "timeline." + sel.i + ".text");
+  }
+  tagEl(detail.querySelector(".byline"), "timeline." + sel.i + ".when");
+}
+function findSiteEl(key){
+  try { return document.querySelector('[data-site-key="' + key + '"]'); } catch(e){ return null; }
+}
+function syncDataForKey(key, value){
+  var ref = siteDataRefs[key];
+  if (ref && ref.obj) ref.obj[ref.field] = value;
+}
+function applyAllSiteText(){
+  var tlTouched = false;
+  Object.keys(siteText).forEach(function(key){
+    var rec = siteText[key];
+    if (key in siteOriginals) rec.original = siteOriginals[key];
+    syncDataForKey(key, rec.value);
+    var el = findSiteEl(key);
+    if (el) setSiteText(el, rec.value);
+    if (key.indexOf("timeline.") === 0) tlTouched = true;
+  });
+  if (tlTouched && typeof renderTimeline === "function") renderTimeline();
+}
+function gmByline(){
+  return (typeof gmUser !== "undefined" && gmUser && gmUser.email) || "the GM";
+}
+function saveSiteText(key, value, el){
+  var by = gmByline();
+  var now = new Date().toISOString();
+  siteText[key] = { value:value, updated_by:by, updated_at:now, original:(key in siteOriginals) ? siteOriginals[key] : "" };
+  if (el) setSiteText(el, value);
+  syncDataForKey(key, value);
+  if (key.indexOf("timeline.") === 0 && typeof renderTimeline === "function") renderTimeline();
+  renderSiteTextReview();
+  var st = document.getElementById("site-edit-savestate");
+  if (!sb){
+    siteTextTableOk = false;
+    if (st) st.textContent = "Kept for this sitting only: live sync is not connected.";
+    renderSiteTextReview();
+    return;
+  }
+  if (st) st.textContent = "Saving…";
+  sb.from("site_text").upsert({ text_key:key, value:value, updated_by:by, updated_at:now }, { onConflict:"text_key" }).select().then(function(res){
+    if (res.error){
+      siteTextTableOk = false;
+      if (st) st.textContent = "Kept for this sitting only: the site_text table does not exist in Supabase yet (see Site Text Changes in GM Review).";
+    } else {
+      siteTextTableOk = true;
+      if (st) st.textContent = "Saved. Players will see the new wording on their next visit.";
+    }
+    renderSiteTextReview();
+  });
+}
+function revertSiteText(key){
+  var orig = (key in siteOriginals) ? siteOriginals[key] : null;
+  delete siteText[key];
+  if (orig !== null && orig !== undefined){
+    var el = findSiteEl(key);
+    if (el) setSiteText(el, orig);
+    syncDataForKey(key, orig);
+    if (key.indexOf("timeline.") === 0 && typeof renderTimeline === "function") renderTimeline();
+  }
+  var st = document.getElementById("site-edit-savestate");
+  if (sb && siteTextTableOk){
+    sb.from("site_text").delete().eq("text_key", key).then(function(res){
+      if (st && !res.error) st.textContent = "Original wording restored for everyone.";
+      renderSiteTextReview();
+    });
+  } else if (st) st.textContent = "Original wording restored.";
+  renderSiteTextReview();
+}
+function loadSiteText(){
+  if (!sb){ siteTextLoaded = true; renderSiteTextReview(); refreshSiteEditUI(); return; }
+  sb.from("site_text").select("*").then(function(res){
+    siteTextLoaded = true;
+    if (res.error){
+      siteTextTableOk = false;
+    } else {
+      siteTextTableOk = true;
+      (res.data || []).forEach(function(r){
+        if (r && r.text_key && typeof r.value === "string" && r.value){
+          siteText[r.text_key] = { value:r.value, updated_by:r.updated_by || "", updated_at:r.updated_at || "", original:"" };
+        }
+      });
+      applyAllSiteText();
+    }
+    renderSiteTextReview();
+    refreshSiteEditUI();
+  });
+}
+function renderSiteTextReview(){
+  var st = document.getElementById("sitetext-status");
+  var list = document.getElementById("sitetext-list");
+  var sql = document.getElementById("sitetext-sql");
+  if (st){
+    if (!sb){ st.className = "status"; st.textContent = "Live sync is not connected, so site text edits are kept for this sitting only."; }
+    else if (siteTextTableOk){ st.className = "status ok"; st.textContent = "Live sync is connected. Site text edits save to Supabase (the site_text table) at once, and every visitor sees the new wording on their next visit."; }
+    else if (siteTextLoaded){ st.className = "status"; st.textContent = "The site_text table does not exist in Supabase yet, so site text edits are kept for this sitting only. The one-time setup is spelled out below."; }
+    else { st.className = "status"; st.textContent = "Loading site text…"; }
+  }
+  if (sql) sql.hidden = !(sb && siteTextLoaded && !siteTextTableOk);
+  if (!list) return;
+  list.innerHTML = "";
+  if (!window.isGM) return;
+  var keys = Object.keys(siteText);
+  if (!keys.length){
+    list.innerHTML = "<p class='note'>No site text has been changed yet. Press Edit site text in the sign-in panel, then click any outlined wording.</p>";
+    return;
+  }
+  keys.sort(function(a, b){ return String(siteText[b].updated_at || "").localeCompare(String(siteText[a].updated_at || "")); });
+  keys.forEach(function(key){
+    var rec = siteText[key];
+    var row = document.createElement("div"); row.className = "review-item";
+    row.innerHTML = "<div class='rmeta'>" + esc(siteLabels[key] || key) + "</div>" +
+      "<div class='ra'>" + esc(rec.value) + "</div>" +
+      "<div class='rmeta'>Changed by <strong style='color:var(--gold2)'>" + esc(rec.updated_by || "the GM") + "</strong> · " + esc(rec.updated_at ? fmtDate(rec.updated_at) : "this sitting") +
+      (rec.original && rec.original !== rec.value ? " · Originally: “" + esc(rec.original.length > 90 ? rec.original.slice(0, 90) + "…" : rec.original) + "”" : "") +
+      (!siteTextTableOk ? " · Kept for this sitting only" : "") + "</div>";
+    var actions = document.createElement("div"); actions.className = "review-actions";
+    var rb = document.createElement("button"); rb.type = "button"; rb.className = "btn small rust"; rb.textContent = "Restore the original wording";
+    rb.addEventListener("click", function(){ revertSiteText(key); });
+    actions.appendChild(rb);
+    row.appendChild(actions);
+    list.appendChild(row);
+  });
+}
+function closeSiteEditor(){
+  if (siteEditorPanel){ siteEditorPanel.remove(); siteEditorPanel = null; }
+  if (siteEditorEl){ siteEditorEl.classList.remove("site-editing-now"); siteEditorEl = null; }
+  document.querySelectorAll(".site-editing-now").forEach(function(x){ x.classList.remove("site-editing-now"); });
+}
+function openSiteEditor(el){
+  closeSiteEditor();
+  var key = el.getAttribute("data-site-key");
+  if (!key) return;
+  var cur = getSiteText(el);
+  el.classList.add("site-editing-now");
+  var panel = document.createElement("div");
+  panel.className = "site-editor";
+  var hadMarkup = el.children.length > 0 && key !== "hero.title";
+  panel.innerHTML = "<label class='fl' for='site-edit-ta'>Editing: " + esc(siteLabels[key] || key) + "</label>" +
+    "<textarea id='site-edit-ta'></textarea>" +
+    (hadMarkup ? "<p class='note' style='margin:8px 0 0'>This piece carries bold or italic in the original typesetting. Saving replaces it with the plain wording you write here.</p>" : "") +
+    "<div class='serow'><button class='btn small' type='button' data-act='save'>Save changes</button>" +
+    "<button class='btn small' type='button' data-act='cancel'>Cancel</button>" +
+    (siteText[key] ? "<button class='btn small rust' type='button' data-act='revert'>Restore the original wording</button>" : "") +
+    "<span class='note' data-role='note'></span></div>";
+  var ta = panel.querySelector("textarea");
+  ta.value = cur;
+  if (el.parentNode) el.parentNode.insertBefore(panel, el.nextSibling);
+  siteEditorPanel = panel; siteEditorEl = el;
+  panel.querySelector("[data-act='save']").addEventListener("click", function(){
+    var v = ta.value.replace(/\s+/g, " ").trim();
+    var note = panel.querySelector("[data-role='note']");
+    if (!v){ note.textContent = "The wording cannot be empty."; ta.focus(); return; }
+    if (v === cur){ closeSiteEditor(); return; }
+    saveSiteText(key, v, el);
+    closeSiteEditor();
+  });
+  panel.querySelector("[data-act='cancel']").addEventListener("click", function(){ closeSiteEditor(); });
+  var rev = panel.querySelector("[data-act='revert']");
+  if (rev) rev.addEventListener("click", function(){ revertSiteText(key); closeSiteEditor(); });
+  ta.focus();
+  try { ta.select(); } catch(e){}
+}
+function setSiteEditing(on){
+  siteEditing = !!on && !!window.isGM;
+  if (!siteEditing) closeSiteEditor();
+  document.body.classList.toggle("site-editing", siteEditing);
+  var bar = document.getElementById("site-edit-bar");
+  if (bar) bar.hidden = !siteEditing;
+  var tog = document.getElementById("site-edit-toggle");
+  if (tog) tog.textContent = siteEditing ? "Stop editing site text" : "Edit site text";
+  if (siteEditing){
+    var st = document.getElementById("site-edit-savestate");
+    if (st) st.textContent = (siteTextLoaded && !siteTextTableOk && sb) ? "Note: the site_text table does not exist in Supabase yet, so edits are kept for this sitting only." : "";
+  }
+}
+function refreshSiteEditUI(){
+  var controls = document.getElementById("site-edit-controls");
+  if (controls) controls.hidden = !window.isGM;
+  if (!window.isGM && siteEditing) setSiteEditing(false);
+  var tog = document.getElementById("site-edit-toggle");
+  if (tog) tog.textContent = siteEditing ? "Stop editing site text" : "Edit site text";
+}
+if (typeof renderTimeline === "function"){
+  var siteOrigRenderTimeline = renderTimeline;
+  renderTimeline = function(){ siteOrigRenderTimeline(); tagTimelineDetail(); };
+}
+if (typeof applyGM === "function"){
+  var siteOrigApplyGM = applyGM;
+  applyGM = function(){ siteOrigApplyGM(); refreshSiteEditUI(); renderSiteTextReview(); };
+}
+document.addEventListener("click", function(e){
+  if (!siteEditing) return;
+  if (e.target.closest && e.target.closest(".site-editor, #site-edit-bar, #site-edit-controls")) return;
+  var ed = e.target.closest ? e.target.closest("[data-site-key]") : null;
+  if (ed){
+    e.preventDefault();
+    e.stopPropagation();
+    openSiteEditor(ed);
+    return;
+  }
+  if (e.target.closest && e.target.closest(".art-click, .card.person, .imp")){
+    e.preventDefault();
+    e.stopPropagation();
+  }
+}, true);
+document.addEventListener("keydown", function(e){
+  if (e.key === "Escape" && siteEditorPanel) closeSiteEditor();
+});
+(function initSiteText(){
+  tagDataCards();
+  tagStaticText();
+  tagTimelineDetail();
+  var tog = document.getElementById("site-edit-toggle");
+  if (tog) tog.addEventListener("click", function(){ setSiteEditing(!siteEditing); });
+  var done = document.getElementById("site-edit-done");
+  if (done) done.addEventListener("click", function(){ setSiteEditing(false); });
+  refreshSiteEditUI();
+  renderSiteTextReview();
+  loadSiteText();
 })();
 </script>
 </body>
