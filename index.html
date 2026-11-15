@@ -305,6 +305,36 @@ section.page.on{animation:pagein .45s ease both}
 .ev2-body p{color:var(--muted);margin:2px 0 10px;max-width:720px}
 .ev2-links{display:flex;gap:8px;flex-wrap:wrap}
 .ev2-era{display:inline-block;font-size:11.5px;font-variant:small-caps;letter-spacing:1.5px;border:1px solid var(--line);border-radius:2px;padding:1px 8px;color:var(--muted)}
+/* the timeline, horizontal: event headings run along the top,
+   and the chosen event opens in the detail box beneath them */
+.tlh{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 14px;position:relative}
+.tlh::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--line);z-index:0}
+.tlhead{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:1px;background:var(--panel);border:1px solid var(--inkline);border-radius:2px;padding:8px 12px 9px;cursor:pointer;text-align:left;color:var(--ink);min-height:44px;max-width:250px}
+.tlhead .when{font-size:12px;font-variant:small-caps;letter-spacing:1.8px;font-weight:700}
+.tlhead[data-era="deep"] .when{color:#55482e}
+.tlhead[data-era="village"] .when{color:#8a6d1f}
+.tlhead[data-era="spring"] .when{color:var(--rust)}
+.tlhead[data-era="ahead"] .when{color:var(--good)}
+.tlhead .tlt{font-size:16.5px;font-weight:600;line-height:1.2}
+.tlhead .tldot{position:absolute;top:-6px;right:-6px;width:11px;height:11px;background:var(--panel);border:2px solid var(--inkline);transform:rotate(45deg)}
+.tlhead[data-era="deep"] .tldot{background:#55482e}
+.tlhead[data-era="village"] .tldot{background:#8a6d1f}
+.tlhead[data-era="spring"] .tldot{background:var(--rust)}
+.tlhead[data-era="ahead"] .tldot{background:var(--good)}
+.tlhead:hover{background:var(--panel2)}
+.tlhead[aria-selected="true"]{background:#f6ecd2;box-shadow:0 0 0 2px var(--rust)}
+.tlhead.now{box-shadow:0 0 0 2px var(--rust)}
+.tl-detail{border:2px solid var(--inkline);outline:1px solid var(--inkline);outline-offset:4px;background:var(--panel);padding:18px 22px;min-height:120px;animation:pagein .3s ease both}
+.tl-detail h3{margin:2px 0 6px;font-size:24px;color:var(--ink)}
+.tl-detail p{color:var(--muted);margin:0 0 12px;max-width:760px}
+.tl-detail .ev2-links{display:flex;gap:8px;flex-wrap:wrap}
+.tl-detail .byline{font-size:14px;color:var(--faint);font-variant:small-caps;letter-spacing:1px}
+/* a jump menu for pages with several sections */
+.secnav{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 2px 12px;border-bottom:3px double var(--inkline);margin-bottom:8px}
+.secnav .flab{font-size:13px;font-variant:small-caps;letter-spacing:2px;color:var(--faint)}
+.secnav .chipbtn{min-height:36px}
+h2.sec:focus{outline:2px solid var(--rust);outline-offset:3px}
+.badge.pending{color:var(--gold);border:1px solid var(--gold);background:transparent}
 /* map pins: every plate can carry pins that open an article,
    a person, or another map */
 .mapwrap{position:relative}
@@ -325,12 +355,45 @@ section.page.on{animation:pagein .45s ease both}
 .pinpanel .pinlinks{display:flex;gap:8px;flex-wrap:wrap}
 .pinlist{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 6px 2px}
 .pinlist .flab{font-size:13px;font-variant:small-caps;letter-spacing:2px;color:var(--faint)}
+/* pins arrive with a little drop and settle, staggered pin by
+   pin, and the pulse carries an expanding ring so a living map
+   quietly breathes; hover lifts the head a touch */
+.mappin{animation:pindrop .5s cubic-bezier(.25,1.35,.45,1) both}
+@keyframes pindrop{0%{transform:translate(-50%,-170%);opacity:0}55%{opacity:1}100%{transform:translate(-50%,-100%);opacity:1}}
+.mappin .pinhead{position:relative;transition:transform .18s ease}
+.mappin:hover .pinhead,.mappin:focus-visible .pinhead{transform:rotate(45deg) scale(1.16)}
+.mappin.pulse .pinhead::after{content:"";position:absolute;inset:-2px;border:1.5px solid rgba(156,52,24,.5);border-radius:50%;animation:pinring 1.6s ease-out infinite;pointer-events:none}
+@keyframes pinring{0%{transform:scale(.75);opacity:.95}100%{transform:scale(1.85);opacity:0}}
+.mappin.pending .pinhead{background:var(--gold);border-style:dashed}
+.mapwrap.placing{cursor:crosshair}
+.mapwrap.placing .mappin{pointer-events:none;opacity:.4}
+.pinform .fld{margin-bottom:10px}
+.pinform select{width:100%}
+/* the live steading tracker: the book's tracks, clickable in
+   GM mode, with debility marks and the Steading Log */
+.stattrack{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}
+.pipbtn{display:inline-flex;align-items:center;gap:5px;background:none;border:1px solid transparent;border-radius:2px;padding:4px 7px;cursor:pointer;font-size:16px;color:var(--muted);min-height:36px}
+.pipbtn .box{width:13px;height:13px;border:1.6px solid var(--inkline);display:inline-block;flex:none}
+.pipbtn[aria-pressed="true"]{color:var(--ink);font-weight:700}
+.pipbtn[aria-pressed="true"] .box{background:var(--inkline)}
+.pipbtn:disabled{cursor:default}
+.pipbtn:not(:disabled):hover{border-color:var(--line);background:var(--panel2)}
+.surp{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
+.surp .val{font-size:27px;color:var(--ink);min-width:38px;text-align:center}
+.logentry{border:1px solid var(--line);background:var(--panel);border-radius:2px;padding:10px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+.logentry .when{font-variant:small-caps;letter-spacing:1px;color:var(--rust);white-space:nowrap;font-size:14.5px;padding-top:3px}
+.logentry .what{flex:1}
+.imp .impctl{margin-top:10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.gainedbadge{display:inline-block;font-size:12.5px;font-variant:small-caps;letter-spacing:2px;color:var(--panel);background:var(--good);border:1px solid var(--good);border-radius:2px;padding:2px 10px}
+.imp.gained{box-shadow:inset 3px 0 0 var(--good)}
 @media(max-width:640px){.mappin .pinlab{display:none}}
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
-  section.page.on,.pinpanel{animation:none}
+  section.page.on,.pinpanel,.tl-detail{animation:none}
   .ev2{opacity:1;transform:none;transition:none}
+  .mappin{animation:none}
   .mappin.pulse .pinhead{animation:none}
+  .mappin.pulse .pinhead::after{animation:none;display:none}
   #tl-progress-fill{transition:none}
 }
 </style>
@@ -352,7 +415,7 @@ section.page.on{animation:pagein .45s ease both}
   <button role="tab" data-tab="vault" aria-selected="false">Vault</button>
   <button role="tab" data-tab="steading" aria-selected="false">Steading</button>
   <button role="tab" data-tab="review" id="tab-review" aria-selected="false" hidden>GM Review</button>
-  <button type="button" id="gm-btn" aria-expanded="false">GM Sign In</button>
+  <button type="button" id="gm-btn" aria-expanded="false">Sign In</button>
 </nav>
 <div id="gsearch-bar">
   <label class="fl" for="gsearch" style="margin:0">Search</label>
@@ -364,8 +427,9 @@ section.page.on{animation:pagein .45s ease both}
 </div>
 <div id="gm-panel" hidden>
   <div class="inner">
+    <p class="note" id="gm-intro" style="margin:0 0 10px;max-width:760px">The GM and the players sign in here, each with their own account. The GM invites players by email; a player can look at everything right away, and can edit and propose once the GM approves them in GM Review. Without a sign-in, the site is the public view: everything to read, nothing to change.</p>
     <form id="gm-form">
-      <div class="fld"><label class="fl" for="gm-email">GM email</label><input type="email" id="gm-email" autocomplete="username" placeholder="gm@example.com"></div>
+      <div class="fld"><label class="fl" for="gm-email">Email</label><input type="email" id="gm-email" autocomplete="username" placeholder="you@example.com"></div>
       <div class="fld"><label class="fl" for="gm-pass">Password</label><input type="password" id="gm-pass" autocomplete="current-password" placeholder="Password"></div>
       <button class="btn" type="submit" id="gm-signin">Sign in</button>
       <span class="note" id="gm-note" style="align-self:center"></span>
@@ -383,7 +447,7 @@ section.page.on{animation:pagein .45s ease both}
     <div id="gm-signedin" hidden>
       <span id="gm-who" style="color:var(--gold2)"></span>
       <button class="btn small" type="button" id="gm-signout" style="margin-left:12px">Sign out</button>
-      <p class="note" style="margin:8px 0 0">While you are signed in, the GM Review tab, the per-page show and hide controls, and inline editing are available. Players never see them.</p>
+      <p class="note" id="gm-signedin-note" style="margin:8px 0 0"></p>
     </div>
   </div>
 </div>
@@ -649,7 +713,7 @@ section.page.on{animation:pagein .45s ease both}
 <!-- TIMELINE -->
 <section class="page" id="pg-timeline">
   <h2 class="sec">The Timeline of Stonetop</h2>
-  <p class="lede">From the fall of the tower to the march that has not happened yet. Open any event to read it and follow its threads to the people, places, and sessions it touches. Or press Walk the timeline and let the story play itself in order, one event at a time.</p>
+  <p class="lede">From the fall of the tower to the march that has not happened yet. The events run along the top; pick one and its story opens in the box below, with the threads that lead to the people, places, and sessions it touches. Or press Walk the timeline and let the story play itself in order, one event at a time. The GM can add events outright; signed-in players the GM has approved can propose additions, and the GM settles them in GM Review.</p>
   <div class="tl-tools">
     <div class="filterrow"><span class="flab">Eras</span><span id="tl-erafilters" style="display:contents">
       <button class="chipbtn" data-era="all" aria-pressed="true">All eras</button>
@@ -665,19 +729,26 @@ section.page.on{animation:pagein .45s ease both}
     <div class="tl-progress" aria-hidden="true"><div id="tl-progress-fill"></div></div>
     <p class="note" id="tl-status" style="margin:8px 0 0">Nine events, from long ago to next session.</p>
   </div>
-  <div class="tl2" id="tl-list"><div id="tl-spine-fill"></div></div>
+  <div class="tlh" id="tl-heads" role="tablist" aria-label="Timeline events"></div>
+  <div class="tl-detail" id="tl-detail"></div>
   <p class="note" id="tl-empty" hidden>Nothing in the story matches that. Clear the filter to see the whole timeline again.</p>
+  <div id="tl-addwrap" style="margin-top:18px"></div>
+  <p class="note" id="tl-sync-note" style="margin-top:10px"></p>
 </section>
 
 <!-- STEADING -->
 <section class="page" id="pg-steading">
   <h2 class="sec">The Steading: Stonetop</h2>
-  <p class="lede">The steading playbook for the village itself, from Book I (pages 154 to 165), with this table's tracker kept live at the top. Anyone at the table can adjust it during play: change a stat, add a problem, strike one through when the village deals with it.</p>
-  <div id="sb-status" class="status" style="margin:16px 0">Live sync is not connected yet. Changes made here last for this sitting on this device. Changes made here last for this sitting on this device until live sync connects.</div>
-  <div class="statgrid">
-    <div class="card bigstat"><label class="fl" for="st-pros">Prosperity</label><input type="text" id="st-pros" placeholder="Not set yet"><p class="note">Set by the GM on first use.</p></div>
-    <div class="card bigstat"><label class="fl" for="st-pop">Population</label><input type="text" id="st-pop" placeholder="Not set yet"><p class="note">Set by the GM on first use.</p></div>
-    <div class="card bigstat"><label class="fl" for="st-def">Defenses</label><input type="text" id="st-def" placeholder="Not set yet"><p class="note">Set by the GM on first use.</p></div>
+  <p class="lede">The steading playbook for the village itself, from Book I (pages 154 to 165), printed in full below, with this table's tracker kept live at the top. When the GM is signed in, the tracker is the playbook in play: set the stat tracks, count Surplus, mark the village's size and debilities, note the improvements the village has gained, and work the problems and claims board. When a problem or claim is dealt with, it leaves the board and is written into the Steading Log, the running history of what the village has faced and settled.</p>
+  <div id="sb-status" class="status" style="margin:16px 0">Live sync is not connected yet. Changes made here last for this sitting on this device until live sync connects.</div>
+  <div class="sheet" id="st-tracker">
+    <h3>Stonetop, as it stands</h3>
+    <p class="note" id="st-gmnote" style="margin-top:0">Sign in as GM to run the playbook: the tracks, marks, and boards below are yours to change while you are signed in.</p>
+    <div id="st-stats"></div>
+    <h4 style="margin-top:16px">Debilities</h4>
+    <p style="margin-top:0">The steading suffers debilities much like a PC does. They last until a move like Return Triumphant clears them, or until the GM says so.</p>
+    <div class="searchrow" id="st-debilities" style="margin-bottom:6px"></div>
+    <div id="st-debdesc"></div>
   </div>
   <figure class="plate" id="fig-map-village-steading">
     <div class="mapwrap">
@@ -701,10 +772,13 @@ section.page.on{animation:pagein .45s ease both}
   </div>
   <h2 class="sec">Problems and Claims</h2>
   <div id="prob-list"></div>
-  <div class="card" style="margin-top:14px">
+  <div class="card" id="prob-addwrap" style="margin-top:14px" hidden>
     <label class="fl" for="prob-new">Add a problem or claim</label>
     <div class="searchrow" style="margin:0"><input type="text" id="prob-new" placeholder="For example: The grain tallies do not add up"><button class="btn" id="prob-add">Add</button></div>
   </div>
+  <h2 class="sec">The Steading Log</h2>
+  <p class="lede">The running history of the village: every problem and claim the steading has dealt with, in the order they were settled, newest first. What is written here stays written.</p>
+  <div id="steading-log"></div>
   <h2 class="sec">Change Log</h2>
   <div class="card"><div id="change-log"><p class="note">No changes yet this sitting.</p></div>
   <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="copy-steading">Copy steading summary</button><span class="note" id="copy-note" style="align-self:center"></span></div></div>
@@ -1107,7 +1181,7 @@ section.page.on{animation:pagein .45s ease both}
 <!-- GM REVIEW -->
 <section class="page" id="pg-review">
   <h2 class="sec">GM Review</h2>
-  <p class="lede">For the GM, and visible only while the GM is signed in. Every answer players submit to an open question lands here first. Accept an answer as canon and it shows in the article that question belongs to, attached to its question and marked Canon. Dismiss an answer and it stays in this record, but never shows as canon.</p>
+  <p class="lede">For the GM, and visible only while the GM is signed in. Every answer players submit to an open question lands here first. Accept an answer as canon and it shows in the article that question belongs to, attached to its question and marked Canon. Dismiss an answer and it stays in this record, but never shows as canon. Pins that players suggest for the maps wait here too: approve one and it shows on its map for everyone.</p>
   <div id="review-status" class="status" style="margin:16px 0">Loading submitted answers…</div>
   <div class="searchrow" id="review-filters" role="group" aria-label="Filter submissions by status">
     <button class="chipbtn" data-rf="pending" aria-pressed="true">Pending <span id="count-pending"></span></button>
@@ -1117,6 +1191,22 @@ section.page.on{animation:pagein .45s ease both}
     <button class="btn small" id="review-refresh" style="margin-left:auto">Refresh</button>
   </div>
   <div id="review-list"></div>
+  <h2 class="sec">Map Pins Awaiting Approval</h2>
+  <p class="lede">Anyone at the table can suggest a pin on any map, from the Add a pin button under that map. A suggested pin shows only to you, marked in gold on the map, until you approve it here. Approved pins show to everyone; take one down and it leaves the map but stays in the record as dismissed.</p>
+  <div id="pin-review-status" class="status" style="margin:16px 0">Loading map pins…</div>
+  <div id="pin-review-list"></div>
+  <h2 class="sec">Timeline Proposals</h2>
+  <p class="lede">Events that approved players have proposed for the timeline. Approve one and it joins the timeline for everyone; dismiss it and it stays in this record only.</p>
+  <div id="tl-review-list"></div>
+  <h2 class="sec">Players</h2>
+  <p class="lede">Players sign in with accounts the GM invites by email (in Supabase, under Authentication). Register a player's email here, ideally before their first sign-in, so they arrive as a player rather than with GM access. A registered player can read everything at once; approve them and they can edit and propose across the site. Revoke approval and they are back to reading.</p>
+  <div id="players-status" class="status" style="margin:16px 0">Loading the player register…</div>
+  <div id="players-list"></div>
+  <div class="card" style="margin-top:14px">
+    <label class="fl" for="player-new">Register a player by email</label>
+    <div class="searchrow" style="margin:0"><input type="email" id="player-new" placeholder="player@example.com"><button class="btn" id="player-add">Register player</button></div>
+    <p class="note" id="player-add-note" style="margin:8px 0 0"></p>
+  </div>
 </section>
 
 </div>
@@ -1783,56 +1873,245 @@ document.querySelectorAll("#web-groupfilters .chipbtn").forEach(function(b){
 })();
 
 
-/* ---------- steading ---------- */
-var steading = { prosperity:"", population:"", defenses:"", problems:[] };
+/* ---------- steading ----------
+   The live tracker for the playbook printed below it, set out
+   the way the book sets it (Book I, pages 154 to 155): Fortunes,
+   Surplus, and Size on one side; Population, Prosperity, and
+   Defenses on the other; the debilities beneath. The book's
+   starting values are the defaults: Fortunes +1, Prosperity +0,
+   Population +0, Defenses +0, Surplus 1, Size village.
+   Editing follows the site's sign-in model: the public sees the
+   village as it stands, read-only; the GM and players the GM
+   has approved can run the playbook (set the tracks, step
+   Surplus, change Size, mark debilities and improvements, and
+   work the problems and claims board).
+   Marking a problem or claim "Dealt with" takes it off the
+   board and writes it into the Steading Log with the date: the
+   running history of what the village has faced and settled.
+   Saving: the steading_state row keeps Prosperity, Population,
+   and Defenses as numbers, as it always has. Its problems
+   column now holds a small JSON record (marked v:2) carrying
+   the problems board plus the log, Fortunes, Surplus, Size,
+   debilities, and gained improvements; an older row holding a
+   plain problems array still loads as the board alone. */
+var steading = { fortunes:1, prosperity:0, population:0, defenses:0, surplus:1, size:"village", debilities:[], improvements:[], problems:[], log:[] };
 var probSeed = ["Ogmolok's containment is in question, now that the Forgemaster is dead","Hilde is held by the Crynwin, somewhere west","The Gathered Bands: a thousand Hillfolk marching under a Hdor","White Oak's price: a memory given, and a favor owed"];
 steading.problems = probSeed.map(function(t){ return {text:t, done:false}; });
+var ST_STATS = [
+  ["fortunes","Fortunes","Morale, social cohesion, and just how it is going. Roll +Fortunes when Seasons Change, or when you Requisition one of the village's assets."],
+  ["prosperity","Prosperity","The quality and variety of services and household goods, tools and weapons, finery and little luxuries. Roll +Prosperity to Trade & Barter."],
+  ["population","Population","The number of able bodies in town, relative to its Size. Add it to rolls to Muster or Pull Together, and to the Surplus consumed each winter."],
+  ["defenses","Defenses","The martial prowess and readiness of the steading. Roll +Defenses to Deploy."]
+];
+var ST_SIZES = [["hamlet","Hamlet","fewer than 50 people"],["village","Village","150 to 350"],["town","Town","500 to 1500"],["city","City","2500 or more"]];
+var ST_DEBILITIES = [
+  ["diminished","Diminished","by injury, sickness, or doubt: disadvantage to Deploy, Muster, or Pull Together."],
+  ["lacking","Lacking","due to shortages, hoarding, or distrust: treat Prosperity as if it is 1 lower than it is."],
+  ["malcontent","Malcontent","from fear, anger, or despair: Fortunes reset to +0 each season, not +1, and folks need Persuading more often than usual."]
+];
 var logEl = document.getElementById("change-log");
 var changes = [];
 function logChange(msg){
   changes.unshift(msg);
-  logEl.innerHTML = changes.map(function(c){ return "<p style='margin:0 0 6px'>"+esc(c)+"</p>"; }).join("");
+  if (logEl) logEl.innerHTML = changes.map(function(c){ return "<p style='margin:0 0 6px'>"+esc(c)+"</p>"; }).join("");
+}
+function stToday(){ return new Date().toLocaleDateString("en-GB", { day:"numeric", month:"long", year:"numeric" }); }
+function stFmt(v){ return (v > 0 ? "+" + v : "" + v); }
+function stCanEdit(){ return !!(window.isGM || window.canEdit); }
+function buildSteadingTracker(){
+  var host = document.getElementById("st-stats");
+  if (!host) return;
+  var grid = document.createElement("div"); grid.className = "pbgrid";
+  var left = document.createElement("div"); left.className = "pbbox";
+  var right = document.createElement("div"); right.className = "pbbox";
+  ST_STATS.forEach(function(def, idx){
+    var box = (def[0] === "fortunes") ? left : right;
+    var h = document.createElement("h4"); h.textContent = def[1]; h.style.marginTop = idx ? "14px" : "0";
+    box.appendChild(h);
+    var tr = document.createElement("div"); tr.className = "stattrack"; tr.setAttribute("role","group"); tr.setAttribute("aria-label", def[1]);
+    [-1,0,1,2,3].forEach(function(v){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "pipbtn"; b.dataset.stat = def[0]; b.dataset.val = v;
+      b.setAttribute("aria-label", "Set " + def[1] + " to " + stFmt(v));
+      b.innerHTML = "<span class='box'></span>" + stFmt(v);
+      b.addEventListener("click", function(){
+        if (!stCanEdit()) return;
+        steading[def[0]] = v;
+        logChange(def[1] + " set to " + stFmt(v));
+        saveSteading(); renderSteading();
+      });
+      tr.appendChild(b);
+    });
+    box.appendChild(tr);
+    var p = document.createElement("p"); p.textContent = def[2]; box.appendChild(p);
+  });
+  var sh = document.createElement("h4"); sh.textContent = "Surplus"; sh.style.marginTop = "14px"; left.appendChild(sh);
+  var surp = document.createElement("div"); surp.className = "surp";
+  var minus = document.createElement("button"); minus.type = "button"; minus.className = "btn small"; minus.id = "st-surplus-minus"; minus.textContent = "−"; minus.setAttribute("aria-label","Spend one Surplus");
+  var val = document.createElement("span"); val.className = "val"; val.id = "st-surplus-val"; val.textContent = steading.surplus;
+  var plus = document.createElement("button"); plus.type = "button"; plus.className = "btn small"; plus.id = "st-surplus-plus"; plus.textContent = "+"; plus.setAttribute("aria-label","Gain one Surplus");
+  minus.addEventListener("click", function(){ if (!stCanEdit()) return; steading.surplus = Math.max(0, steading.surplus - 1); logChange("Surplus spent: now " + steading.surplus); saveSteading(); renderSteading(); });
+  plus.addEventListener("click", function(){ if (!stCanEdit()) return; steading.surplus = steading.surplus + 1; logChange("Surplus gained: now " + steading.surplus); saveSteading(); renderSteading(); });
+  surp.appendChild(minus); surp.appendChild(val); surp.appendChild(plus);
+  left.appendChild(surp);
+  var sp = document.createElement("p"); sp.textContent = "Food in the granary and in household larders, livestock ready for slaughter, whisky ready to drink. Generated each summer and autumn, consumed each winter. There is no upper limit."; left.appendChild(sp);
+  var zh = document.createElement("h4"); zh.textContent = "Size"; zh.style.marginTop = "14px"; left.appendChild(zh);
+  var zrow = document.createElement("div"); zrow.className = "searchrow"; zrow.style.margin = "4px 0";
+  ST_SIZES.forEach(function(z){
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "chipbtn"; b.dataset.size = z[0];
+    b.textContent = z[1];
+    b.title = z[1] + ": " + z[2];
+    b.addEventListener("click", function(){ if (!stCanEdit()) return; steading.size = z[0]; logChange("Size set to " + z[1]); saveSteading(); renderSteading(); });
+    zrow.appendChild(b);
+  });
+  left.appendChild(zrow);
+  var zp = document.createElement("p"); zp.id = "st-size-note"; left.appendChild(zp);
+  grid.appendChild(left); grid.appendChild(right);
+  host.appendChild(grid);
+  var dhost = document.getElementById("st-debilities");
+  if (dhost){
+    ST_DEBILITIES.forEach(function(d){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "chipbtn"; b.dataset.deb = d[0]; b.textContent = d[1];
+      b.setAttribute("aria-pressed","false");
+      b.addEventListener("click", function(){
+        if (!stCanEdit()) return;
+        var i = steading.debilities.indexOf(d[0]);
+        if (i === -1){ steading.debilities.push(d[0]); logChange("Debility marked: " + d[1]); }
+        else { steading.debilities.splice(i,1); logChange("Debility cleared: " + d[1]); }
+        saveSteading(); renderSteading();
+      });
+      dhost.appendChild(b);
+    });
+  }
 }
 function renderProblems(){
-  var el = document.getElementById("prob-list"); el.innerHTML = "";
+  var el = document.getElementById("prob-list"); if (!el) return; el.innerHTML = "";
   steading.problems.forEach(function(p,i){
     var row = document.createElement("div"); row.className = "card"; row.style.marginBottom = "10px"; row.style.display = "flex"; row.style.gap = "12px"; row.style.alignItems = "flex-start";
-    row.innerHTML = "<div style='flex:1;"+(p.done?"text-decoration:line-through;color:var(--faint)":"")+"'>"+esc(p.text)+"</div>";
-    var b1 = document.createElement("button"); b1.className = "btn small"; b1.textContent = p.done ? "Reopen" : "Dealt with";
-    b1.addEventListener("click", function(){ p.done = !p.done; logChange((p.done?"Problem dealt with: ":"Problem reopened: ")+p.text); saveSteading(); renderProblems(); });
-    var b2 = document.createElement("button"); b2.className = "btn small rust"; b2.textContent = "Remove";
-    b2.addEventListener("click", function(){ var gone = steading.problems.splice(i,1)[0]; logChange("Problem removed: "+gone.text); saveSteading(); renderProblems(); });
-    row.appendChild(b1); row.appendChild(b2); el.appendChild(row);
+    var txt = document.createElement("div"); txt.style.flex = "1"; txt.textContent = p.text; row.appendChild(txt);
+    if (stCanEdit()){
+      var b1 = document.createElement("button"); b1.className = "btn small"; b1.textContent = "Dealt with";
+      b1.addEventListener("click", function(){
+        var gone = steading.problems.splice(i,1)[0];
+        steading.log.unshift({ text:gone.text, date:stToday() });
+        logChange("Problem dealt with, and written into the Steading Log: " + gone.text);
+        saveSteading(); renderSteading();
+      });
+      var b2 = document.createElement("button"); b2.className = "btn small rust"; b2.textContent = "Remove";
+      b2.addEventListener("click", function(){ var gone = steading.problems.splice(i,1)[0]; logChange("Problem removed: " + gone.text); saveSteading(); renderSteading(); });
+      row.appendChild(b1); row.appendChild(b2);
+    }
+    el.appendChild(row);
   });
   if (!steading.problems.length) el.innerHTML = "<p class='note'>No problems on the board. The village breathes easy, for now.</p>";
+  var wrap = document.getElementById("prob-addwrap");
+  if (wrap) wrap.hidden = !stCanEdit();
 }
-["pros","pop","def"].forEach(function(k){
-  var input = document.getElementById("st-"+k);
-  input.addEventListener("change", function(){
-    var key = k==="pros"?"prosperity":(k==="pop"?"population":"defenses");
-    steading[key] = input.value.trim();
-    logChange(key.charAt(0).toUpperCase()+key.slice(1)+" set to: "+(steading[key]||"unset"));
-    saveSteading();
+function renderSteadingLog(){
+  var el = document.getElementById("steading-log"); if (!el) return; el.innerHTML = "";
+  if (!steading.log.length){ el.innerHTML = "<p class='note'>Nothing has been dealt with yet. When a problem or claim is marked as dealt with, it is written here.</p>"; return; }
+  steading.log.forEach(function(entry, i){
+    var row = document.createElement("div"); row.className = "logentry";
+    var when = document.createElement("span"); when.className = "when"; when.textContent = entry.date || "";
+    var what = document.createElement("div"); what.className = "what"; what.textContent = entry.text;
+    row.appendChild(when); row.appendChild(what);
+    if (stCanEdit()){
+      var b = document.createElement("button"); b.className = "btn small"; b.textContent = "Reopen";
+      b.addEventListener("click", function(){
+        var e = steading.log.splice(i,1)[0];
+        steading.problems.push({ text:e.text, done:false });
+        logChange("Problem reopened from the Steading Log: " + e.text);
+        saveSteading(); renderSteading();
+      });
+      row.appendChild(b);
+    }
+    el.appendChild(row);
   });
-});
-document.getElementById("prob-add").addEventListener("click", function(){
+}
+function renderImprovements(){
+  document.querySelectorAll("#pg-steading .imp").forEach(function(imp){
+    var h = imp.querySelector("h4"); if (!h) return;
+    var name = h.textContent.trim();
+    var gained = steading.improvements.indexOf(name) !== -1;
+    imp.classList.toggle("gained", gained);
+    var ctl = imp.querySelector(".impctl");
+    if (ctl) ctl.remove();
+    ctl = document.createElement("div"); ctl.className = "impctl";
+    if (gained){
+      var badge = document.createElement("span"); badge.className = "gainedbadge"; badge.textContent = "Gained"; ctl.appendChild(badge);
+    }
+    if (stCanEdit()){
+      var b = document.createElement("button"); b.type = "button"; b.className = "btn small"; b.textContent = gained ? "Mark as not gained" : "Mark as gained";
+      b.addEventListener("click", function(){
+        var i = steading.improvements.indexOf(name);
+        if (i === -1){ steading.improvements.push(name); logChange("Improvement gained: " + name); }
+        else { steading.improvements.splice(i,1); logChange("Improvement no longer held: " + name); }
+        saveSteading(); renderImprovements();
+      });
+      ctl.appendChild(b);
+    }
+    if (gained || stCanEdit()) imp.appendChild(ctl);
+  });
+}
+function renderSteading(){
+  var can = stCanEdit();
+  var note = document.getElementById("st-gmnote");
+  if (note) note.textContent = window.isGM
+    ? "You are signed in as GM: the playbook is live. Set the tracks, mark debilities, note the improvements the village has gained, and deal with problems and claims. Everything saves as you go."
+    : (window.playerApproved
+      ? "You are signed in as an approved player: the playbook is live for you too. Set the tracks, mark debilities and improvements, and deal with problems and claims. Everything saves as you go."
+      : (window.isPlayer
+        ? "You are signed in, but the GM has not approved you yet, so the playbook is read-only for now. Once the GM approves you in GM Review, you can run it too."
+        : "This is the public view: the village as it stands. Sign in, and once the GM has approved you, the playbook here is live: tracks, marks, and boards, all editable."));
+  document.querySelectorAll("#st-stats .pipbtn").forEach(function(b){
+    var on = steading[b.dataset.stat] === Number(b.dataset.val);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+    b.disabled = !can;
+  });
+  var sv = document.getElementById("st-surplus-val"); if (sv) sv.textContent = steading.surplus;
+  var sm = document.getElementById("st-surplus-minus"); if (sm) sm.disabled = !can;
+  var spl = document.getElementById("st-surplus-plus"); if (spl) spl.disabled = !can;
+  document.querySelectorAll("#st-stats [data-size]").forEach(function(b){
+    b.setAttribute("aria-pressed", steading.size === b.dataset.size ? "true" : "false");
+    b.disabled = !can;
+  });
+  var zn = document.getElementById("st-size-note");
+  if (zn){ var z = ST_SIZES.filter(function(s){ return s[0] === steading.size; })[0]; zn.textContent = z ? ("Stonetop is a " + z[1].toLowerCase() + ": " + z[2] + " people.") : ""; }
+  document.querySelectorAll("#st-debilities [data-deb]").forEach(function(b){
+    b.setAttribute("aria-pressed", steading.debilities.indexOf(b.dataset.deb) !== -1 ? "true" : "false");
+    b.disabled = !can;
+  });
+  var dd = document.getElementById("st-debdesc");
+  if (dd){
+    dd.innerHTML = "";
+    ST_DEBILITIES.forEach(function(d){
+      if (steading.debilities.indexOf(d[0]) === -1) return;
+      var p = document.createElement("p"); p.style.margin = "0 0 4px";
+      p.innerHTML = "<b>" + esc(d[1]) + "</b>, " + esc(d[2]);
+      dd.appendChild(p);
+    });
+    if (!steading.debilities.length) dd.innerHTML = "<p class='note' style='margin:0'>The steading carries no debilities right now.</p>";
+  }
+  renderProblems();
+  renderSteadingLog();
+  renderImprovements();
+}
+var probAddBtn = document.getElementById("prob-add");
+if (probAddBtn) probAddBtn.addEventListener("click", function(){
+  if (!stCanEdit()) return;
   var inp = document.getElementById("prob-new"); var v = inp.value.trim(); if (!v) return;
   steading.problems.push({text:v, done:false}); inp.value = "";
-  logChange("Problem added: "+v); saveSteading(); renderProblems();
+  logChange("Problem added: " + v); saveSteading(); renderSteading();
 });
-function applySteading(){
-  document.getElementById("st-pros").value = steading.prosperity || "";
-  document.getElementById("st-pop").value = steading.population || "";
-  document.getElementById("st-def").value = steading.defenses || "";
-  renderProblems();
-}
+function applySteading(){ renderSteading(); }
 var steadingRowId = null;
 function statNum(v){ var n = parseInt(String(v).trim(), 10); return isNaN(n) ? 0 : n; }
 function saveSteading(){
   if (!sb) return;
-  /* The live table stores the three stats as numbers (0 means
-     not set yet) and the problems board as a JSON string. */
-  var payload = { prosperity:statNum(steading.prosperity), population:statNum(steading.population), defenses:statNum(steading.defenses), problems:JSON.stringify(steading.problems), updated_at:new Date().toISOString() };
+  var record = { v:2, problems:steading.problems, log:steading.log, fortunes:steading.fortunes, surplus:steading.surplus, size:steading.size, debilities:steading.debilities, improvements:steading.improvements };
+  var payload = { prosperity:steading.prosperity, population:steading.population, defenses:steading.defenses, problems:JSON.stringify(record), updated_at:new Date().toISOString() };
   if (steadingRowId) {
     sb.from("steading_state").update(payload).eq("id", steadingRowId).then(function(){});
   } else {
@@ -1840,11 +2119,19 @@ function saveSteading(){
   }
 }
 document.getElementById("copy-steading").addEventListener("click", function(){
-  var lines = ["Stonetop, the steading","Prosperity: "+(steading.prosperity||"not set"),"Population: "+(steading.population||"not set"),"Defenses: "+(steading.defenses||"not set"),"Problems:"];
-  steading.problems.forEach(function(p){ lines.push((p.done?"[dealt with] ":"- ")+p.text); });
+  var lines = ["Stonetop, the steading",
+    "Fortunes: " + stFmt(steading.fortunes), "Prosperity: " + stFmt(steading.prosperity), "Population: " + stFmt(steading.population), "Defenses: " + stFmt(steading.defenses),
+    "Surplus: " + steading.surplus, "Size: " + steading.size,
+    "Debilities: " + (steading.debilities.length ? steading.debilities.join(", ") : "none"),
+    "Improvements gained: " + (steading.improvements.length ? steading.improvements.join(", ") : "none"),
+    "Problems and claims:"];
+  steading.problems.forEach(function(p){ lines.push("- " + p.text); });
+  lines.push("The Steading Log (dealt with):");
+  steading.log.forEach(function(e){ lines.push("- [" + (e.date || "") + "] " + e.text); });
   var txt = lines.join("\n");
   if (navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){ document.getElementById("copy-note").textContent = "Copied."; });
 });
+buildSteadingTracker();
 applySteading();
 
 /* ---------- open questions ----------
@@ -2025,11 +2312,17 @@ function buildQItem(src, it, idx){
     return "<div class='sub pending'><span class='who'>" + esc(s.who) + "</span><span class='badge pending'>Awaiting GM review</span><div style='margin-top:4px'>" + esc(s.text) + "</div></div>";
   }).join("");
   oqUid++;
+  var canAnswer = !!(window.isGM || window.canEdit);
   box.innerHTML = "<p class='q'>" + esc(it) + "</p><div class='subs'>" + subs + "</div>" +
-    "<label class='fl' for='ta-oq-" + oqUid + "'>Your answer</label><textarea id='ta-oq-" + oqUid + "' placeholder='What does the village know, or think it knows?'></textarea>" +
-    "<div class='searchrow' style='margin:10px 0 0'><input type='text' class='who-inp' placeholder='Your name (character or player)' style='max-width:280px'><button class='btn act-sub'>Submit answer</button></div>";
-  box.querySelector(".act-sub").addEventListener("click", function(){
-    var ta = box.querySelector("textarea"); var who = box.querySelector(".who-inp").value.trim() || "Anonymous";
+    (canAnswer
+      ? "<label class='fl' for='ta-oq-" + oqUid + "'>Your answer</label><textarea id='ta-oq-" + oqUid + "' placeholder='What does the village know, or think it knows?'></textarea>" +
+        "<div class='searchrow' style='margin:10px 0 0'><input type='text' class='who-inp' placeholder='Your name (character or player)' style='max-width:280px'><button class='btn act-sub'>Submit answer</button></div>"
+      : "<p class='note'>Answers go to the GM for review, with the name of the player who sent them. Sign in, and once the GM has approved you, you can answer open questions.</p>");
+  var subBtn = box.querySelector(".act-sub");
+  if (subBtn) subBtn.addEventListener("click", function(){
+    var ta = box.querySelector("textarea"); var who = box.querySelector(".who-inp").value.trim();
+    if (typeof gmUser !== "undefined" && gmUser && gmUser.email) who = who ? (who + " (" + gmUser.email + ")") : gmUser.email;
+    if (!who) who = "Anonymous";
     var text = ta.value.trim(); if (!text){ ta.focus(); return; }
     var entry = { id:null, question:it, source_page:src, answer:text, submitted_by:who, submitted_at:new Date().toISOString(), status:"pending" };
     allSubs.push(entry);
@@ -2121,11 +2414,22 @@ function renderQuestions(){
     sb.from("steading_state").select("*").order("id",{ascending:true}).limit(1).then(function(res){
       if (res.data && res.data.length){
         var row = res.data[0]; steadingRowId = row.id;
-        steading.prosperity = row.prosperity ? String(row.prosperity) : "";
-        steading.population = row.population ? String(row.population) : "";
-        steading.defenses = row.defenses ? String(row.defenses) : "";
-        if (Array.isArray(row.problems)) steading.problems = row.problems;
-        else if (typeof row.problems === "string" && row.problems) { try { var p = JSON.parse(row.problems); if (Array.isArray(p)) steading.problems = p; } catch(e){} }
+        steading.prosperity = statNum(row.prosperity);
+        steading.population = statNum(row.population);
+        steading.defenses = statNum(row.defenses);
+        var parsed = null;
+        if (Array.isArray(row.problems)) parsed = row.problems;
+        else if (typeof row.problems === "string" && row.problems) { try { parsed = JSON.parse(row.problems); } catch(e){} }
+        if (Array.isArray(parsed)) steading.problems = parsed;
+        else if (parsed && parsed.v === 2){
+          if (Array.isArray(parsed.problems)) steading.problems = parsed.problems;
+          if (Array.isArray(parsed.log)) steading.log = parsed.log;
+          if (typeof parsed.fortunes === "number") steading.fortunes = parsed.fortunes;
+          if (typeof parsed.surplus === "number") steading.surplus = parsed.surplus;
+          if (typeof parsed.size === "string") steading.size = parsed.size;
+          if (Array.isArray(parsed.debilities)) steading.debilities = parsed.debilities;
+          if (Array.isArray(parsed.improvements)) steading.improvements = parsed.improvements;
+        }
         applySteading();
       }
     });
@@ -2237,9 +2541,16 @@ document.getElementById("chr-submit").addEventListener("click", function(){
   var byEl = document.getElementById("chr-by");
   var entryEl = document.getElementById("chr-entry");
   var note = document.getElementById("chr-note");
+  if (!(window.isGM || window.canEdit)){
+    if (note) note.textContent = window.isPlayer
+      ? "You are signed in, but the GM has not approved you yet. Once they do, you can send Chronicle entries."
+      : "Sign in, and once the GM has approved you, you can send Chronicle entries. They go to the GM with your name on them.";
+    return;
+  }
   var title = titleEl.value.trim();
   var entry = entryEl.value;
   var by = byEl.value.trim() || "Wapner Sati";
+  if (window.isPlayer && typeof gmUser !== "undefined" && gmUser && gmUser.email) by = by + " (" + gmUser.email + ")";
   if (!title){ titleEl.focus(); if (note) note.textContent = "Give the entry a title first."; return; }
   if (!entry.trim()){ entryEl.focus(); if (note) note.textContent = "The entry itself is empty."; return; }
   var row = { id:null, title:title, entry:entry, submitted_by:by, submitted_at:new Date().toISOString(), status:"pending" };
@@ -2560,6 +2871,101 @@ function loadVault(){
   });
 }
 
+
+/* ---------- players: the register and GM approval ----------
+   The sign-in model for the whole site. The public view is
+   read-only. The GM invites players by email in Supabase
+   (Authentication), and registers each player's email here.
+   A registered player who signs in can read everything at
+   once; once the GM approves them, window.canEdit opens the
+   editing and proposing surfaces (the steading playbook, map
+   pin and timeline proposals, answers and Chronicle entries),
+   and their proposals carry their email as the attribution.
+   A signed-in account with no register row is treated as the
+   GM: that is how the site worked when the GM was the only
+   account, and it keeps the GM's own sign-in working. Register
+   players before their first sign-in so they arrive as
+   players. GM_EMAILS can also pin GM accounts by email.
+   The register lives in the Supabase table player_registry
+   (email, approved); until that table exists, the register is
+   kept for this sitting only and sign-ins keep the old
+   GM-only behaviour, which GM Review says plainly. */
+var GM_EMAILS = [];
+var playerRegistry = [];
+var registryOk = false;
+window.isPlayer = false;
+window.playerApproved = false;
+window.canEdit = false;
+function computeRoles(){
+  window.isGM = false; window.isPlayer = false; window.playerApproved = false;
+  var u = (typeof gmUser !== "undefined") ? gmUser : null;
+  if (u && u.email){
+    var email = String(u.email).toLowerCase();
+    if (GM_EMAILS.indexOf(email) !== -1){ window.isGM = true; }
+    else {
+      var row = null;
+      playerRegistry.forEach(function(r){ if (String(r.email || "").toLowerCase() === email) row = r; });
+      if (row){ window.isPlayer = true; window.playerApproved = !!row.approved; }
+      else { window.isGM = true; }
+    }
+  }
+  window.canEdit = !!(window.isGM || window.playerApproved);
+}
+function loadRegistry(){
+  if (!sb){ renderPlayers(); return; }
+  sb.from("player_registry").select("*").order("email", { ascending:true }).then(function(res){
+    if (res.error){ registryOk = false; }
+    else { registryOk = true; playerRegistry = res.data || []; }
+    computeRoles(); applyGM(); renderPlayers();
+  });
+}
+function renderPlayers(){
+  var st = document.getElementById("players-status");
+  var list = document.getElementById("players-list");
+  if (!st || !list) return;
+  if (!sb){ st.className = "status"; st.textContent = "Live sync is not connected, so the player register is kept for this sitting only."; }
+  else if (!registryOk){ st.className = "status"; st.textContent = "The player_registry table does not exist in Supabase yet, so the register is kept for this sitting only. Until it exists, anyone who signs in is treated as the GM, as the site worked before players had their own accounts."; }
+  else { st.className = "status ok"; st.textContent = "Live sync is connected. The register saves to Supabase and is shared with every device."; }
+  list.innerHTML = "";
+  if (!window.isGM) return;
+  if (!playerRegistry.length){ list.innerHTML = "<p class='note'>No players registered yet. Add a player's email below, and invite them in Supabase so they can set a password and sign in.</p>"; return; }
+  playerRegistry.forEach(function(r){
+    var row = document.createElement("div"); row.className = "vrow";
+    var vt = document.createElement("div"); vt.className = "vt";
+    vt.innerHTML = "<b>" + esc(r.email || "") + "</b> <span class='badge " + (r.approved ? "accepted" : "pending") + "'>" + (r.approved ? "Approved" : "Awaiting approval") + "</span>";
+    row.appendChild(vt);
+    var b = document.createElement("button"); b.type = "button"; b.className = "btn small" + (r.approved ? " rust" : " good");
+    b.textContent = r.approved ? "Revoke approval" : "Approve";
+    b.addEventListener("click", function(){
+      r.approved = !r.approved;
+      if (sb && registryOk && r.id) sb.from("player_registry").update({ approved:r.approved }).eq("id", r.id).then(function(){});
+      computeRoles(); applyGM(); renderPlayers();
+    });
+    row.appendChild(b);
+    list.appendChild(row);
+  });
+}
+var playerAddBtn = document.getElementById("player-add");
+if (playerAddBtn) playerAddBtn.addEventListener("click", function(){
+  var inp = document.getElementById("player-new");
+  var note = document.getElementById("player-add-note");
+  var email = inp.value.trim().toLowerCase();
+  if (!email || email.indexOf("@") === -1){ note.textContent = "Enter the player's email address."; return; }
+  if (gmUser && gmUser.email && email === String(gmUser.email).toLowerCase()){ note.textContent = "That is your own email. The GM account does not go on the player register."; return; }
+  if (playerRegistry.some(function(r){ return String(r.email || "").toLowerCase() === email; })){ note.textContent = "That email is already registered."; return; }
+  var row = { email:email, approved:false };
+  playerRegistry.push(row);
+  inp.value = "";
+  note.textContent = registryOk ? "Registered. Invite them in Supabase (Authentication) if they have no account yet, then approve them here once they have signed in." : "Registered for this sitting. Once the player_registry table exists in Supabase, registrations will save for good.";
+  if (sb && registryOk){
+    sb.from("player_registry").insert({ email:email, approved:false }).select().then(function(res){
+      if (res.data && res.data[0]) row.id = res.data[0].id;
+      renderPlayers();
+    });
+  }
+  renderPlayers();
+});
+
 /* ---------- GM auth wiring ---------- */
 function applyGM(){
   var reviewTab = document.getElementById("tab-review");
@@ -2569,12 +2975,24 @@ function applyGM(){
   var btn = document.getElementById("gm-btn");
   var form = document.getElementById("gm-form");
   var signed = document.getElementById("gm-signedin");
-  if (window.isGM){
-    btn.textContent = "GM: Signed In";
+  var who = document.getElementById("gm-who");
+  var snote = document.getElementById("gm-signedin-note");
+  var user = (typeof gmUser !== "undefined") ? gmUser : null;
+  if (user){
+    btn.textContent = window.isGM ? "GM: Signed In" : "Signed In";
     form.hidden = true; signed.hidden = false;
-    document.getElementById("gm-who").textContent = "Signed in as GM" + (gmUser && gmUser.email ? " (" + gmUser.email + ")" : "") + ".";
+    if (who) who.textContent = window.isGM
+      ? "Signed in as GM" + (user.email ? " (" + user.email + ")" : "") + "."
+      : (window.playerApproved
+        ? "Signed in as " + (user.email || "a player") + ", an approved player. You can edit and propose."
+        : "Signed in as " + (user.email || "a player") + ", a player who is not approved yet. You can read everything; editing and proposing open once the GM approves you.");
+    if (snote) snote.textContent = window.isGM
+      ? "While you are signed in as GM, the GM Review tab, the per-page show and hide controls, approvals, and inline editing are available. Players never see them."
+      : (window.playerApproved
+        ? "You can run the steading playbook, propose map pins and timeline events, submit answers, and send Chronicle entries. What you propose carries your email, so the GM can see it came from you."
+        : "Ask the GM to approve your account in GM Review, under Players. Until then, the site is read-only for you, like the public view.");
   } else {
-    btn.textContent = "GM Sign In";
+    btn.textContent = "Sign In";
     form.hidden = false; signed.hidden = true;
     var reviewPage = document.getElementById("pg-review");
     if (reviewPage && reviewPage.classList.contains("on")) go("home");
@@ -2584,10 +3002,17 @@ function applyGM(){
     signed.hidden = true;
     var setupEl = document.getElementById("gm-setup");
     if (setupEl) setupEl.hidden = false;
-    btn.textContent = "Set GM Password";
+    btn.textContent = "Set Password";
   }
   renderReview(); renderChronicle(); renderVault();
   if (typeof renderQuestions === "function") renderQuestions();
+  if (typeof renderSteading === "function") renderSteading();
+  if (typeof renderMapPins === "function") renderMapPins();
+  if (typeof renderPinReview === "function") renderPinReview();
+  if (typeof renderTimeline === "function") renderTimeline();
+  if (typeof renderTlAdd === "function") renderTlAdd();
+  if (typeof renderTlReview === "function") renderTlReview();
+  if (typeof renderPlayers === "function") renderPlayers();
 }
 var gmBtn = document.getElementById("gm-btn");
 var gmPanel = document.getElementById("gm-panel");
@@ -2617,7 +3042,7 @@ if (AUTH_HASH.access_token && (AUTH_HASH.type === "invite" || AUTH_HASH.type ===
 } else if (AUTH_HASH.error || AUTH_HASH.error_code){
   gmPanel.hidden = false;
   gmBtn.setAttribute("aria-expanded", "true");
-  document.getElementById("gm-note").textContent = "That sign-in link was invalid or has expired. Sign in with your email and password, or ask for a fresh invite link.";
+  document.getElementById("gm-note").textContent = "That sign-in link was invalid or has expired. Sign in with your email and password, or ask the GM for a fresh invite link.";
   cleanAuthHash();
 }
 document.getElementById("gm-setup").addEventListener("submit", function(evt){
@@ -2639,7 +3064,7 @@ document.getElementById("gm-setup").addEventListener("submit", function(evt){
     window.passwordSetupMode = false;
     document.getElementById("gm-setup").hidden = true;
     applyGM();
-    document.getElementById("gm-who").textContent = "Password set. Signed in as GM" + (gmUser && gmUser.email ? " (" + gmUser.email + ")" : "") + ".";
+    document.getElementById("gm-who").textContent = "Password set. Signed in" + (gmUser && gmUser.email ? " as " + gmUser.email : "") + ".";
     cleanAuthHash();
   });
 });
@@ -2655,7 +3080,7 @@ document.getElementById("gm-form").addEventListener("submit", function(evt){
   if (!sb || !sb.auth){ note.textContent = "Live sync is not connected, so sign-in is unavailable right now."; return; }
   var email = document.getElementById("gm-email").value.trim();
   var pass = document.getElementById("gm-pass").value;
-  if (!email || !pass){ note.textContent = "Enter the GM email and password."; return; }
+  if (!email || !pass){ note.textContent = "Enter your email and password."; return; }
   note.textContent = "Signing in…";
   sb.auth.signInWithPassword({ email:email, password:pass }).then(function(res){
     if (res.error){ note.textContent = "Sign-in failed: " + res.error.message; return; }
@@ -2672,10 +3097,11 @@ var gmSessionKey = "__none__";
 function setSession(session){
   var user = session && session.user ? session.user : null;
   var key = user ? user.id : "__anon__";
-  window.isGM = !!user;
   gmUser = user;
+  computeRoles();
   applyGM();
   if (key !== gmSessionKey){ gmSessionKey = key; loadVault(); }
+  if (user) loadRegistry();
 }
 if (sb && sb.auth){
   sb.auth.getSession().then(function(res){
@@ -2746,13 +3172,20 @@ function linkButton(l, cls){
 }
 
 /* ---------- the timeline, on its own page ----------
-   The nine events that used to sit at the foot of the World
-   page, now with titles, eras, and threads: each event opens
-   to its text and to buttons leading to the people, places,
-   sessions, and articles it touches. Era chips and the filter
-   box narrow the list; Walk the timeline plays the visible
-   events in order, opening and highlighting each in turn and
-   filling the progress rule and the spine as it goes. */
+   The timeline runs horizontally: the event headings sit in a
+   row along the top, and the event you pick opens in the box
+   beneath them, with its text and the link buttons that lead
+   to the people, places, sessions, and articles it touches.
+   Era chips and the filter box narrow the row; Walk the
+   timeline steps through the visible events in order.
+   Adding to it follows the site's ethos: the GM adds events
+   outright (and can change or remove the ones added here; the
+   nine events from the campaign record below are part of the
+   page itself), and approved players propose additions, which
+   wait in GM Review until the GM approves them. Added events
+   save to the Supabase table timeline_events and proposals to
+   timeline_proposals; until those tables exist, both are kept
+   for this sitting only, which the page says plainly. */
 var TL_ERAS = { deep:"The deep past", village:"Village years", spring:"This spring", ahead:"Still to come" };
 var TL_EVENTS = [
   { era:"deep", when:"Long ago", title:"The Tower Falls",
@@ -2783,9 +3216,17 @@ var TL_EVENTS = [
     text:"The westward march to the Crynwin nests after Hilde.",
     links:[ { label:"Next: Session 8", page:"sessions" }, { label:"Hilde Saer", person:"Hilde Saer" } ] }
 ];
-var tlState = { era:"all", q:"", open:{}, playing:false, timer:null, step:0 };
+var tlCustom = [];      /* events added on the page: by the GM, or approved proposals */
+var tlProposals = [];   /* proposed events waiting on the GM */
+var tlEventsOk = false, tlPropsOk = false;
+var tlState = { era:"all", q:"", sel:0, playing:false, timer:null, step:0, editing:null };
+function tlAllEvents(){
+  var out = TL_EVENTS.map(function(ev, i){ return { ev:ev, i:i, custom:null }; });
+  tlCustom.forEach(function(c, j){ out.push({ ev:c, i:TL_EVENTS.length + j, custom:c }); });
+  return out;
+}
 function tlVisibleEvents(){
-  return TL_EVENTS.map(function(ev, i){ return { ev:ev, i:i }; }).filter(function(x){
+  return tlAllEvents().filter(function(x){
     if (tlState.era !== "all" && x.ev.era !== tlState.era) return false;
     if (tlState.q){
       var hay = (x.ev.when + " " + x.ev.title + " " + x.ev.text).toLowerCase();
@@ -2795,76 +3236,235 @@ function tlVisibleEvents(){
   });
 }
 function renderTimeline(){
-  var list = document.getElementById("tl-list");
-  if (!list) return;
-  var spine = document.getElementById("tl-spine-fill");
-  list.innerHTML = ""; if (spine) list.appendChild(spine);
+  var heads = document.getElementById("tl-heads");
+  var detail = document.getElementById("tl-detail");
+  if (!heads || !detail) return;
   var vis = tlVisibleEvents();
-  document.getElementById("tl-empty").hidden = vis.length > 0;
+  var empty = document.getElementById("tl-empty");
+  if (empty) empty.hidden = vis.length > 0;
+  if (vis.length && !vis.some(function(x){ return x.i === tlState.sel; })) tlState.sel = vis[0].i;
+  heads.innerHTML = "";
   vis.forEach(function(x){
-    var ev = x.ev, i = x.i;
-    var art = document.createElement("article");
-    art.className = "ev2" + (tlState.open[i] ? " open" : "");
-    art.id = "tl-ev-" + i; art.setAttribute("data-era", ev.era);
-    var card = document.createElement("div"); card.className = "ev2-card";
-    var head = document.createElement("button");
-    head.type = "button"; head.className = "ev2-head";
-    head.setAttribute("aria-expanded", tlState.open[i] ? "true" : "false");
-    head.innerHTML = "<span class='when'>" + escTl(ev.when) + "</span><span class='ev2-title'>" + escTl(ev.title) + "</span><span class='ev2-era'>" + escTl(TL_ERAS[ev.era]) + "</span><span class='ev2-chev' aria-hidden='true'>&#9662;</span>";
-    head.addEventListener("click", function(){
-      stopTlWalk();
-      tlState.open[i] = !tlState.open[i];
-      renderTimeline();
-    });
-    card.appendChild(head);
-    if (tlState.open[i]){
-      var body = document.createElement("div"); body.className = "ev2-body";
-      var p = document.createElement("p"); p.textContent = ev.text; body.appendChild(p);
+    var ev = x.ev;
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "tlhead"; b.id = "tl-ev-" + x.i;
+    b.setAttribute("data-era", ev.era);
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", x.i === tlState.sel ? "true" : "false");
+    b.innerHTML = "<span class='tldot' aria-hidden='true'></span><span class='when'>" + escTl(ev.when) + "</span><span class='tlt'>" + escTl(ev.title) + "</span>";
+    b.addEventListener("click", function(){ stopTlWalk(); tlState.sel = x.i; renderTimeline(); });
+    heads.appendChild(b);
+  });
+  detail.innerHTML = "";
+  var sel = vis.filter(function(x){ return x.i === tlState.sel; })[0] || vis[0];
+  if (sel){
+    var ev = sel.ev;
+    var meta = document.createElement("p");
+    meta.style.margin = "0 0 2px";
+    meta.innerHTML = "<span class='ev2-era'>" + escTl(TL_ERAS[ev.era] || ev.era) + "</span> <span class='byline'>" + escTl(ev.when) + "</span>";
+    detail.appendChild(meta);
+    var h = document.createElement("h3"); h.textContent = ev.title; detail.appendChild(h);
+    var p = document.createElement("p"); p.textContent = ev.text; detail.appendChild(p);
+    if (ev.links && ev.links.length){
       var links = document.createElement("div"); links.className = "ev2-links";
       ev.links.forEach(function(l){ links.appendChild(linkButton(l, "btn small")); });
-      body.appendChild(links);
-      card.appendChild(body);
+      detail.appendChild(links);
     }
-    art.appendChild(card);
-    var dot = document.createElement("span"); dot.className = "ev2-dot"; dot.setAttribute("aria-hidden", "true");
-    art.appendChild(dot);
-    list.appendChild(art);
-  });
+    if (sel.custom){
+      var by = document.createElement("p"); by.className = "byline"; by.style.marginTop = "10px";
+      by.textContent = sel.custom.by ? ("Added by " + sel.custom.by + ".") : "Added at the table.";
+      detail.appendChild(by);
+      if (window.isGM){
+        var ctl = document.createElement("div"); ctl.className = "ev2-links"; ctl.style.marginTop = "6px";
+        var eb = document.createElement("button"); eb.type = "button"; eb.className = "btn small"; eb.textContent = "Change this event";
+        eb.addEventListener("click", function(){ tlState.editing = sel.custom; renderTlAdd(); document.getElementById("tl-addwrap").scrollIntoView({ block:"center", behavior: REDUCED_MOTION ? "auto" : "smooth" }); });
+        var rb = document.createElement("button"); rb.type = "button"; rb.className = "btn small rust"; rb.textContent = "Remove this event";
+        rb.addEventListener("click", function(){
+          var c = sel.custom;
+          tlCustom = tlCustom.filter(function(y){ return y !== c; });
+          if (sb && tlEventsOk && c.id) sb.from("timeline_events").delete().eq("id", c.id).then(function(){});
+          tlState.editing = null;
+          renderTimeline(); renderTlAdd();
+        });
+        ctl.appendChild(eb); ctl.appendChild(rb);
+        detail.appendChild(ctl);
+      }
+    }
+  } else {
+    detail.innerHTML = "<p style='margin:0'>No event is chosen. Clear the filter to see the whole timeline again.</p>";
+  }
   var status = document.getElementById("tl-status");
   if (status && !tlState.playing){
-    status.textContent = vis.length === TL_EVENTS.length
-      ? "Nine events, from long ago to next session."
-      : "Showing " + vis.length + " of " + TL_EVENTS.length + " events.";
+    var total = tlAllEvents().length;
+    status.textContent = vis.length === total
+      ? total + " events, from long ago to next session."
+      : "Showing " + vis.length + " of " + total + " events.";
   }
-  setupTlReveal();
-  updateTlSpine();
+  renderTlSyncNote();
 }
-var tlObserver = null;
-function setupTlReveal(){
-  var els = document.querySelectorAll("#tl-list .ev2");
-  if (REDUCED_MOTION || !("IntersectionObserver" in window)){
-    els.forEach(function(el){ el.classList.add("seen"); });
-    return;
+function renderTlSyncNote(){
+  var el = document.getElementById("tl-sync-note");
+  if (!el) return;
+  if (!sb){ el.textContent = "Live sync is not connected, so events added or proposed here are kept for this sitting only."; return; }
+  if (tlEventsOk && tlPropsOk){ el.textContent = ""; return; }
+  el.textContent = "The timeline_events and timeline_proposals tables do not exist in Supabase yet, so events added or proposed here are kept for this sitting only. Once the tables exist, additions and proposals will save and sync for the whole table.";
+}
+function renderTlAdd(){
+  var wrap = document.getElementById("tl-addwrap");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  var card = document.createElement("div"); card.className = "card";
+  if (window.isGM){
+    var editing = tlState.editing;
+    card.innerHTML = "<h3 style='margin-top:0'>" + (editing ? "Change this event" : "Add an event") + "</h3>" +
+      "<p class='note' style='margin-top:0'>As GM, events you add go straight onto the timeline for everyone. You can change or remove events added here from their box above; the nine events from the campaign record are part of the page itself.</p>";
+    var f = document.createElement("div"); f.className = "pinform";
+    f.innerHTML =
+      "<div class='fld'><label class='fl' for='tl-f-when'>When</label><input type='text' id='tl-f-when' placeholder='For example: Second of Spring, Year 150'></div>" +
+      "<div class='fld'><label class='fl' for='tl-f-title'>Title</label><input type='text' id='tl-f-title' placeholder='What happened'></div>" +
+      "<div class='fld'><label class='fl' for='tl-f-era'>Era</label><select id='tl-f-era'><option value='deep'>The deep past</option><option value='village'>Village years</option><option value='spring' selected>This spring</option><option value='ahead'>Still to come</option></select></div>" +
+      "<div class='fld'><label class='fl' for='tl-f-text'>The event</label><textarea id='tl-f-text' placeholder='Tell it the way the Chronicle would'></textarea></div>";
+    card.appendChild(f);
+    if (editing){
+      document.createElement("span");
+      setTimeout(function(){
+        var w = document.getElementById("tl-f-when"); if (w) w.value = editing.when || "";
+        var t = document.getElementById("tl-f-title"); if (t) t.value = editing.title || "";
+        var e = document.getElementById("tl-f-era"); if (e) e.value = editing.era || "spring";
+        var x = document.getElementById("tl-f-text"); if (x) x.value = editing.text || "";
+      }, 0);
+    }
+    var row = document.createElement("div"); row.className = "searchrow"; row.style.margin = "10px 0 0";
+    var save = document.createElement("button"); save.type = "button"; save.className = "btn"; save.textContent = editing ? "Save changes" : "Add to the timeline";
+    save.addEventListener("click", function(){
+      var when = document.getElementById("tl-f-when").value.trim();
+      var title = document.getElementById("tl-f-title").value.trim();
+      var era = document.getElementById("tl-f-era").value;
+      var text = document.getElementById("tl-f-text").value.trim();
+      if (!title || !text) return;
+      if (tlState.editing){
+        var c = tlState.editing;
+        c.when = when || c.when; c.title = title; c.era = era; c.text = text;
+        if (sb && tlEventsOk && c.id) sb.from("timeline_events").update({ when_label:c.when, title:c.title, era:c.era, text:c.text }).eq("id", c.id).then(function(){});
+        tlState.editing = null;
+        tlState.sel = TL_EVENTS.length + tlCustom.indexOf(c);
+      } else {
+        var nc = { era:era, when:when || "This spring", title:title, text:text, links:[], by:(typeof gmUser !== "undefined" && gmUser && gmUser.email) || "the GM" };
+        tlCustom.push(nc);
+        tlState.sel = TL_EVENTS.length + tlCustom.length - 1;
+        if (sb){
+          sb.from("timeline_events").insert({ when_label:nc.when, title:nc.title, era:nc.era, text:nc.text, created_by:nc.by }).select().then(function(res){
+            if (res.data && res.data[0]){ nc.id = res.data[0].id; tlEventsOk = true; }
+            renderTlSyncNote();
+          });
+        }
+      }
+      renderTimeline(); renderTlAdd();
+    });
+    row.appendChild(save);
+    if (editing){
+      var cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "btn small"; cancel.textContent = "Cancel";
+      cancel.addEventListener("click", function(){ tlState.editing = null; renderTlAdd(); });
+      row.appendChild(cancel);
+    }
+    card.appendChild(row);
+  } else if (window.canEdit){
+    card.innerHTML = "<h3 style='margin-top:0'>Propose an event</h3>" +
+      "<p class='note' style='margin-top:0'>Propose an addition to the timeline. It goes to the GM with your name on it, and joins the timeline if the GM approves it in GM Review.</p>";
+    var f2 = document.createElement("div"); f2.className = "pinform";
+    f2.innerHTML =
+      "<div class='fld'><label class='fl' for='tl-p-when'>When</label><input type='text' id='tl-p-when' placeholder='For example: Two winters ago'></div>" +
+      "<div class='fld'><label class='fl' for='tl-p-title'>Title</label><input type='text' id='tl-p-title' placeholder='What happened'></div>" +
+      "<div class='fld'><label class='fl' for='tl-p-era'>Era</label><select id='tl-p-era'><option value='deep'>The deep past</option><option value='village'>Village years</option><option value='spring' selected>This spring</option><option value='ahead'>Still to come</option></select></div>" +
+      "<div class='fld'><label class='fl' for='tl-p-text'>The event</label><textarea id='tl-p-text' placeholder='Tell it the way you remember it'></textarea></div>";
+    card.appendChild(f2);
+    var row2 = document.createElement("div"); row2.className = "searchrow"; row2.style.margin = "10px 0 0";
+    var send = document.createElement("button"); send.type = "button"; send.className = "btn"; send.textContent = "Send to the GM";
+    var note = document.createElement("span"); note.className = "note"; note.id = "tl-p-note"; note.style.alignSelf = "center";
+    send.addEventListener("click", function(){
+      var when = document.getElementById("tl-p-when").value.trim();
+      var title = document.getElementById("tl-p-title").value.trim();
+      var era = document.getElementById("tl-p-era").value;
+      var text = document.getElementById("tl-p-text").value.trim();
+      if (!title || !text){ note.textContent = "Give the event a title and a telling first."; return; }
+      var by = (typeof gmUser !== "undefined" && gmUser && gmUser.email) || "a player";
+      var prop = { era:era, when:when || "This spring", title:title, text:text, submitted_by:by, status:"pending" };
+      tlProposals.push(prop);
+      if (sb){
+        sb.from("timeline_proposals").insert({ when_label:prop.when, title:prop.title, era:prop.era, text:prop.text, submitted_by:by, status:"pending" }).select().then(function(res){
+          if (res.data && res.data[0]){ prop.id = res.data[0].id; tlPropsOk = true; }
+          renderTlSyncNote();
+        });
+      }
+      note.textContent = "Sent. The GM will see it in GM Review, with your name on it.";
+      document.getElementById("tl-p-title").value = "";
+      document.getElementById("tl-p-text").value = "";
+      document.getElementById("tl-p-when").value = "";
+      renderTlReview();
+    });
+    row2.appendChild(send); row2.appendChild(note);
+    card.appendChild(row2);
+  } else if (window.isPlayer){
+    card.innerHTML = "<h3 style='margin-top:0'>Propose an event</h3><p class='note' style='margin:0'>You are signed in, but the GM has not approved you yet. Once they do, you can propose additions to the timeline here.</p>";
+  } else {
+    card.innerHTML = "<h3 style='margin-top:0'>Add to the timeline</h3><p class='note' style='margin:0'>The GM adds events outright, and players the GM has approved can propose additions. Sign in above to take part; the timeline itself is here for everyone to read.</p>";
   }
-  if (tlObserver) tlObserver.disconnect();
-  tlObserver = new IntersectionObserver(function(entries){
-    entries.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add("seen"); tlObserver.unobserve(en.target); } });
-  }, { threshold: 0.12 });
-  els.forEach(function(el){ tlObserver.observe(el); });
+  wrap.appendChild(card);
 }
-function updateTlSpine(){
-  var fill = document.getElementById("tl-spine-fill");
-  var list = document.getElementById("tl-list");
-  if (!fill || !list) return;
-  var page = document.getElementById("pg-timeline");
-  if (!page || !page.classList.contains("on")){ return; }
-  var rect = list.getBoundingClientRect();
-  var viewMid = window.innerHeight * 0.55;
-  var h = Math.max(0, Math.min(rect.height - 12, viewMid - rect.top));
-  fill.style.height = h + "px";
+function renderTlReview(){
+  var list = document.getElementById("tl-review-list");
+  if (!list) return;
+  list.innerHTML = "";
+  if (!window.isGM) return;
+  var pending = tlProposals.filter(function(r){ return (r.status || "pending") === "pending"; });
+  if (!pending.length){ list.innerHTML = "<p class='note'>No timeline proposals are waiting.</p>"; return; }
+  pending.forEach(function(r){
+    var row = document.createElement("div"); row.className = "review-item";
+    row.innerHTML = "<div class='rq'>" + escTl(r.title) + "</div><div class='ra'>" + escTl(r.text) + "</div><p class='note' style='margin:0'>" + escTl(r.when || "") + " · " + escTl(TL_ERAS[r.era] || r.era || "") + " · proposed by " + escTl(r.submitted_by || "a player") + "</p>";
+    var ctl = document.createElement("div"); ctl.className = "ev2-links"; ctl.style.marginTop = "8px";
+    var ok = document.createElement("button"); ok.type = "button"; ok.className = "btn small good"; ok.textContent = "Approve onto the timeline";
+    ok.addEventListener("click", function(){
+      r.status = "accepted";
+      var nc = { era:r.era, when:r.when, title:r.title, text:r.text, links:[], by:r.submitted_by || "a player" };
+      tlCustom.push(nc);
+      if (sb && tlEventsOk) sb.from("timeline_events").insert({ when_label:nc.when, title:nc.title, era:nc.era, text:nc.text, created_by:nc.by }).select().then(function(res){ if (res.data && res.data[0]) nc.id = res.data[0].id; });
+      if (sb && tlPropsOk && r.id) sb.from("timeline_proposals").update({ status:"accepted" }).eq("id", r.id).then(function(){});
+      renderTimeline(); renderTlReview();
+    });
+    var no = document.createElement("button"); no.type = "button"; no.className = "btn small rust"; no.textContent = "Dismiss";
+    no.addEventListener("click", function(){
+      r.status = "dismissed";
+      if (sb && tlPropsOk && r.id) sb.from("timeline_proposals").update({ status:"dismissed" }).eq("id", r.id).then(function(){});
+      renderTlReview();
+    });
+    ctl.appendChild(ok); ctl.appendChild(no);
+    row.appendChild(ctl);
+    list.appendChild(row);
+  });
 }
+function loadTlData(){
+  if (!sb){ renderTimeline(); renderTlAdd(); return; }
+  sb.from("timeline_events").select("*").order("id", { ascending:true }).then(function(res){
+    if (!res.error){
+      tlEventsOk = true;
+      tlCustom = (res.data || []).map(function(r){ return { id:r.id, era:r.era || "spring", when:r.when_label || "", title:r.title || "", text:r.text || "", links:[], by:r.created_by || "" }; });
+    }
+    renderTimeline(); renderTlAdd();
+  });
+  sb.from("timeline_proposals").select("*").order("id", { ascending:true }).then(function(res){
+    if (!res.error){
+      tlPropsOk = true;
+      tlProposals = (res.data || []).map(function(r){ return { id:r.id, era:r.era || "spring", when:r.when_label || "", title:r.title || "", text:r.text || "", submitted_by:r.submitted_by || "", status:r.status || "pending" }; });
+    }
+    renderTlReview(); renderTlSyncNote();
+  });
+}
+/* kept as quiet no-ops: the horizontal timeline has no spine
+   to fill and no scroll reveal to arm */
+function setupTlReveal(){}
+function updateTlSpine(){}
 function tlVisibleEls(){
-  return Array.prototype.slice.call(document.querySelectorAll("#tl-list .ev2"));
+  return Array.prototype.slice.call(document.querySelectorAll("#tl-heads .tlhead"));
 }
 function stopTlWalk(){
   if (tlState.timer){ clearInterval(tlState.timer); tlState.timer = null; }
@@ -2872,23 +3472,23 @@ function stopTlWalk(){
   tlState.playing = false;
   var btn = document.getElementById("tl-play");
   if (btn) btn.textContent = "Walk the timeline";
-  document.querySelectorAll("#tl-list .ev2.now").forEach(function(el){ el.classList.remove("now"); });
+  document.querySelectorAll("#tl-heads .tlhead.now").forEach(function(el){ el.classList.remove("now"); });
 }
 function tlWalkStep(){
-  var els = tlVisibleEls();
-  if (!els.length || tlState.step >= els.length){ stopTlWalk(); return; }
-  els.forEach(function(el){ el.classList.remove("now"); });
-  var el = els[tlState.step];
-  var idx = parseInt(el.id.replace("tl-ev-", ""), 10);
-  if (!tlState.open[idx]){ tlState.open[idx] = true; renderTimeline(); el = document.getElementById("tl-ev-" + idx); }
-  el.classList.add("now", "seen");
-  el.scrollIntoView({ block:"center", behavior: REDUCED_MOTION ? "auto" : "smooth" });
+  var vis = tlVisibleEvents();
+  if (!vis.length || tlState.step >= vis.length){ stopTlWalk(); return; }
+  var x = vis[tlState.step];
+  tlState.sel = x.i;
+  renderTimeline();
+  document.querySelectorAll("#tl-heads .tlhead").forEach(function(el){ el.classList.toggle("now", el.id === "tl-ev-" + x.i); });
+  var head = document.getElementById("tl-ev-" + x.i);
+  if (head) head.scrollIntoView({ block:"nearest", behavior: REDUCED_MOTION ? "auto" : "smooth" });
   var fill = document.getElementById("tl-progress-fill");
-  if (fill) fill.style.width = Math.round(((tlState.step + 1) / els.length) * 100) + "%";
+  if (fill) fill.style.width = Math.round(((tlState.step + 1) / vis.length) * 100) + "%";
   var status = document.getElementById("tl-status");
-  if (status) status.textContent = "Walking the story: event " + (tlState.step + 1) + " of " + els.length + ", " + TL_EVENTS[idx].title + ".";
+  if (status) status.textContent = "Walking the story: event " + (tlState.step + 1) + " of " + vis.length + ", " + x.ev.title + ".";
   tlState.step++;
-  if (tlState.step >= els.length){
+  if (tlState.step >= vis.length){
     setTimeout(function(){
       stopTlWalk();
       var st = document.getElementById("tl-status");
@@ -2897,8 +3497,8 @@ function tlWalkStep(){
   }
 }
 function startTlWalk(){
-  var els = tlVisibleEls();
-  if (!els.length) return;
+  var vis = tlVisibleEvents();
+  if (!vis.length) return;
   tlState.playing = true; tlState.step = 0;
   var btn = document.getElementById("tl-play");
   if (btn) btn.textContent = "Stop the walk";
@@ -2908,9 +3508,10 @@ function startTlWalk(){
   tlState.timer = setInterval(tlWalkStep, 3000);
 }
 (function initTimeline(){
-  var list = document.getElementById("tl-list");
-  if (!list) return;
+  if (!document.getElementById("tl-heads")) return;
   renderTimeline();
+  renderTlAdd();
+  loadTlData();
   document.querySelectorAll("#tl-erafilters .chipbtn").forEach(function(b){
     b.addEventListener("click", function(){
       stopTlWalk();
@@ -2929,30 +3530,33 @@ function startTlWalk(){
   });
   var play = document.getElementById("tl-play");
   if (play) play.addEventListener("click", function(){ tlState.playing ? stopTlWalk() : startTlWalk(); });
-  window.addEventListener("scroll", updateTlSpine, { passive:true });
-  window.addEventListener("resize", updateTlSpine);
-  document.querySelectorAll('[data-tab="timeline"], [data-go="timeline"]').forEach(function(b){
-    b.addEventListener("click", function(){ setTimeout(updateTlSpine, 120); });
-  });
 })();
+
 
 /* ---------- map pins ----------
    Every map plate can carry pins. A plate names its map in a
-   data-mappins layer and a data-pinlist strip; the pins for
-   that map live in MAP_PINS below, positioned in percent of
-   the map's width and height, each with the article, person,
-   or other map it opens. To pin a new place on any map, add
-   one entry to its list: label, x, y, a line of text, and
-   links. A link is a page plus an element id, a person by
-   name (their full article when the GM shows it, their card
-   otherwise), or fig, the id of another map's plate, which is
-   how pins lead from one map to another. Tapping a pin or its
-   name in the strip opens the pin panel under the map. */
+   data-mappins layer and a data-pinlist strip; the built-in
+   pins for that map live in MAP_PINS below, positioned in
+   percent of the map's width and height, each with the article,
+   person, or other map it opens. A link is a page plus an
+   element id, a person by name, or fig, the id of another
+   map's plate, which is how pins lead from one map to another.
+   Pins drop in one by one and pulse with an expanding ring;
+   the pin you select keeps animating, its head just darkens.
+   Anyone signed in and approved (or the GM) can suggest a new
+   pin on any map: Add a pin, click the map where it belongs,
+   and name it. A player's pin waits, visible only to the GM
+   and marked in gold, until the GM approves it in GM Review;
+   then it shows to everyone. Pins save to the Supabase table
+   map_pins; until that table exists, suggestions and approvals
+   are kept for this sitting only, which the page says plainly. */
 var MAP_META = {
   village:   { page:"home",  fig:"fig-map-village-home" },
   vicinity:  { page:"world", fig:"fig-map-vicinity" },
   worldsend: { page:"world", fig:"fig-map-worldsend" }
 };
+var MAP_NAMES = { village:"the village map", vicinity:"the Vicinity map", worldsend:"the World's End map" };
+var MAP_PAGE_NAMES = { home:"Home", people:"People", web:"Relationship Web", sessions:"Sessions", chronicle:"Chronicle", timeline:"Timeline", world:"World", vault:"Vault", steading:"Steading" };
 var MAP_PINS = {
   village: [
     { label:"The Stone", x:49.5, y:30,
@@ -3006,60 +3610,268 @@ var MAP_PINS = {
       links:[ { label:"Brennan Blackthorne", person:"Brennan Blackthorne" }, { label:"Ivan Grimshaw", person:"Ivan Grimshaw" } ] }
   ]
 };
+var customPins = [];   /* {id, map, label, text, x, y, page, submitted_by, status} */
+var pinTableOk = false;
+var pinHidden = {};    /* map key -> true when its pins are hidden */
+var placing = null;    /* {key, plate} while a new pin is being placed */
+function pinCanPropose(){ return !!(window.isGM || window.canEdit); }
+function visibleCustomPins(key){
+  return customPins.filter(function(p){
+    if (p.map !== key) return false;
+    if (p.status === "approved") return true;
+    return !!window.isGM && p.status === "pending";
+  });
+}
+function allPinsFor(key){
+  var out = (MAP_PINS[key] || []).map(function(p){ return { label:p.label, text:p.text, links:p.links, x:p.x, y:p.y, custom:null }; });
+  visibleCustomPins(key).forEach(function(p){
+    out.push({ label:p.label, text:p.text, x:p.x, y:p.y, custom:p,
+      links: p.page ? [ { label:"Open the " + (MAP_PAGE_NAMES[p.page] || p.page) + " page", page:p.page } ] : [] });
+  });
+  return out;
+}
 function openPinPanel(plate, pin, pinBtn){
   var panel = plate.querySelector("[data-pinpanel]");
   if (!panel) return;
-  plate.querySelectorAll(".mappin").forEach(function(b){ b.classList.toggle("active", b === pinBtn); b.classList.remove("pulse"); });
+  /* the selected pin keeps its pulse; only its head darkens */
+  plate.querySelectorAll(".mappin").forEach(function(b){ b.classList.toggle("active", b === pinBtn); });
   panel.innerHTML = "";
   var h = document.createElement("h4"); h.textContent = pin.label; panel.appendChild(h);
   var p = document.createElement("p"); p.textContent = pin.text; panel.appendChild(p);
-  var links = document.createElement("div"); links.className = "pinlinks";
-  pin.links.forEach(function(l){ links.appendChild(linkButton(l, "btn small")); });
-  panel.appendChild(links);
+  if (pin.custom && pin.custom.status === "pending"){
+    var pend = document.createElement("p");
+    pend.innerHTML = "<span class='badge pending'>Awaiting GM approval</span> Only the GM can see this pin for now.";
+    panel.appendChild(pend);
+  }
+  if (pin.custom && pin.custom.submitted_by){
+    var by = document.createElement("p"); by.className = "note"; by.style.margin = "0 0 10px";
+    by.textContent = "Pinned by " + pin.custom.submitted_by + ".";
+    panel.appendChild(by);
+  }
+  if (pin.links && pin.links.length){
+    var links = document.createElement("div"); links.className = "pinlinks";
+    pin.links.forEach(function(l){ links.appendChild(linkButton(l, "btn small")); });
+    panel.appendChild(links);
+  }
   panel.hidden = false;
 }
-(function initMapPins(){
+function cancelPlacing(){
+  if (!placing) return;
+  var wrap = placing.plate.querySelector(".mapwrap");
+  if (wrap) wrap.classList.remove("placing");
+  placing = null;
+}
+function startPlacing(key, plate){
+  var panel = plate.querySelector("[data-pinpanel]");
+  if (!pinCanPropose()){
+    if (panel){
+      panel.innerHTML = "";
+      var h = document.createElement("h4"); h.textContent = "Add a pin"; panel.appendChild(h);
+      var p = document.createElement("p");
+      p.textContent = window.isPlayer
+        ? "You are signed in, but the GM has not approved you yet. Once they do, you can pin places on the maps and propose them for everyone."
+        : "Sign in above to suggest a pin. Players the GM has approved can pin places on any map; the GM approves each pin before it shows to everyone.";
+      panel.appendChild(p);
+      panel.hidden = false;
+    }
+    return;
+  }
+  cancelPlacing();
+  placing = { key:key, plate:plate };
+  var wrap = plate.querySelector(".mapwrap");
+  if (wrap) wrap.classList.add("placing");
+  if (panel){
+    panel.innerHTML = "";
+    var h2 = document.createElement("h4"); h2.textContent = "Add a pin"; panel.appendChild(h2);
+    var p2 = document.createElement("p");
+    p2.textContent = window.isGM
+      ? "Click on the map where the pin belongs. Pins you add go straight onto the map."
+      : "Click on the map where the pin belongs. Your pin goes to the GM with your name on it, and shows to everyone once the GM approves it.";
+    panel.appendChild(p2);
+    var c = document.createElement("button"); c.type = "button"; c.className = "btn small"; c.textContent = "Cancel";
+    c.addEventListener("click", function(){ cancelPlacing(); panel.hidden = true; });
+    panel.appendChild(c);
+    panel.hidden = false;
+  }
+}
+function showPinForm(plate, key, x, y){
+  var panel = plate.querySelector("[data-pinpanel]");
+  cancelPlacing();
+  if (!panel) return;
+  panel.innerHTML = "";
+  var h = document.createElement("h4"); h.textContent = "New pin on " + (MAP_NAMES[key] || "the map"); panel.appendChild(h);
+  var form = document.createElement("div"); form.className = "pinform";
+  form.innerHTML =
+    "<div class='fld'><label class='fl' for='pf-label'>Name of the place</label><input type='text' id='pf-label' placeholder='For example: The old mill race'></div>" +
+    "<div class='fld'><label class='fl' for='pf-text'>What belongs here</label><textarea id='pf-text' placeholder='A line or two about the place'></textarea></div>" +
+    "<div class='fld'><label class='fl' for='pf-page'>Link the pin to</label><select id='pf-page'>" +
+    "<option value=''>No page, just the note</option><option value='people'>People</option><option value='world'>World</option><option value='steading'>Steading</option><option value='timeline'>Timeline</option><option value='sessions'>Sessions</option><option value='chronicle'>Chronicle</option><option value='vault'>Vault</option>" +
+    "</select></div>";
+  panel.appendChild(form);
+  var row = document.createElement("div"); row.className = "pinlinks";
+  var save = document.createElement("button"); save.type = "button"; save.className = "btn small"; save.textContent = window.isGM ? "Put it on the map" : "Send to the GM";
+  var note = document.createElement("span"); note.className = "note"; note.id = "pf-note"; note.style.alignSelf = "center";
+  save.addEventListener("click", function(){
+    var label = document.getElementById("pf-label").value.trim();
+    var text = document.getElementById("pf-text").value.trim();
+    var page = document.getElementById("pf-page").value;
+    if (!label || !text){ note.textContent = "Give the pin a name and a line about the place first."; return; }
+    var by = (typeof gmUser !== "undefined" && gmUser && gmUser.email) || (window.isGM ? "the GM" : "a player");
+    var pin = { map:key, label:label, text:text, x:Math.round(x * 10) / 10, y:Math.round(y * 10) / 10, page:page, submitted_by:by, status: window.isGM ? "approved" : "pending" };
+    customPins.push(pin);
+    if (sb){
+      sb.from("map_pins").insert({ map_key:key, label:label, text:text, x:pin.x, y:pin.y, link_page:page, submitted_by:by, status:pin.status }).select().then(function(res){
+        if (res.data && res.data[0]){ pin.id = res.data[0].id; pinTableOk = true; }
+        renderPinReview();
+      });
+    }
+    renderMapPins();
+    renderPinReview();
+    panel.innerHTML = "";
+    var h2 = document.createElement("h4"); h2.textContent = label; panel.appendChild(h2);
+    var p = document.createElement("p");
+    p.textContent = window.isGM
+      ? "Your pin is on the map."
+      : "Thank you. Your pin is with the GM for approval, with your name on it, and will show on the map for everyone once it is approved." +
+        ((sb && !pinTableOk) ? " One caution: the map_pins table does not exist in Supabase yet, so for now this pin is kept for this sitting only." : (!sb ? " One caution: live sync is not connected, so for now this pin is kept for this sitting only." : ""));
+    panel.appendChild(p);
+    panel.hidden = false;
+  });
+  var cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "btn small"; cancel.textContent = "Cancel";
+  cancel.addEventListener("click", function(){ panel.hidden = true; });
+  row.appendChild(save); row.appendChild(cancel); row.appendChild(note);
+  panel.appendChild(row);
+  panel.hidden = false;
+  var lab = document.getElementById("pf-label");
+  if (lab) lab.focus();
+}
+function renderMapPins(){
   document.querySelectorAll("[data-mappins]").forEach(function(layer){
     var key = layer.getAttribute("data-mappins");
-    var pins = MAP_PINS[key] || [];
     var plate = layer.closest(".plate");
+    layer.innerHTML = "";
+    layer.classList.toggle("off", !!pinHidden[key]);
+    var pins = allPinsFor(key);
     pins.forEach(function(pin, i){
       var b = document.createElement("button");
-      b.type = "button"; b.className = "mappin" + (REDUCED_MOTION ? "" : " pulse");
-      b.style.left = pin.x + "%"; b.style.top = pin.y + "%";
-      b.setAttribute("aria-label", "Map pin " + (i + 1) + ": " + pin.label);
+      b.type = "button";
+      b.className = "mappin" + (REDUCED_MOTION ? "" : " pulse") + (pin.custom && pin.custom.status === "pending" ? " pending" : "");
+      b.style.left = pin.x + "%";
+      b.style.top = pin.y + "%";
+      b.style.animationDelay = (i * 0.09) + "s";
+      b.setAttribute("aria-label", "Map pin " + (i + 1) + ": " + pin.label + (pin.custom && pin.custom.status === "pending" ? " (awaiting GM approval)" : ""));
       b.innerHTML = "<span class='pinlab' aria-hidden='true'>" + escTl(pin.label) + "</span><span class='pinhead'><span class='pinnum'>" + (i + 1) + "</span></span>";
-      b.addEventListener("click", function(){ if (plate) openPinPanel(plate, pin, b); });
+      b.addEventListener("click", function(ev){ ev.stopPropagation(); if (plate) openPinPanel(plate, pin, b); });
       layer.appendChild(b);
-      pin._btns = pin._btns || []; pin._btns.push(b);
     });
   });
   document.querySelectorAll("[data-pinlist]").forEach(function(strip){
     var key = strip.getAttribute("data-pinlist");
-    var pins = MAP_PINS[key] || [];
     var plate = strip.closest(".plate");
+    strip.innerHTML = "";
+    var pins = allPinsFor(key);
     var lab = document.createElement("span"); lab.className = "flab"; lab.textContent = "Pins"; strip.appendChild(lab);
     pins.forEach(function(pin, i){
       var c = document.createElement("button");
       c.type = "button"; c.className = "chipbtn";
-      c.textContent = (i + 1) + ". " + pin.label;
-      c.addEventListener("click", function(){ if (plate) openPinPanel(plate, pin, plate.querySelectorAll(".mappin")[i]); });
+      c.textContent = (i + 1) + ". " + pin.label + (pin.custom && pin.custom.status === "pending" ? " (pending)" : "");
+      c.addEventListener("click", function(){
+        if (!plate) return;
+        var btns = plate.querySelectorAll(".mappin");
+        openPinPanel(plate, pin, btns[i] || null);
+      });
       strip.appendChild(c);
     });
     var layer = plate ? plate.querySelector("[data-mappins]") : null;
     if (layer){
       var t = document.createElement("button");
-      t.type = "button"; t.className = "chipbtn"; t.setAttribute("aria-pressed", "true");
-      t.textContent = "Pins shown";
+      t.type = "button"; t.className = "chipbtn"; t.setAttribute("aria-pressed", pinHidden[key] ? "false" : "true");
+      t.textContent = pinHidden[key] ? "Pins hidden" : "Pins shown";
       t.addEventListener("click", function(){
-        var off = layer.classList.toggle("off");
-        t.setAttribute("aria-pressed", off ? "false" : "true");
-        t.textContent = off ? "Pins hidden" : "Pins shown";
+        pinHidden[key] = !pinHidden[key];
+        renderMapPins();
       });
       strip.appendChild(t);
     }
+    var add = document.createElement("button");
+    add.type = "button"; add.className = "chipbtn"; add.textContent = "Add a pin";
+    add.addEventListener("click", function(){ if (plate) startPlacing(key, plate); });
+    strip.appendChild(add);
   });
+}
+function setPinStatus(pin, status){
+  pin.status = status;
+  if (sb && pinTableOk && pin.id) sb.from("map_pins").update({ status:status }).eq("id", pin.id).then(function(){});
+  renderMapPins(); renderPinReview();
+}
+function renderPinReview(){
+  var list = document.getElementById("pin-review-list");
+  var st = document.getElementById("pin-review-status");
+  if (st){
+    if (sb && pinTableOk){ st.className = "status ok"; st.textContent = "Live sync is connected. Pin suggestions save to Supabase, and approvals here are shared with the whole table."; }
+    else if (sb){ st.className = "status"; st.textContent = "The map_pins table does not exist in Supabase yet, so pin suggestions and approvals are kept for this sitting only."; }
+    else { st.className = "status"; st.textContent = "Live sync is not connected, so pin suggestions and approvals are kept for this sitting only."; }
+  }
+  if (!list) return;
+  list.innerHTML = "";
+  if (!window.isGM) return;
+  var pending = customPins.filter(function(p){ return p.status === "pending"; });
+  var approved = customPins.filter(function(p){ return p.status === "approved"; });
+  if (!pending.length && !approved.length){ list.innerHTML = "<p class='note'>No player pins yet. Pins suggested from the maps will wait here.</p>"; return; }
+  pending.forEach(function(pin){
+    var row = document.createElement("div"); row.className = "review-item";
+    row.innerHTML = "<div class='rq'>" + escTl(pin.label) + "</div><div class='ra'>" + escTl(pin.text) + "</div><p class='note' style='margin:0'>On " + escTl(MAP_NAMES[pin.map] || pin.map) + " · suggested by " + escTl(pin.submitted_by || "a player") + (pin.page ? " · links to the " + escTl(MAP_PAGE_NAMES[pin.page] || pin.page) + " page" : "") + "</p>";
+    var ctl = document.createElement("div"); ctl.className = "ev2-links"; ctl.style.marginTop = "8px";
+    var ok = document.createElement("button"); ok.type = "button"; ok.className = "btn small good"; ok.textContent = "Approve";
+    ok.addEventListener("click", function(){ setPinStatus(pin, "approved"); });
+    var no = document.createElement("button"); no.type = "button"; no.className = "btn small rust"; no.textContent = "Dismiss";
+    no.addEventListener("click", function(){ setPinStatus(pin, "dismissed"); });
+    ctl.appendChild(ok); ctl.appendChild(no);
+    row.appendChild(ctl);
+    list.appendChild(row);
+  });
+  approved.forEach(function(pin){
+    var row = document.createElement("div"); row.className = "review-item";
+    row.innerHTML = "<div class='rq'>" + escTl(pin.label) + " <span class='badge accepted'>On the map</span></div><p class='note' style='margin:4px 0 0'>On " + escTl(MAP_NAMES[pin.map] || pin.map) + " · pinned by " + escTl(pin.submitted_by || "a player") + "</p>";
+    var ctl = document.createElement("div"); ctl.className = "ev2-links"; ctl.style.marginTop = "8px";
+    var down = document.createElement("button"); down.type = "button"; down.className = "btn small rust"; down.textContent = "Take down";
+    down.addEventListener("click", function(){ setPinStatus(pin, "dismissed"); });
+    ctl.appendChild(down);
+    row.appendChild(ctl);
+    list.appendChild(row);
+  });
+}
+function loadCustomPins(){
+  if (!sb){ renderMapPins(); renderPinReview(); return; }
+  sb.from("map_pins").select("*").order("id", { ascending:true }).then(function(res){
+    if (!res.error){
+      pinTableOk = true;
+      customPins = (res.data || []).map(function(r){
+        return { id:r.id, map:r.map_key || r.map || "", label:r.label || "", text:r.text || "", x:Number(r.x) || 0, y:Number(r.y) || 0, page:r.link_page || r.page || "", submitted_by:r.submitted_by || "", status:r.status || "pending" };
+      }).filter(function(p){ return p.status !== "dismissed"; });
+    }
+    renderMapPins(); renderPinReview();
+  });
+}
+(function initMapPins(){
+  document.querySelectorAll(".plate").forEach(function(plate){
+    var wrap = plate.querySelector(".mapwrap");
+    if (!wrap) return;
+    wrap.addEventListener("click", function(e){
+      if (!placing || placing.plate !== plate) return;
+      var layer = plate.querySelector("[data-mappins]");
+      var key = layer ? layer.getAttribute("data-mappins") : placing.key;
+      var rect = wrap.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      var x = Math.max(1, Math.min(99, (e.clientX - rect.left) / rect.width * 100));
+      var y = Math.max(1, Math.min(99, (e.clientY - rect.top) / rect.height * 100));
+      showPinForm(plate, key, x, y);
+    });
+  });
+  renderMapPins();
+  loadCustomPins();
 })();
+
 </script>
 
 <script>
@@ -3206,6 +4018,42 @@ function openPinPanel(plate, pin, pinBtn){
   });
   document.addEventListener("click", function(evt){
     if (!box.hidden && !evt.target.closest("#gsearch-bar")) box.hidden = true;
+  });
+})();
+</script>
+
+<script>
+/* ---------- section menus ----------
+   Pages with several sections get a jump menu under their
+   heading: one button per section on the page, scrolling
+   straight to it. Built from the page's own section headings,
+   so it stays right as sections come and go. */
+(function(){
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function slug(t){ return t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
+  document.querySelectorAll("section.page").forEach(function(pg){
+    var heads = Array.prototype.slice.call(pg.querySelectorAll("h2.sec"));
+    if (heads.length < 2) return;
+    var nav = document.createElement("nav");
+    nav.className = "secnav";
+    nav.setAttribute("aria-label", "Sections on this page");
+    var lab = document.createElement("span"); lab.className = "flab"; lab.textContent = "On this page";
+    nav.appendChild(lab);
+    heads.forEach(function(h){
+      if (!h.id) h.id = pg.id.replace(/^pg-/, "") + "-sec-" + slug(h.textContent);
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "chipbtn"; b.textContent = h.textContent.trim();
+      b.addEventListener("click", function(){
+        h.scrollIntoView({ block:"start", behavior: reduce ? "auto" : "smooth" });
+        h.setAttribute("tabindex", "-1");
+        h.focus({ preventScroll:true });
+      });
+      nav.appendChild(b);
+    });
+    var first = heads[0];
+    var anchor = first.nextSibling;
+    if (anchor && anchor.nodeType === 1 && anchor.classList.contains("lede")) anchor = anchor.nextSibling;
+    pg.insertBefore(nav, anchor);
   });
 })();
 </script>
