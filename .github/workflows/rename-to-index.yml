@@ -1,0 +1,25 @@
+name: Rename site file to index.html
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Replace index.html with the new version
+        run: |
+          set -e
+          test -f stonetop-adventures.html
+          rm -f index.html
+          mv stonetop-adventures.html index.html
+          git add -A
+          git status --short
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Rename stonetop-adventures.html to index.html"
+          git push
