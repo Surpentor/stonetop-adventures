@@ -4227,6 +4227,36 @@ function findArticleNote(title){
   if (typeof findPersonArticle === "function") return findPersonArticle(title);
   return null;
 }
+/* A card's heading is not always its note's title: the Ogmolok
+   card is headed "Ogmolok, the Buried Horror" while its note is
+   titled "Ogmolok", and the Fae card's note is titled "Fae".
+   An exact-title-only match therefore never reaches those full
+   articles at all, and the click falls back to a stub built
+   from the card's own short text. Try, in order: the heading
+   itself, the card's own article source (the name its open
+   questions are filed under, which is the note's title), the
+   heading with any ", subtitle" or ": subtitle" cut away, and
+   the heading without a leading "The". */
+function articleNoteCandidates(card, title){
+  var out = [];
+  function push(v){ v = (v || "").trim(); if (v && out.indexOf(v) === -1) out.push(v); }
+  push(title);
+  if (card){
+    var q = card.querySelector(".article-questions, .oq-count");
+    if (q) push(q.getAttribute("data-source"));
+  }
+  push(String(title || "").split(/\s*[:,]\s+/)[0]);
+  if (/^the\s+/i.test(title || "")) push(String(title).replace(/^the\s+/i, ""));
+  return out;
+}
+function findArticleNoteFor(card, title){
+  var cands = articleNoteCandidates(card, title);
+  for (var i = 0; i < cands.length; i++){
+    var row = findArticleNote(cands[i]);
+    if (row) return row;
+  }
+  return null;
+}
 function openArticleView(d){
   var pg = document.getElementById("pg-article");
   if (!pg || !d || !d.title) return false;
@@ -4364,7 +4394,7 @@ function articleDataFromImp(imp, backTab){
 /* The one door every named thing opens through: vault note if
    there is one, the card-data article if there is not. */
 function openNamedArticle(name, backTab){
-  var row = findArticleNote(name);
+  var row = findArticleNoteFor(null, name);
   if (row && typeof renderVault === "function"){
     vaultSlug = row.slug; vaultEditing = false;
     renderVault(); go("vault"); window.scrollTo({ top:0 });
@@ -4385,12 +4415,17 @@ function wireCardArticle(card, getData){
   if (!card.querySelector(".full-article")){
     var b = document.createElement("button");
     b.type = "button"; b.className = "full-article"; b.innerHTML = "Read the full article &rarr;";
-    card.appendChild(b);
+    /* The article link stands directly under the card's text,
+       before its Open Questions block: appended at the very foot
+       of the card, below the questions, it is easy to miss and
+       gets pushed further down whenever the questions open. */
+    var anchor = card.querySelector(".article-questions, .oq-count");
+    if (anchor) card.insertBefore(b, anchor); else card.appendChild(b);
   }
   function open(){
     var row = null;
     var title = h ? h.textContent.trim() : "";
-    if (title) row = findArticleNote(title);
+    if (title) row = findArticleNoteFor(card, title);
     if (row && typeof renderVault === "function"){
       vaultSlug = row.slug; vaultEditing = false;
       renderVault(); go("vault"); window.scrollTo({ top:0 });
@@ -4400,7 +4435,14 @@ function wireCardArticle(card, getData){
     if (d) openArticleView(d);
   }
   card.addEventListener("click", function(evt){
-    if (evt.target.closest("button, a, textarea, input, select, summary, details, .article-questions, .impctl")) return;
+    /* Only real controls keep a click to themselves: buttons,
+       links, form fields, the questions' own summary toggle, and
+       the GM's add-a-question form. A click anywhere else on the
+       card opens the full article, including a click on the text
+       of the open questions themselves: swallowing every click
+       inside the whole questions block left most of these cards
+       dead to click, above all once the questions stood open. */
+    if (evt.target.closest("button, a, textarea, input, select, label, summary, .impctl, .gm-addq")) return;
     open();
   });
   var fa = card.querySelector(".full-article");
