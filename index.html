@@ -448,6 +448,17 @@ body.site-editing [data-site-key].site-editing-now{outline:2px solid var(--rust)
 .site-editor .serow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
 #site-edit-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--ink);color:var(--panel);padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:16px;box-shadow:0 -4px 18px rgba(34,29,19,.35)}
 #site-edit-bar .btn{background:var(--panel);flex:none}
+/* player access requests: the form a signed-in player uses to
+   ask to be added, shown plainly under the sign-in panel */
+#access-panel{background:var(--panel);border-bottom:2px solid var(--rust);padding:18px 20px}
+#access-panel .inner{max-width:1080px;margin:0 auto}
+#access-panel h3{color:var(--ink);margin:0 0 6px;font-size:22px}
+#access-panel .afields{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:12px}
+@media(max-width:760px){#access-panel .afields{grid-template-columns:1fr}}
+#access-panel input[readonly]{background:var(--panel2);color:var(--muted)}
+.access-state{border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:2px;padding:12px 16px;color:var(--muted);font-size:16px;background:var(--panel2);margin-top:12px}
+.access-state.declined{border-left-color:var(--rust)}
+.access-state.pending{border-left-color:var(--gold)}
 @media(max-width:640px){.mappin .pinlab{display:none}}
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
@@ -490,7 +501,7 @@ body.site-editing [data-site-key].site-editing-now{outline:2px solid var(--rust)
 </div>
 <div id="gm-panel" hidden>
   <div class="inner">
-    <p class="note" id="gm-intro" style="margin:0 0 10px;max-width:760px">The GM and the players sign in here, each with their own account. The GM invites players by email; a player can look at everything right away, and can edit and propose once the GM approves them in GM Review. Without a sign-in, the site is the public view: everything to read, nothing to change.</p>
+    <p class="note" id="gm-intro" style="margin:0 0 10px;max-width:760px">The GM and the players sign in here, each with their own account. A player who signs in before the GM has added them uses Request access below to ask to be added, giving their name, the email they signed in with, and their character if they know it. The GM just approves or declines the request in GM Review, under Players. Once approved, a player can answer questions, propose timeline events and map pins, and propose page changes. Without a sign-in, the site is the public view: everything to read, nothing to change.</p>
     <form id="gm-form">
       <div class="fld"><label class="fl" for="gm-email">Email</label><input type="email" id="gm-email" autocomplete="username" placeholder="you@example.com"></div>
       <div class="fld"><label class="fl" for="gm-pass">Password</label><input type="password" id="gm-pass" autocomplete="current-password" placeholder="Password"></div>
@@ -515,7 +526,34 @@ body.site-editing [data-site-key].site-editing-now{outline:2px solid var(--rust)
         <button class="btn small rust" type="button" id="site-edit-toggle">Edit site text</button>
         <span class="note" id="site-edit-note" style="margin-left:10px">The site's own wording: the landing strip, the hero, headings, introductions, card text, map captions, and the playbook text. Vault notes keep their own editor in the Vault.</span>
       </div>
+      <div id="gm-player-request-hint" hidden style="margin-top:12px">
+        <button class="btn small" type="button" id="gm-show-access">Request player access instead</button>
+        <span class="note" style="margin-left:10px">For players, not the GM: if you signed in with a player account and have not been added yet, use Request access to ask the GM to add this email. The GM account itself does not need to request access.</span>
+      </div>
     </div>
+  </div>
+</div>
+<div id="access-panel" hidden>
+  <div class="inner">
+    <h3>Request access</h3>
+    <p style="color:var(--muted);margin:0;max-width:760px">Ask the GM to add you as a player. Give your name and, if you know it, the character you play. The email is the one you signed in with, so the GM approves the right account and never has to type it in. Once the GM approves you, you can answer questions, propose timeline events and map pins, and propose page changes.</p>
+    <div id="access-form-wrap">
+      <div class="afields">
+        <div><label class="fl" for="access-name">Your name</label><input type="text" id="access-name" placeholder="Your name" autocomplete="name"></div>
+        <div><label class="fl" for="access-email">Email you signed in with</label><input type="email" id="access-email" readonly></div>
+        <div><label class="fl" for="access-character">Character you play (if you know it)</label><input type="text" id="access-character" list="access-characters" placeholder="Optional"><datalist id="access-characters"></datalist></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px">
+        <button class="btn rust" type="button" id="access-submit">Request access</button>
+        <span class="note" id="access-note" style="align-self:center"></span>
+      </div>
+    </div>
+    <div id="access-pending-note" class="access-state pending" hidden>Your request is with the GM. It stands as pending in GM Review, under Players, and the GM can approve it there. Until then you can read everything, and editing and proposing open as soon as you are approved.</div>
+    <div id="access-declined-note" class="access-state declined" hidden>
+      <p style="margin:0 0 10px"><b style="color:var(--ink)">The GM declined your request for player access.</b> This account has not been approved as a player, so editing and proposing stay closed for it, though you can still read everything. If that looks wrong, speak to the GM in person. You can also send a fresh request below.</p>
+      <button class="btn small" type="button" id="access-again">Request access again</button>
+    </div>
+    <div id="access-sent-note" class="access-state pending" hidden></div>
   </div>
 </div>
 <div id="site-edit-bar" hidden>
@@ -1271,14 +1309,69 @@ create policy "Signed-in GM can write site text"
   with check (auth.role() = 'authenticated');</pre>
   </details>
   <h2 class="sec">Players</h2>
-  <p class="lede">Players sign in with accounts the GM invites by email (in Supabase, under Authentication). Register a player's email here, ideally before their first sign-in, so they arrive as a player rather than with GM access. A registered player can read everything at once; approve them and they can edit and propose across the site. Revoke approval and they are back to reading.</p>
-  <div id="players-status" class="status" style="margin:16px 0">Loading the player register…</div>
+  <p class="lede">Players add themselves now. A player signs in with their own account, then uses Request access at the top of the page to give their name, the email they signed in with, and their character if they know it. Their request waits here as pending, and you just approve or decline it: you never type a player's email in by hand. Approving adds that email to the register below as an approved player, with the same access an approved player has always had: answering questions, proposing timeline events and map pins, and proposing page changes. Declining takes the request off your pending list, and the player is told plainly that the GM declined it the next time they sign in. Revoke approval on the register and a player is back to reading.</p>
+  <h3 style="margin:22px 0 6px;font-size:21px">Access requests waiting for you</h3>
+  <div id="access-review-status" class="status" style="margin:12px 0">Loading access requests…</div>
+  <div id="access-requests-list"></div>
+  <details class="code" id="access-sql" hidden>
+    <summary>Creating the access_requests table in Supabase (one time)</summary>
+    <p style="color:var(--muted)">Until this table exists, access requests are kept for the sitting only. Run this once in the Supabase SQL editor for the stonetop project, and requests will save and persist, so a player can ask once and the GM can decide on any device:</p>
+    <pre>create table public.access_requests (
+  id bigint generated always as identity primary key,
+  email text not null,
+  name text,
+  character_name text,
+  status text not null default 'pending',
+  created_at timestamptz default now(),
+  decided_at timestamptz
+);
+alter table public.access_requests enable row level security;
+create policy "Read your own request, or any request as the GM"
+  on public.access_requests for select to authenticated
+  using (
+    (auth.jwt() ->> 'email') is not null
+    and (
+      lower(email) = lower(auth.jwt() ->> 'email')
+      or not exists (
+        select 1 from public.player_registry pr
+        where lower(pr.email) = lower(auth.jwt() ->> 'email')
+      )
+    )
+  );
+create policy "Request access for your own signed-in email only"
+  on public.access_requests for insert to authenticated
+  with check (
+    (auth.jwt() ->> 'email') is not null
+    and lower(email) = lower(auth.jwt() ->> 'email')
+  );
+create policy "The GM decides requests, and a player can re-ask"
+  on public.access_requests for update to authenticated
+  using (
+    (auth.jwt() ->> 'email') is not null
+    and (
+      lower(email) = lower(auth.jwt() ->> 'email')
+      or not exists (
+        select 1 from public.player_registry pr
+        where lower(pr.email) = lower(auth.jwt() ->> 'email')
+      )
+    )
+  )
+  with check (
+    (auth.jwt() ->> 'email') is not null
+    and (
+      lower(email) = lower(auth.jwt() ->> 'email')
+      or not exists (
+        select 1 from public.player_registry pr
+        where lower(pr.email) = lower(auth.jwt() ->> 'email')
+      )
+    )
+  );</pre>
+    <p style="color:var(--muted)">The read rule is deliberately narrow, because a request carries a player's name and email: you can read your own request, and the GM can read them all. On this site the GM is the signed-in account with no row on the player register, which is the check the second half of each rule makes. Nobody signed out can read a request at all.</p>
+  </details>
+  <h3 style="margin:22px 0 6px;font-size:21px">The player register</h3>
+  <div id="players-status" class="status" style="margin:12px 0">Loading the player register…</div>
   <div id="players-list"></div>
-  <div class="card" style="margin-top:14px">
-    <label class="fl" for="player-new">Register a player by email</label>
-    <div class="searchrow" style="margin:0"><input type="email" id="player-new" placeholder="player@example.com"><button class="btn" id="player-add">Register player</button></div>
-    <p class="note" id="player-add-note" style="margin:8px 0 0"></p>
-  </div>
+  <p class="note" style="margin-top:12px">There is no box for typing in a player's email any more, on purpose: players request access with the email they signed in with, and approving their request is what puts them on this register.</p>
 </section>
 
 <!-- ARTICLE -->
@@ -3063,30 +3156,57 @@ function loadVault(){
 }
 
 
-/* ---------- players: the register and GM approval ----------
+/* ---------- players: access requests, the register, approval ----------
    The sign-in model for the whole site. The public view is
-   read-only. The GM invites players by email in Supabase
-   (Authentication), and registers each player's email here.
-   A registered player who signs in can read everything at
-   once; once the GM approves them, window.canEdit opens the
-   editing and proposing surfaces (the steading playbook, map
-   pin and timeline proposals, answers and Chronicle entries),
-   and their proposals carry their email as the attribution.
-   A signed-in account with no register row is treated as the
-   GM: that is how the site worked when the GM was the only
-   account, and it keeps the GM's own sign-in working. Register
-   players before their first sign-in so they arrive as
-   players. GM_EMAILS can also pin GM accounts by email.
+   read-only. Players add themselves: a player signs in with
+   their own account, then uses Request access (shown under the
+   sign-in panel whenever a signed-in player is not approved
+   yet) to give their name, the email they signed in with, and
+   their character if they know it. The request lands in GM
+   Review, under Players, as pending. The GM never types a
+   player's email in by hand: Approve puts that exact email on
+   the register as approved, and Decline takes the request off
+   the pending list and leaves a plain declined message the
+   player sees the next time they sign in. Once approved, window.canEdit opens the
+   editing and proposing surfaces (answers to open questions,
+   timeline event and map pin proposals, page proposals, the
+   steading playbook and Chronicle entries), and their work
+   carries their email as the attribution, exactly as an
+   approved player has always worked.
+   The legacy rule stands exactly as it was, so the GM is
+   never locked out: a signed-in account with no register row
+   is treated as the GM, as the site worked when the GM was
+   the only account, whatever requests it may have made. What
+   makes a requester a player is the register itself: sending
+   a request also puts their email on the register, not yet
+   approved, the same row the GM's approval later flips.
+   Declining a request leaves that unapproved row in place, so
+   the player stays a player who can read, and sees the plain
+   declined message on their next sign-in. GM_EMAILS can also
+   pin GM accounts by email.
    The register lives in the Supabase table player_registry
-   (email, approved); until that table exists, the register is
-   kept for this sitting only and sign-ins keep the old
-   GM-only behaviour, which GM Review says plainly. */
+   (email, approved) and requests in access_requests (email,
+   name, character_name, status, created_at, decided_at);
+   until a table exists, its records are kept for this sitting
+   only, which the page says plainly, with the one-time setup
+   for access_requests spelled out in GM Review. */
 var GM_EMAILS = [];
 var playerRegistry = [];
 var registryOk = false;
+var accessRequests = [];
+var accessRequestsOk = false;
+var accessRequestsLoaded = false;
+var accessPanelForced = false;
 window.isPlayer = false;
 window.playerApproved = false;
 window.canEdit = false;
+function myAccessRequest(){
+  var u = (typeof gmUser !== "undefined") ? gmUser : null;
+  if (!u || !u.email) return null;
+  var email = String(u.email).toLowerCase(), hit = null;
+  accessRequests.forEach(function(r){ if (String(r.email || "").toLowerCase() === email) hit = r; });
+  return hit;
+}
 function computeRoles(){
   window.isGM = false; window.isPlayer = false; window.playerApproved = false;
   var u = (typeof gmUser !== "undefined") ? gmUser : null;
@@ -3110,16 +3230,31 @@ function loadRegistry(){
     computeRoles(); applyGM(); renderPlayers();
   });
 }
+function loadAccessRequests(){
+  if (!sb){ accessRequestsLoaded = true; renderPlayers(); renderAccessPanel(); return; }
+  sb.from("access_requests").select("*").order("created_at", { ascending:true }).then(function(res){
+    accessRequestsLoaded = true;
+    if (res.error){ accessRequestsOk = false; }
+    else {
+      accessRequestsOk = true;
+      accessRequests = (res.data || []).map(function(r){
+        return { id:r.id || null, email:r.email || "", name:r.name || "", character_name:r.character_name || "", status:r.status || "pending", created_at:r.created_at || null, decided_at:r.decided_at || null };
+      });
+    }
+    computeRoles(); applyGM(); renderPlayers(); renderAccessPanel();
+  });
+}
 function renderPlayers(){
   var st = document.getElementById("players-status");
   var list = document.getElementById("players-list");
+  renderAccessRequests();
   if (!st || !list) return;
   if (!sb){ st.className = "status"; st.textContent = "Live sync is not connected, so the player register is kept for this sitting only."; }
-  else if (!registryOk){ st.className = "status"; st.textContent = "The player_registry table does not exist in Supabase yet, so the register is kept for this sitting only. Until it exists, anyone who signs in is treated as the GM, as the site worked before players had their own accounts."; }
+  else if (!registryOk){ st.className = "status"; st.textContent = "The player_registry table does not exist in Supabase yet, so the register is kept for this sitting only. Until it exists, anyone who signs in with no access request is treated as the GM, as the site worked before players had their own accounts."; }
   else { st.className = "status ok"; st.textContent = "Live sync is connected. The register saves to Supabase and is shared with every device."; }
   list.innerHTML = "";
   if (!window.isGM) return;
-  if (!playerRegistry.length){ list.innerHTML = "<p class='note'>No players registered yet. Add a player's email below, and invite them in Supabase so they can set a password and sign in.</p>"; return; }
+  if (!playerRegistry.length){ list.innerHTML = "<p class='note'>No players on the register yet. When you approve a player's request above, their email lands here, already approved. There is nothing to type in.</p>"; return; }
   playerRegistry.forEach(function(r){
     var row = document.createElement("div"); row.className = "vrow";
     var vt = document.createElement("div"); vt.className = "vt";
@@ -3136,25 +3271,174 @@ function renderPlayers(){
     list.appendChild(row);
   });
 }
-var playerAddBtn = document.getElementById("player-add");
-if (playerAddBtn) playerAddBtn.addEventListener("click", function(){
-  var inp = document.getElementById("player-new");
-  var note = document.getElementById("player-add-note");
-  var email = inp.value.trim().toLowerCase();
-  if (!email || email.indexOf("@") === -1){ note.textContent = "Enter the player's email address."; return; }
-  if (gmUser && gmUser.email && email === String(gmUser.email).toLowerCase()){ note.textContent = "That is your own email. The GM account does not go on the player register."; return; }
-  if (playerRegistry.some(function(r){ return String(r.email || "").toLowerCase() === email; })){ note.textContent = "That email is already registered."; return; }
-  var row = { email:email, approved:false };
-  playerRegistry.push(row);
-  inp.value = "";
-  note.textContent = registryOk ? "Registered. Invite them in Supabase (Authentication) if they have no account yet, then approve them here once they have signed in." : "Registered for this sitting. Once the player_registry table exists in Supabase, registrations will save for good.";
-  if (sb && registryOk){
-    sb.from("player_registry").insert({ email:email, approved:false }).select().then(function(res){
-      if (res.data && res.data[0]) row.id = res.data[0].id;
-      renderPlayers();
-    });
+function renderAccessRequests(){
+  var st = document.getElementById("access-review-status");
+  var list = document.getElementById("access-requests-list");
+  var sql = document.getElementById("access-sql");
+  if (st){
+    if (!sb){ st.className = "status"; st.textContent = "Live sync is not connected, so access requests are kept for this sitting only."; }
+    else if (accessRequestsOk){ st.className = "status ok"; st.textContent = "Live sync is connected. Access requests save to Supabase (the access_requests table), so a request made on any device waits here until you decide it."; }
+    else if (accessRequestsLoaded){ st.className = "status"; st.textContent = "The access_requests table does not exist in Supabase yet, so access requests are kept for this sitting only. The one-time setup is spelled out below."; }
+    else { st.className = "status"; st.textContent = "Loading access requests…"; }
   }
-  renderPlayers();
+  if (sql) sql.hidden = !(sb && accessRequestsLoaded && !accessRequestsOk);
+  if (!list) return;
+  list.innerHTML = "";
+  if (!window.isGM) return;
+  var pending = accessRequests.filter(function(r){ return r.status === "pending"; });
+  if (!pending.length){ list.innerHTML = "<p class='note'>No access requests waiting. When a player signs in and presses Request access, their name, their signed-in email, and their character if they gave one will wait here, with Approve and Decline buttons. You will not need to type their email.</p>"; return; }
+  pending.forEach(function(rec){
+    var row = document.createElement("div"); row.className = "review-item";
+    row.innerHTML = "<div class='rmeta'>Access request <span class='badge pending'>Pending</span></div>" +
+      "<div class='rq'>" + esc(rec.name || "A player") + "</div>" +
+      "<div class='ra'>Email they signed in with: <b>" + esc(rec.email || "") + "</b>" +
+      (rec.character_name ? "<br>Character: " + esc(rec.character_name) : "<br>Character: not given") +
+      "<br><span class='rmeta'>Requested " + esc(rec.created_at ? fmtDate(rec.created_at) : "this sitting") + (accessRequestsOk ? "" : " · Kept for this sitting only") + "</span></div>";
+    var ctl = document.createElement("div"); ctl.className = "review-actions";
+    var ok = document.createElement("button"); ok.type = "button"; ok.className = "btn small good"; ok.textContent = "Approve";
+    ok.addEventListener("click", function(){ approveAccessRequest(rec); });
+    var no = document.createElement("button"); no.type = "button"; no.className = "btn small rust"; no.textContent = "Decline";
+    no.addEventListener("click", function(){ declineAccessRequest(rec); });
+    ctl.appendChild(ok); ctl.appendChild(no);
+    row.appendChild(ctl);
+    list.appendChild(row);
+  });
+}
+function approveAccessRequest(rec){
+  rec.status = "approved";
+  rec.decided_at = new Date().toISOString();
+  if (sb && accessRequestsOk && rec.id) sb.from("access_requests").update({ status:"approved", decided_at:rec.decided_at }).eq("id", rec.id).then(function(){});
+  var email = String(rec.email || "").toLowerCase();
+  var row = null;
+  playerRegistry.forEach(function(r){ if (String(r.email || "").toLowerCase() === email) row = r; });
+  if (row){
+    row.approved = true;
+    if (sb && registryOk && row.id) sb.from("player_registry").update({ approved:true }).eq("id", row.id).then(function(){});
+  } else {
+    var nrow = { email:email, approved:true };
+    playerRegistry.push(nrow);
+    if (sb && registryOk){
+      sb.from("player_registry").insert({ email:email, approved:true }).select().then(function(res){
+        if (res.data && res.data[0]) nrow.id = res.data[0].id;
+        renderPlayers();
+      });
+    }
+  }
+  computeRoles(); applyGM(); renderPlayers(); renderAccessPanel();
+}
+function declineAccessRequest(rec){
+  rec.status = "declined";
+  rec.decided_at = new Date().toISOString();
+  if (sb && accessRequestsOk && rec.id) sb.from("access_requests").update({ status:"declined", decided_at:rec.decided_at }).eq("id", rec.id).then(function(){});
+  computeRoles(); applyGM(); renderPlayers(); renderAccessPanel();
+}
+function renderAccessPanel(){
+  var panel = document.getElementById("access-panel");
+  if (!panel) return;
+  var hint = document.getElementById("gm-player-request-hint");
+  var user = (typeof gmUser !== "undefined") ? gmUser : null;
+  if (!user){ panel.hidden = true; if (hint) hint.hidden = true; return; }
+  if (hint) hint.hidden = !window.isGM;
+  var show = accessPanelForced || (window.isPlayer && !window.playerApproved);
+  if (window.playerApproved) show = false;
+  panel.hidden = !show;
+  if (!show) return;
+  var emailInp = document.getElementById("access-email");
+  if (emailInp && user.email) emailInp.value = user.email;
+  var dl = document.getElementById("access-characters");
+  if (dl && !dl.children.length && typeof PCS !== "undefined") PCS.forEach(function(p){ var o = document.createElement("option"); o.value = p.n; dl.appendChild(o); });
+  var formWrap = document.getElementById("access-form-wrap");
+  var pend = document.getElementById("access-pending-note");
+  var decl = document.getElementById("access-declined-note");
+  var sent = document.getElementById("access-sent-note");
+  var req = myAccessRequest();
+  if (sent) sent.hidden = true;
+  if (req && req.status === "pending"){
+    if (formWrap) formWrap.hidden = true;
+    if (pend) pend.hidden = false;
+    if (decl) decl.hidden = true;
+  } else if (req && req.status === "declined"){
+    if (formWrap) formWrap.hidden = true;
+    if (pend) pend.hidden = true;
+    if (decl) decl.hidden = false;
+  } else {
+    if (formWrap) formWrap.hidden = false;
+    if (pend) pend.hidden = true;
+    if (decl) decl.hidden = true;
+  }
+}
+var gmShowAccessBtn = document.getElementById("gm-show-access");
+if (gmShowAccessBtn) gmShowAccessBtn.addEventListener("click", function(){
+  accessPanelForced = true;
+  renderAccessPanel();
+  var panel = document.getElementById("access-panel");
+  if (panel) panel.scrollIntoView({ block:"start", behavior:"smooth" });
+  var nm = document.getElementById("access-name");
+  if (nm) setTimeout(function(){ try { nm.focus({ preventScroll:true }); } catch(e){} }, 350);
+});
+var accessAgainBtn = document.getElementById("access-again");
+if (accessAgainBtn) accessAgainBtn.addEventListener("click", function(){
+  var decl = document.getElementById("access-declined-note");
+  var formWrap = document.getElementById("access-form-wrap");
+  if (decl) decl.hidden = true;
+  if (formWrap) formWrap.hidden = false;
+  var nm = document.getElementById("access-name");
+  if (nm) nm.focus();
+});
+var accessSubmitBtn = document.getElementById("access-submit");
+if (accessSubmitBtn) accessSubmitBtn.addEventListener("click", function(){
+  var note = document.getElementById("access-note");
+  var user = (typeof gmUser !== "undefined") ? gmUser : null;
+  if (!user || !user.email){ if (note) note.textContent = "Sign in first, then request access with the email you signed in with."; return; }
+  var name = document.getElementById("access-name").value.trim();
+  var character = document.getElementById("access-character").value.trim();
+  var email = String(user.email).toLowerCase();
+  if (!name){ if (note) note.textContent = "Give your name, so the GM knows who is asking."; return; }
+  var existing = myAccessRequest();
+  if (existing && existing.status === "pending"){ renderAccessPanel(); return; }
+  var caution = (!sb) ? " One caution: live sync is not connected, so for now this request is kept for this sitting only." : ((accessRequestsLoaded && !accessRequestsOk) ? " One caution: the access_requests table does not exist in Supabase yet, so for now this request is kept for this sitting only." : "");
+  if (existing && existing.status === "declined"){
+    existing.status = "pending"; existing.name = name; existing.character_name = character; existing.decided_at = null; existing.created_at = new Date().toISOString();
+    if (sb && accessRequestsOk && existing.id) sb.from("access_requests").update({ status:"pending", name:name, character_name:character, decided_at:null }).eq("id", existing.id).then(function(){});
+  } else {
+    var rec = { email:email, name:name, character_name:character, status:"pending", created_at:new Date().toISOString(), decided_at:null };
+    accessRequests.push(rec);
+    if (sb && accessRequestsOk){
+      sb.from("access_requests").insert({ email:email, name:name, character_name:character, status:"pending" }).select().then(function(res){
+        if (res && !res.error && res.data && res.data[0]){ rec.id = res.data[0].id; accessRequestsOk = true; }
+        renderPlayers();
+      });
+    } else if (sb){
+      sb.from("access_requests").insert({ email:email, name:name, character_name:character, status:"pending" }).select().then(function(res){
+        if (res && !res.error && res.data && res.data[0]){ rec.id = res.data[0].id; accessRequestsOk = true; accessRequestsLoaded = true; }
+        renderPlayers();
+      });
+    }
+  }
+  /* Asking for player access is also what puts this email on
+     the register, not yet approved: that row, not the request,
+     is what makes this account a player rather than the legacy
+     GM, and it is the row the GM's approval later flips. */
+  var haveRow = playerRegistry.some(function(r){ return String(r.email || "").toLowerCase() === email; });
+  if (!haveRow){
+    var prow = { email:email, approved:false };
+    playerRegistry.push(prow);
+    if (sb && registryOk){
+      sb.from("player_registry").insert({ email:email, approved:false }).select().then(function(res){
+        if (res.data && res.data[0]) prow.id = res.data[0].id;
+        renderPlayers();
+      });
+    }
+  }
+  accessPanelForced = false;
+  computeRoles(); applyGM(); renderPlayers();
+  renderAccessPanel();
+  var sent = document.getElementById("access-sent-note");
+  var pend = document.getElementById("access-pending-note");
+  if (pend && !pend.hidden && sent){
+    sent.textContent = "Thank you, " + name + ". Your request is with the GM as pending, under the email " + email + "." + caution;
+    sent.hidden = false;
+  }
 });
 
 /* ---------- GM auth wiring ---------- */
@@ -3181,7 +3465,12 @@ function applyGM(){
       ? "While you are signed in as GM, the GM Review tab, the per-page show and hide controls, approvals, and inline editing are available. Players never see them."
       : (window.playerApproved
         ? "You can run the steading playbook, propose map pins and timeline events, submit answers, and send Chronicle entries. What you propose carries your email, so the GM can see it came from you."
-        : "Ask the GM to approve your account in GM Review, under Players. Until then, the site is read-only for you, like the public view.");
+        : (function(){
+            var req = (typeof myAccessRequest === "function") ? myAccessRequest() : null;
+            if (req && req.status === "declined") return "The GM declined your request for player access, so this account has not been added as a player. The Request access form below says it plainly, and you can send a fresh request there. Until you are approved, the site is read-only for you, like the public view.";
+            if (req && req.status === "pending") return "Your request for player access is with the GM as pending in GM Review, under Players. Until the GM approves it, the site is read-only for you, like the public view.";
+            return "You have not been added as a player yet. Use the Request access form below: give your name, and your character if you know it, and the GM just approves the email you signed in with. Until then, the site is read-only for you, like the public view.";
+          })());
   } else {
     btn.textContent = "Sign In";
     form.hidden = false; signed.hidden = true;
@@ -3204,6 +3493,7 @@ function applyGM(){
   if (typeof renderTlAdd === "function") renderTlAdd();
   if (typeof renderTlReview === "function") renderTlReview();
   if (typeof renderPlayers === "function") renderPlayers();
+  if (typeof renderAccessPanel === "function") renderAccessPanel();
   if (typeof renderPageProposals === "function") renderPageProposals();
   if (typeof refreshProposeUI === "function") refreshProposeUI();
 }
@@ -3294,7 +3584,7 @@ function setSession(session){
   computeRoles();
   applyGM();
   if (key !== gmSessionKey){ gmSessionKey = key; loadVault(); }
-  if (user) loadRegistry();
+  if (user){ loadRegistry(); loadAccessRequests(); }
 }
 if (sb && sb.auth){
   sb.auth.getSession().then(function(res){
@@ -4648,7 +4938,7 @@ function showProposeApproval(panel){
   panel.innerHTML = "";
   var h = document.createElement("h4"); h.textContent = "Propose a change"; panel.appendChild(h);
   var p = document.createElement("p");
-  p.textContent = "You are signed in, but the GM has not approved you yet. Once they approve you in GM Review, under Players, this button opens the proposal form: a change to this page, or a brand-new entry, sent to the GM with your name on it.";
+  p.textContent = "You are signed in, but the GM has not approved you yet. If you have not asked yet, use Request access at the top of the page, and the GM just approves the email you signed in with in GM Review, under Players. Once they approve you, this button opens the proposal form: a change to this page, or a brand-new entry, sent to the GM with your name on it.";
   panel.appendChild(p);
   panel.hidden = false;
 }
@@ -4967,7 +5257,7 @@ function tagDataCards(){
   }
 }
 var SITE_CANDIDATES = ".hero h1, h2.sec, h3, h4, .lede, section.page > p, .card p, .sheet p, .sheet li, .imp li, figcaption, .tag, .role, .card .meta, .strip .lab, .strip .val, footer";
-var SITE_EXCLUDE = "#gm-panel, .topwrap, nav.tabs, #gsearch-bar, .propose-bar, .propose-panel, .secnav, .article-questions, .oq-block, .gm-addq, #vault-list, #vault-reader, #pg-article, .chr-full, #chr-canon, #chr-pending, #chr-dismissed-wrap, #review-list, #pin-review-list, #tl-review-list, #prop-review-list, #players-list, #tl-heads, #tl-detail, #tl-addwrap, #web-panel, #web-box, .pinpanel, .pinlist, form, .review-item, .qitem, #st-stats, #st-debilities, #st-debdesc, #st-gmnote, #prob-list, #steading-log, #change-log, #sitetext-list, #site-edit-bar, .site-editor";
+var SITE_EXCLUDE = "#gm-panel, #access-panel, .topwrap, nav.tabs, #gsearch-bar, .propose-bar, .propose-panel, .secnav, .article-questions, .oq-block, .gm-addq, #vault-list, #vault-reader, #pg-article, .chr-full, #chr-canon, #chr-pending, #chr-dismissed-wrap, #review-list, #pin-review-list, #tl-review-list, #prop-review-list, #players-list, #access-requests-list, #access-review-status, #tl-heads, #tl-detail, #tl-addwrap, #web-panel, #web-box, .pinpanel, .pinlist, form, .review-item, .qitem, #st-stats, #st-debilities, #st-debdesc, #st-gmnote, #prob-list, #steading-log, #change-log, #sitetext-list, #site-edit-bar, .site-editor";
 function tagStaticText(){
   document.querySelectorAll(SITE_CANDIDATES).forEach(function(el){
     if (el.closest && el.closest(SITE_EXCLUDE)) return;
